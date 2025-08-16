@@ -1,0 +1,101 @@
+@import './theme.css';
+
+/* Base styles are now defined in theme.css */
+/* This file contains app-wide styles that aren't component-specific */
+
+
+a {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-primary-500);
+  text-decoration: inherit;
+  transition: color var(--transition-fast) var(--transition-timing-ease);
+}
+
+a:hover {
+  color: var(--color-primary-600);
+}
+
+/* Body styles are defined in theme.css */
+body {
+  min-width: 320px;
+}
+
+/* Heading styles */
+h1 {
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-4);
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-3);
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-1);
+}
+
+/* Button base styles - specific styling should be in Button component CSS */
+button {
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  font-family: inherit;
+  background-color: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast) var(--transition-timing-ease);
+}
+
+button:hover {
+  border-color: var(--color-primary-500);
+  box-shadow: var(--shadow-sm);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* We're managing theme in our custom theme system, so this is removed */
+
+/* Focus styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Remove default focus styles when using mouse */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Accessibility utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

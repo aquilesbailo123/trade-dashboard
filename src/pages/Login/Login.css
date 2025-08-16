@@ -1,0 +1,9 @@
+/* Login page */
+
+.loginPage { display: grid; place-items: center; height: 100vh; padding: 16px; background: radial-gradient(600px 300px at 50% -20%, rgba(59,130,246,0.18), transparent 60%), var(--color-bg); }
+.loginCard { width: 420px; padding: 24px; animation: slideUp 400ms ease; }
+.loginTitle { margin: 0 0 6px; }
+.loginSubtitle { margin: 0 0 16px; }
+.loginFields { display: grid; gap: 12px; }
+
+@keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

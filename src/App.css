@@ -1,0 +1,87 @@
+/* App-specific styles */
+
+.app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.app-logo {
+  height: 3rem;
+  padding: var(--space-2);
+  will-change: filter;
+  transition: filter var(--transition-normal);
+}
+
+.app-logo:hover {
+  filter: drop-shadow(0 0 0.5rem var(--color-primary-500));
+}
+
+/* Animation moved to theme.css */
+
+/* App layout utilities */
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Card styles are now in theme.css */
+
+/* App-specific components */
+
+.app-section {
+  margin-bottom: var(--space-8);
+}
+
+.app-section__title {
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--grid-gap);
+}
+
+/* Status indicators */
+.app-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.app-status-indicator::before {
+  content: "";
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  margin-right: var(--space-1);
+}
+
+.app-status-indicator--online::before {
+  background-color: var(--color-status-approved);
+}
+
+.app-status-indicator--offline::before {
+  background-color: var(--color-status-flagged);
+}
+
+.app-status-indicator--idle::before {
+  background-color: var(--color-status-pending);
+}

@@ -1,0 +1,7 @@
+/* Settings page */
+
+.settingsPage { display: grid; gap: 12px; }
+.settingsTitle { margin: 0; }
+.settingsCard { padding: 16px; }
+.settingsIntro { margin-top: 0; }
+.settingsList { margin: 0; padding-left: 18px; }

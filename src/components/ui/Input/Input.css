@@ -1,0 +1,171 @@
+.input {
+    display: block;
+    width: 100%;
+}
+
+.input__label {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    transition: color var(--transition-fast) var(--transition-timing-ease);
+}
+
+.input__field {
+    width: 100%;
+    background-color: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-base);
+    transition: all var(--transition-fast) var(--transition-timing-ease);
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 0 transparent;
+    outline: none;
+}
+
+.input__field::placeholder {
+    color: var(--color-text-tertiary);
+    opacity: 0.7;
+}
+
+.input__field:hover {
+    border-color: var(--color-border-hover);
+}
+
+.input__field:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Error state */
+.input--error .input__label {
+    color: var(--color-danger-500);
+}
+
+.input--error .input__field {
+    border-color: var(--color-danger-500);
+}
+
+.input--error .input__field:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.input__error-message {
+    margin-top: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--color-danger-500);
+    animation: slideUp var(--transition-fast) forwards;
+}
+
+/* Disabled state */
+.input--disabled .input__label,
+.input--disabled .input__field {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.input--disabled .input__field:hover {
+    border-color: var(--color-border-primary);
+}
+
+/* Size variants */
+.input--sm .input__field {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-sm);
+}
+
+.input--lg .input__field {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-size-lg);
+}
+
+/* Animation for focus */
+.input__field:focus ~ .input__highlight {
+    transform: scaleX(1);
+    opacity: 1;
+}
+
+.input__highlight {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--color-primary-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-normal) var(--transition-timing-bounce),
+                opacity var(--transition-normal) var(--transition-timing-bounce);
+    opacity: 0;
+    z-index: 0;
+}
+
+/* Floating label animation */
+.input--floating {
+    position: relative;
+    padding-top: var(--space-4);
+}
+
+.input--floating .input__label {
+    position: absolute;
+    top: calc(var(--space-4) + var(--space-2));
+    left: var(--space-3);
+    transform-origin: left top;
+    transition: transform var(--transition-normal) var(--transition-timing-ease),
+                color var(--transition-normal) var(--transition-timing-ease);
+    pointer-events: none;
+    z-index: 2;
+    background-color: transparent;
+    padding: 0 var(--space-1);
+}
+
+.input--floating .input__field:focus + .input__label,
+.input--floating.input--has-value .input__label {
+    transform: translateY(calc(-1 * var(--space-4) - var(--space-1))) scale(0.85);
+    color: var(--color-primary-500);
+}
+
+/* Icon support */
+.input--with-icon {
+    position: relative;
+}
+
+.input--with-icon .input__field {
+    padding-left: calc(var(--space-8));
+}
+
+.input__icon {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-tertiary);
+    z-index: 2;
+    transition: color var(--transition-fast) var(--transition-timing-ease);
+}
+
+.input__field:focus ~ .input__icon {
+    color: var(--color-primary-500);
+}
+
+/* Loading state */
+.input--loading .input__field {
+    padding-right: var(--space-8);
+}
+
+.input__loader {
+    position: absolute;
+    right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--color-border-primary);
+    border-radius: 50%;
+    border-top-color: var(--color-primary-500);
+    animation: spin 1s linear infinite;
+}

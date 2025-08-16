@@ -1,7 +1,79 @@
-/* NotFound page */
+/* NotFound page - Enterprise styling */
 
-.nfPage { display: grid; place-items: center; height: 100vh; text-align: center; padding: 16px; background: radial-gradient(600px 300px at 50% -20%, rgba(34,197,94,0.18), transparent 60%), var(--color-bg); }
-.nfCard { padding: 24px; }
-.nfTitle { margin: 0; font-size: 72px; line-height: 1; }
-.nfText { margin: 8px 0 16px; }
-.nfLink { color: var(--color-primary); font-weight: 700; }
+.notFoundPage {
+  background: radial-gradient(600px 300px at 50% -20%, rgba(34,197,94,0.08), transparent 60%), var(--color-bg);
+  color: var(--color-text-primary);
+}
+
+.notFoundCard {
+  padding: 2.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  max-width: 460px;
+  width: 100%;
+}
+
+.notFoundIcon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  color: var(--color-warning);
+}
+
+.notFoundTitle {
+  margin: 0;
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+
+.notFoundText {
+  margin: 0 0 2rem;
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.notFoundButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.notFoundButton:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .notFoundTitle {
+    font-size: 3.5rem;
+  }
+  
+  .notFoundCard {
+    padding: 2rem;
+  }
+  
+  .notFoundText {
+    font-size: 1rem;
+  }
+}

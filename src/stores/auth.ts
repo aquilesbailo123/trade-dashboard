@@ -16,8 +16,14 @@ export type AuthState = {
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
-    user: null,
-    isAuthenticated: false,
+    // Initialize with a default user to stay logged in
+    user: {
+        id: "u_1",
+        name: "Fraud Admin",
+        email: "admin@frauddetection.com",
+        role: "admin",
+    },
+    isAuthenticated: true, // Already authenticated
     loading: false,
     login: async (email: string, _password: string) => {
         set({ loading: true });

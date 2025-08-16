@@ -204,206 +204,194 @@ interface ChartPoint {
 
 interface ChartProps {
   height?: number;
-  type?: 'line' | 'candle' | 'bar' | 'area';
   showVolume?: boolean;
-  data?: ChartPoint[];
-  color?: string;
-  secondaryColor?: string;
 }
 
 const ChartVisualization = ({ 
   height = 250, 
-  type = 'line', 
-  showVolume = false,
-  data,
-  color = 'var(--color-primary-500)',
-  secondaryColor = 'var(--color-accent-400)'
-}: ChartProps) => {
-  // Generate realistic stock market data with patterns
-  const generatePoints = () => {
-    const points: ChartPoint[] = [];
-    let lastY = 50 + Math.random() * 20;
-    const volatility = 2;
-    const trend = 0.1; // slight upward trend
+  showVolume = true,
+  timeRange = '30d'
+}: ChartProps & { timeRange?: string }) => {
+  
+  // Generate sample data based on timeRange
+  const chartData = useMemo(() => {
+    // Map timeRange to number of data points
+    const timeRangeMap: Record<string, number> = {
+      '24h': 24,
+      '7d': 7 * 24, // hourly for 7 days
+      '30d': 30,
+      '90d': 90
+    };
     
-    // Generate data for the last 30 days with dates
+    const dataPoints = timeRangeMap[timeRange] || 30;
+    const startPrice = 156;
+    let volatility = 2;
+    
+    // Adjust volatility based on time range
+    if (timeRange === '24h') volatility = 0.5;
+    else if (timeRange === '7d') volatility = 1;
+    else if (timeRange === '90d') volatility = 3;
+    
     const now = new Date();
-    for (let i = 29; i >= 0; i--) {
-      // Create slight patterns in the data
-      const change = (Math.random() - 0.5) * volatility;
-      const trendFactor = i > 15 ? trend : -trend * 0.8; // trend reversal in second half
+    let prevPrice = startPrice;
+    
+    return Array(dataPoints).fill(0).map((_, i) => {
+      const dayChange = (Math.random() - 0.5) * volatility;
+      const price = prevPrice + dayChange;
+      prevPrice = price; // Store for next iteration
+      const volume = Math.floor(Math.random() * (2000 + i % 500)) + 500;
       
-      lastY = Math.max(10, Math.min(100, lastY + change + trendFactor));
-      const volume = Math.floor(Math.random() * 5000) + 1000;
+      // Create appropriate date based on timeRange
+      let date;
+      if (timeRange === '24h') {
+        date = new Date(now.getTime() - (dataPoints - i) * 60 * 60 * 1000);
+      } else if (timeRange === '7d') {
+        date = new Date(now.getTime() - (dataPoints - i) * 60 * 60 * 1000);
+      } else if (timeRange === '30d') {
+        date = new Date(now.getTime() - (dataPoints - i) * 24 * 60 * 60 * 1000);
+      } else {
+        date = new Date(now.getTime() - (dataPoints - i) * 24 * 60 * 60 * 1000);
+      }
       
-      // Create date for each point (going back from today)
-      const date = new Date(now);
-      date.setDate(now.getDate() - i);
-      
-      // Sharp drop or spike on specific days (market events)
-      if (i === 8) lastY = lastY * 0.92; // Sharp drop
-      if (i === 5) lastY = lastY * 1.08; // Recovery
-      
-      points.push({
-        x: 29 - i,
-        y: lastY,
+      return {
+        price,
+        volume,
         date,
-        volume
-      });
-    }
-    return points;
-  };
+        x: i,
+        y: price
+      };
+    });
+  }, [timeRange]);
   
-  // Use memoized data or generate if not provided
-  const chartData = useMemo(() => data || generatePoints(), [data]);
-  const maxY = Math.max(...chartData.map(p => p.y)) + 5;
-  const minY = Math.min(...chartData.map(p => p.y)) - 5;
-  const range = maxY - minY;
-  
-  const maxVolume = showVolume ? Math.max(...chartData.map(p => p.volume || 0)) : 0;
+  const maxY = useMemo(() => Math.max(...chartData.map(p => p.y)) + 5, [chartData]);
+  const minY = useMemo(() => Math.min(...chartData.map(p => p.y)) - 5, [chartData]);
+  const range = useMemo(() => maxY - minY, [maxY, minY]);
   
   const getPath = () => {
-    const width = 100;
-    const scaledPoints = chartData.map((p) => ({
-      x: (p.x / (chartData.length - 1)) * width,
-      y: height - (((p.y - minY) / range) * (height - (showVolume ? 50 : 0))),
-    }));
+    if (!chartData.length) return '';
+    
+    // Use consistent SVG viewBox width of 100 for all calculations
+    const viewBoxWidth = 100;
+    const chartHeight = height - (showVolume ? 50 : 0);
+    
+    const scaledPoints = chartData.map((p, i) => {
+      // Scale x from 0 to viewBoxWidth based on position in array
+      const x = (i / (chartData.length - 1)) * viewBoxWidth;
+      // Scale y from minY-maxY range to 0-chartHeight (inverted, since SVG y goes down)
+      const y = height - (((p.y - minY) / range) * chartHeight);
+      return {x, y};
+    });
     
     return scaledPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
   };
-
+  
   const getAreaPath = () => {
     const chartHeight = showVolume ? height - 50 : height;
-    return `${getPath()} L 100 ${chartHeight} L 0 ${chartHeight} Z`;
+    const viewBoxWidth = 100;
+    return `${getPath()} L ${viewBoxWidth} ${chartHeight} L 0 ${chartHeight} Z`;
   };
-  
-  const getMovingAverage = (window: number) => {
+  const getMAPath = () => {
+    if (chartData.length < 7) return ''; // Not enough data for MA
+
+    // Calculate Moving Average for each point
+    const window = 7; // 7-day moving average
     const maPoints: ChartPoint[] = [];
+    const viewBoxWidth = 100;
+    const chartHeight = height - (showVolume ? 50 : 0);
     
-    for (let i = 0; i < chartData.length; i++) {
-      if (i >= window - 1) {
-        let sum = 0;
-        for (let j = 0; j < window; j++) {
-          sum += chartData[i - j].y;
-        }
-        maPoints.push({
-          x: chartData[i].x,
-          y: sum / window,
-        });
+    for (let i = window - 1; i < chartData.length; i++) {
+      let sum = 0;
+      for (let j = 0; j < window; j++) {
+        sum += chartData[i - j].y;
       }
+      maPoints.push({
+        x: chartData[i].x,
+        y: sum / window,
+      });
     }
     
-    const width = 200;
     return maPoints.map((p) => ({
-      x: (p.x / (chartData.length - 1)) * width,
-      y: height - (((p.y - minY) / range) * (height - (showVolume ? 50 : 0))),
+      x: (p.x / (chartData.length - 1)) * viewBoxWidth,
+      y: height - (((p.y - minY) / range) * chartHeight),
     })).map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
   };
   
+  // To fix the stretched text issue, we need to apply a transformation to counter the non-uniform scaling
+  // First, calculate the current price y position
+  const priceY = height - (((chartData[chartData.length-1].y - minY) / range) * (height - (showVolume ? 50 : 0)));
+  
   return (
-    <svg width="100%" height="100%" viewBox={`0 0 200 ${height}`} preserveAspectRatio="xMidYMid preserve">
-      {/* Background grid */}
-      <rect width="200" height={height} fill="var(--color-surface-primary)" fillOpacity="0.03" rx="1" />
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <svg width="100%" height="100%" viewBox={`0 0 100 ${height}`} preserveAspectRatio="none">
+      {/* Background grid - uses viewBoxWidth of 100 to fill container */}
+      <rect width="100" height={height} fill="var(--color-surface-primary)" fillOpacity="0.03" rx="1" />
       
-      {/* Grid lines - horizontal */}
+      {/* Grid lines - horizontal - lines only */}
+      {[...Array(5)].map((_, i) => {
+        const yPos = ((height - (showVolume ? 50 : 0)) / 4) * i;
+        return (
+          <g key={`h-grid-${i}`}>
+            <line 
+              x1="0" y1={yPos} x2="100" y2={yPos}
+              stroke="var(--color-border-primary)" strokeWidth="0.5" strokeDasharray="1 1" 
+              vectorEffect="non-scaling-stroke"
+            />
+          </g>
+        );
+      })}
+      
+      {/* Render grid price labels as HTML overlays to prevent stretching */}
       {[...Array(5)].map((_, i) => {
         const yPos = ((height - (showVolume ? 50 : 0)) / 4) * i;
         const price = maxY - (i * (range / 4));
         return (
-          <g key={`h-grid-${i}`}>
-            <line 
-              x1="0" y1={yPos} x2="200" y2={yPos}
-              stroke="var(--color-border-primary)" strokeWidth="0.5" strokeDasharray="1 1" 
-            />
-            <text 
-              x="1" y={yPos - 2} 
-              fontSize="6" 
-              fill="var(--color-text-tertiary)">
-              ${price.toFixed(2)}
-            </text>
-          </g>
+          <div 
+            key={`price-grid-${i}`}
+            style={{
+              position: 'absolute',
+              left: '4px',
+              top: `calc(${(yPos / height) * 100}% - 8px)`,
+              color: '#666',
+              fontSize: '10px',
+              fontFamily: 'sans-serif',
+              pointerEvents: 'none',
+              zIndex: 10,
+              background: 'rgba(255,255,255,0.7)',
+              padding: '1px 3px',
+              borderRadius: '2px'
+            }}
+          >
+            {price.toFixed(0)}
+          </div>
         );
       })}
       
-      {/* Grid lines - vertical (days) */}
-      {chartData.filter((_, i) => i % 5 === 0).map((point, i) => {
-        const xPos = (point.x / (chartData.length - 1)) * 200;
-        return (
-          <g key={`v-grid-${i}`}>
-            <line 
-              x1={xPos} y1="0" x2={xPos} y2={showVolume ? height - 50 : height}
-              stroke="var(--color-border-primary)" strokeWidth="0.5" strokeDasharray="1 1" 
-            />
-            {point.date && (
-              <text 
-                x={xPos} y={showVolume ? height - 40 : height - 5} 
-                fontSize="5"
-                textAnchor="middle"
-                fill="var(--color-text-tertiary)">
-                {point.date.getDate()}/{point.date.getMonth() + 1}
-              </text>
-            )}
-          </g>
-        );
-      })}
+      {/* Area chart */}
+      <path 
+        d={getAreaPath()} 
+        fill="var(--color-primary-500)" 
+        fillOpacity="0.1" 
+      />
       
-      {/* Volume bars */}
-      {showVolume && maxVolume > 0 && chartData.map((point, i) => {
-        const barWidth = 200 / chartData.length * 0.8;
-        const xPos = (point.x / (chartData.length - 1)) * 200 - barWidth/2;
-        const volHeight = ((point.volume || 0) / maxVolume) * 40;
-        return (
-          <rect 
-            key={`vol-${i}`}
-            x={xPos}
-            y={height - volHeight}
-            width={barWidth}
-            height={volHeight}
-            fill={point.y > (chartData[Math.max(0, i-1)]?.y || point.y) ? 
-                  'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}
-            rx="1"
-          />
-        );
-      })}
-      
-      {/* Chart visualization based on type */}
-      {type === 'area' && (
-        <path d={getAreaPath()} fill={`${color}`} fillOpacity="0.1" />
-      )}
-      
-      {/* Main chart line */}
+      {/* Main line chart */}
       <path 
         d={getPath()} 
         fill="none" 
-        stroke={color} 
-        strokeWidth="1.2" 
+        stroke="var(--color-primary-500)" 
+        strokeWidth="1.2"
+        vectorEffect="non-scaling-stroke"
       />
       
       {/* Moving averages */}
       <path 
-        d={getMovingAverage(7)} 
+        d={getMAPath()} 
         fill="none" 
-        stroke={secondaryColor} 
-        strokeWidth="1" 
-        strokeDasharray="1 1"
+        stroke="var(--color-accent-400)"
+        strokeWidth="0.8"
+        opacity="0.8"
+        strokeDasharray="1 2"
+        vectorEffect="non-scaling-stroke"
       />
-      
-      {/* Data points */}
-      {chartData.filter((_, i) => i % 3 === 0 || i === chartData.length - 1).map((p, i) => {
-        const scaledX = (p.x / (chartData.length - 1)) * 100;
-        const scaledY = height - (((p.y - minY) / range) * (height - (showVolume ? 50 : 0)));
-        return (
-          <circle 
-            key={`point-${i}`}
-            cx={scaledX}
-            cy={scaledY}
-            r="1.2"
-            fill="var(--color-surface-primary)"
-            stroke={color}
-            strokeWidth="0.8"
-          />
-        );
-      })}
       
       {/* Current price highlight */}
       <g>
@@ -415,28 +403,113 @@ const ChartVisualization = ({
           stroke="var(--color-primary-400)" 
           strokeWidth="0.5" 
           strokeDasharray="1 2" 
+          vectorEffect="non-scaling-stroke"
         />
-        <rect 
-          x="85" 
-          y={height - (((chartData[chartData.length-1].y - minY) / range) * (height - (showVolume ? 50 : 0))) - 7} 
-          width="15" 
-          height="7" 
-          rx="1"
-          fill="var(--color-primary-500)" 
+        {/* Horizontal dotted line only */}
+        <line 
+          x1="0" 
+          y1={priceY} 
+          x2="100" 
+          y2={priceY}
+          stroke="var(--color-primary-400)" 
+          strokeWidth="0.5" 
+          strokeDasharray="1 2" 
+          vectorEffect="non-scaling-stroke"
         />
-        <text 
-          x="92.5" 
-          y={height - (((chartData[chartData.length-1].y - minY) / range) * (height - (showVolume ? 50 : 0))) - 2} 
-          fontSize="5" 
-          fill="white"
-          textAnchor="middle"
-        >
-          ${chartData[chartData.length-1].y.toFixed(2)}
-        </text>
       </g>
     </svg>
+    {/* Position the price label as an HTML overlay to avoid SVG stretching */}
+    <div 
+      style={{
+        position: 'absolute',
+        right: '0',
+        top: `calc(${(priceY / height) * 100}% - 10px)`,
+        backgroundColor: 'var(--color-primary-500)',
+        color: 'white',
+        padding: '2px 6px',
+        borderRadius: '2px',
+        fontSize: '12px',
+        lineHeight: '1',
+        fontFamily: 'sans-serif',
+        transform: 'translateY(-50%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minWidth: '40px'
+      }}
+    >
+      {chartData[chartData.length-1].y.toFixed(2)}
+    </div>
+  </div>
   );
 };
+
+// Transaction data structure matching the required fields
+interface Transaction {
+  id: string;
+  contractType: string;
+  contractMonth: string;
+  price: number;
+  client: string;
+  salesPerson: string;
+  dateOfExecution: string;
+}
+
+// Critical Transactions component
+interface CriticalTransactionsProps {
+  transactions: Transaction[];
+}
+
+const CriticalTransactions: React.FC<CriticalTransactionsProps> = ({ transactions }) => {
+  return (
+    <div className="critical-transactions-panel">
+      <div className="panelHeader">
+        <div className="panelHeader__left">
+          <h3>Critical Transactions</h3>
+          <div className="panelHeader__subtitle">High priority trades for review</div>
+        </div>
+        <div className="panelActions">
+          <button className="textButton">Review All</button>
+        </div>
+      </div>
+      
+      <div className="critical-transactions-list">
+        {transactions.map((transaction) => (
+          <div className="critical-transaction-card" key={transaction.id}>
+            <div className="transaction-header">
+              <div className="transaction-badge">{transaction.contractType}</div>
+              <div className="transaction-price">${transaction.price.toFixed(2)}</div>
+            </div>
+            
+            <div className="transaction-details">
+              <div className="detail-row">
+                <div className="detail-label">Contract Month:</div>
+                <div className="detail-value">{transaction.contractMonth}</div>
+              </div>
+              <div className="detail-row">
+                <div className="detail-label">Client:</div>
+                <div className="detail-value">{transaction.client}</div>
+              </div>
+              <div className="detail-row">
+                <div className="detail-label">Sales Person:</div>
+                <div className="detail-value">{transaction.salesPerson}</div>
+              </div>
+              <div className="detail-row">
+                <div className="detail-label">Date of Execution:</div>
+                <div className="detail-value">{transaction.dateOfExecution}</div>
+              </div>
+            </div>
+            
+            <div className="transaction-actions">
+              <button className="action-button primary">Review</button>
+              <button className="action-button warning">Flag</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // Advanced financial risk metrics for stock trading
 interface RiskMetric {
@@ -520,12 +593,43 @@ export default function Home() {
     }
   ];
   
-  // Mock market indices data
+  // Sample market indices data
   const marketIndices: MarketIndex[] = [
     { name: 'S&P 500', value: 4892.37, change: 18.24, changePercent: 0.37 },
     { name: 'NASDAQ', value: 15982.18, change: -28.42, changePercent: -0.18 },
     { name: 'DOW', value: 38654.22, change: 134.58, changePercent: 0.35 },
     { name: 'VIX', value: 14.12, change: -0.42, changePercent: -2.89 }
+  ];
+  
+  // Critical example transactions based on provided data
+  const criticalTransactions: Transaction[] = [
+    {
+      id: '001',
+      contractType: 'WTI',
+      contractMonth: 'July/26',
+      price: 65.76,
+      client: 'Nova Trading',
+      salesPerson: '0061',
+      dateOfExecution: '2025-07-15'
+    },
+    {
+      id: '002',
+      contractType: 'NGO',
+      contractMonth: 'May/27',
+      price: 7.8,
+      client: 'Sun Trading',
+      salesPerson: '771',
+      dateOfExecution: '2025-05-03'
+    },
+    {
+      id: '003',
+      contractType: 'NGO',
+      contractMonth: 'May/27',
+      price: 7.8,
+      client: 'Sun Trading',
+      salesPerson: '771',
+      dateOfExecution: '2025-05-05'
+    }
   ];
   
   // Enhanced activity items with trading-specific events
@@ -689,6 +793,11 @@ export default function Home() {
         ))}
       </section>
 
+      {/* Critical Transactions Section */}
+      <section className="criticalTransactionsPanel" style={{gridColumn: "span 12"}}>
+        <CriticalTransactions transactions={criticalTransactions} />
+      </section>
+
       {/* Charts Section */}
       <div className="dashboardGrid" style={{gridColumn: "span 12"}}>
         <section className="chartPanel mainChart" style={{gridColumn: "span 8"}}>
@@ -725,7 +834,7 @@ export default function Home() {
             </div>
           </div>
           <div className="chartContainer">
-            <ChartVisualization height={320} />
+            <ChartVisualization height={320} timeRange={timeRange} showVolume={true} />
           </div>
           <div className="chartLegend">
             <div className="legendItem">

@@ -91,6 +91,173 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Critical Transactions Panel - Prominent Display */
+.criticalTransactionsPanel {
+    /* margin-bottom: var(--space-6); */
+    grid-column: span 12;
+    animation: fadeSlideUp 0.7s var(--easing-emphasized) 0.2s both;
+}
+
+.critical-transactions-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(239, 68, 68, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Premium gradient border for critical transactions */
+.critical-transactions-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+        135deg,
+        transparent,
+        rgba(239, 68, 68, 0.3) 25%,
+        rgba(239, 68, 68, 0.4) 50%,
+        rgba(239, 68, 68, 0.3) 75%,
+        transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.8;
+    transition: opacity var(--transition-normal) var(--transition-timing-smooth);
+}
+
+/* Critical transactions list */
+.critical-transactions-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+}
+
+/* Critical transaction card */
+.critical-transaction-card {
+    background: rgba(var(--rgb-surface-elevated), 0.7);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    padding: var(--space-4);
+    transition: all var(--transition-normal) var(--transition-timing-smooth);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.critical-transaction-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg), 0 8px 24px rgba(239, 68, 68, 0.15);
+}
+
+.transaction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-badge {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-danger-500);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-full);
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.transaction-badge::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-danger-500);
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+
+.transaction-price {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    font-family: var(--font-family-heading);
+}
+
+.transaction-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-size-sm);
+}
+
+.detail-label {
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+}
+
+.detail-value {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+.transaction-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.action-button {
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-md);
+    border: none;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-normal) var(--transition-timing-smooth);
+}
+
+.action-button.primary {
+    background: var(--color-primary-500);
+    color: white;
+}
+
+.action-button.primary:hover {
+    background: var(--color-primary-600);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.action-button.warning {
+    background: var(--color-danger-500);
+    color: white;
+}
+
+.action-button.warning:hover {
+    background: var(--color-danger-600);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
 .homeHero__title {
     margin: 0 0 var(--space-2);
     font-size: var(--font-size-2xl);
@@ -1044,7 +1211,7 @@
         margin-top: 1rem;
         width: 100%;
         overflow-x: auto;
-        padding-bottom: 0.5rem;
+        /* padding-bottom: 0.5rem; */
         display: flex;
         -ms-overflow-style: none;
         scrollbar-width: none;
@@ -1420,6 +1587,13 @@ color: var(--color-danger-400);
 color: var(--color-text-secondary);
 }
 
+.chart-text {
+    font-family: monospace !important;
+    font-size: 8px !important;
+    letter-spacing: -0.5px !important;
+    transform: scale(0.8) !important;
+}
+
 .metricCard__alert {
 position: absolute;
 bottom: 0;
@@ -1445,15 +1619,19 @@ margin-bottom: 1.75rem;
 .chartContainer {
   position: relative;
   width: 100%;
-  aspect-ratio: 2.5 / 1;
-  max-height: 400px;
+  max-width: 100%;
+  aspect-ratio: 3 / 2;
+  height: auto;
+  /* min-height: 260px; */
+  max-height: none;
+  margin: 0 auto;
 }
 
 .chartContainer svg {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  overflow: visible;
 }
 
 .chartPanel {

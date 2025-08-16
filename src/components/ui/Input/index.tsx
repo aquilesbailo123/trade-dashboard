@@ -23,7 +23,7 @@ export default function Input({
     defaultValue,
     ...rest
 }: InputProps) {
-    const [isFocused, setIsFocused] = useState(false);
+    const [_, setIsFocused] = useState(false);
     const hasValue = value !== undefined && value !== "" || 
                     defaultValue !== undefined && defaultValue !== "";
     

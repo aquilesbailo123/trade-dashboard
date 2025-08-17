@@ -6,14 +6,14 @@ export default function Users() {
     const { data, isLoading } = useUsers();
 
     return (
-        <div className="usersPage container">
-            <h2 className="usersTitle">Users</h2>
+        <div className="users_page container">
+            <h2 className="users_title">Users</h2>
             {isLoading ? (
-                <div className="usersLoading text-muted">Loading...</div>
+                <div className="users_loading text-muted">Loading...</div>
             ) : (
-                <div className="usersCard card">
-                    <div className="usersTable__wrapper">
-                        <table className="usersTable">
+                <div className="users_card card">
+                    <div className="users_table_wrapper">
+                        <table className="users_table">
                             <thead>
                                 <tr>
                                     <Th>ID</Th>
@@ -23,10 +23,10 @@ export default function Users() {
                             </thead>
                             <tbody>
                                 {(data ?? []).map((u) => (
-                                    <tr key={u.id} className="usersTable__row">
+                                    <tr key={u.id} className="users_table_row">
                                         <Td>{u.id}</Td>
                                         <Td>{u.email}</Td>
-                                        <Td><span className="usersBadge">{u.riskScore}</span></Td>
+                                        <Td><span className="users_badge">{u.riskScore}</span></Td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -40,12 +40,12 @@ export default function Users() {
 
 function Th({ children }: { children: React.ReactNode }) {
     return (
-        <th className="usersTable__th">{children}</th>
+        <th className="users_table_th">{children}</th>
     );
 }
 
 function Td({ children }: { children: React.ReactNode }) {
     return (
-        <td className="usersTable__td">{children}</td>
+        <td className="users_table_td">{children}</td>
     );
 }

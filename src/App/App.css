@@ -1,0 +1,82 @@
+/* App-specific styles */
+
+.app_container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.app_logo {
+    height: 3rem;
+    padding: var(--space-2);
+    will-change: filter;
+    transition: filter var(--transition-normal);
+}
+
+.app_logo:hover {
+    filter: drop-shadow(0 0 0.5rem var(--color-primary-500));
+}
+
+/* App layout utilities */
+.app_content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* App-specific components */
+.app_section {
+    margin-bottom: var(--space-8);
+}
+
+.app_section_title {
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+}
+
+.app_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--grid-gap);
+}
+
+/* Status indicators */
+.app_status_indicator {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.app_status_indicator::before {
+    content: "";
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    margin-right: var(--space-1);
+}
+
+.app_status_indicator_online::before {
+    background-color: var(--color-status-approved);
+}
+
+.app_status_indicator_offline::before {
+    background-color: var(--color-status-flagged);
+}
+
+.app_status_indicator_idle::before {
+    background-color: var(--color-status-pending);
+}

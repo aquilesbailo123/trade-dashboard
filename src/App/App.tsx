@@ -1,27 +1,27 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import ProtectedRoute from "./components/ProtectedRoute";
-import DashboardLayout from "./layouts/DashboardLayout";
-import ModalRoot from "./components/ModalRoot";
-import { routes } from "./routes";
-import Login from "./pages/Login/index";
-import Home from "./pages/Home/Home";
-import Transactions from "./pages/Transactions/index";
-import Users from "./pages/Users/index";
-import Settings from "./pages/Settings/index";
-import NotFound from "./pages/NotFound/index";
+import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
+import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
+import ModalRoot from "../components/ModalRoot/ModalRoot";
+import { routes } from "../routes";
+import Login from "../pages/Login/Login";
+import Home from "../pages/Home/Home";
+import Transactions from "../pages/Transactions/Transactions";
+import Users from "../pages/Users/Users";
+import Settings from "../pages/Settings/Settings";
+import NotFound from "../pages/NotFound/NotFound";
 import "./App.css";
 
 function App() {
     return (
-        <div className="App">
+        <div className="app_container">
             <Toaster
                 position="top-center"
                 toastOptions={{
                     duration: 4000,
                     style: { zIndex: 60 },
-                    success: { style: { background: "var(--color-surface)", color: "var(--color-text)" } },
-                    error: { style: { background: "var(--color-danger)", color: "#fff" } },
+                    success: { style: { background: "var(--color-surface-primary)", color: "var(--color-text-primary)" } },
+                    error: { style: { background: "var(--color-danger-500)", color: "var(--color-text-primary)" } },
                 }}
             />
             <ModalRoot />
@@ -43,4 +43,4 @@ function App() {
     );
 }
 
-export default App
+export default App;

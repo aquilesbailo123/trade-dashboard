@@ -1,4 +1,4 @@
-.button {
+.button_base {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -16,120 +16,120 @@
 }
 
 /* Base variant styles */
-.button--primary {
+.button_primary {
     background: linear-gradient(to right, var(--color-primary-600), var(--color-primary-500));
     color: white;
     border-color: transparent;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-.button--primary:hover {
+.button_primary:hover {
     background: linear-gradient(to right, var(--color-primary-700), var(--color-primary-600));
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
-.button--primary:active {
+.button_primary:active {
     transform: translateY(0);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-.button--secondary {
+.button_secondary {
     background: linear-gradient(to right, var(--color-surface-tertiary), var(--color-surface-secondary));
     color: var(--color-text-primary);
     border-color: var(--color-border-primary);
 }
 
-.button--secondary:hover {
+.button_secondary:hover {
     background: var(--color-surface-elevated);
     border-color: var(--color-border-hover);
     transform: translateY(-1px);
 }
 
-.button--secondary:active {
+.button_secondary:active {
     transform: translateY(0);
 }
 
-.button--danger {
+.button_danger {
     background: linear-gradient(to right, var(--color-danger-600), var(--color-danger-500));
     color: white;
     border-color: transparent;
 }
 
-.button--danger:hover {
+.button_danger:hover {
     background: linear-gradient(to right, var(--color-danger-700), var(--color-danger-600));
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(239, 68, 68, 0.15);
 }
 
-.button--danger:active {
+.button_danger:active {
     transform: translateY(0);
     box-shadow: 0 1px 2px rgba(239, 68, 68, 0.06);
 }
 
-.button--ghost {
+.button_ghost {
     background: transparent;
     color: var(--color-text-primary);
     border-color: transparent;
 }
 
-.button--ghost:hover {
+.button_ghost:hover {
     background-color: var(--color-surface-secondary);
     color: var(--color-text-primary);
 }
 
-.button--ghost:active {
+.button_ghost:active {
     background-color: var(--color-surface-tertiary);
 }
 
-.button--success {
+.button_success {
     background: linear-gradient(to right, var(--color-success-600), var(--color-success-500));
     color: white;
     border-color: transparent;
 }
 
-.button--success:hover {
+.button_success:hover {
     background: linear-gradient(to right, var(--color-success-700), var(--color-success-600));
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(16, 185, 129, 0.15);
 }
 
 /* Size variants */
-.button--sm {
+.button_sm {
     padding: var(--space-1) var(--space-2);
     font-size: var(--font-size-xs);
     border-radius: var(--radius-sm);
 }
 
-.button--md {
+.button_md {
     padding: var(--space-2) var(--space-4);
     font-size: var(--font-size-sm);
 }
 
-.button--lg {
+.button_lg {
     padding: var(--space-3) var(--space-6);
     font-size: var(--font-size-base);
 }
 
 /* Full width */
-.button--full {
+.button_full_width {
     width: 100%;
 }
 
 /* Disabled state */
-.button:disabled,
-.button--disabled {
+.button_base:disabled,
+.button_disabled {
     opacity: 0.6;
     cursor: not-allowed;
     pointer-events: none;
 }
 
 /* Loading state */
-.button--loading {
+.button_loading {
     color: transparent;
 }
 
-.button--loading::after {
+.button_loading::after {
     content: "";
     position: absolute;
     width: 16px;
@@ -144,29 +144,29 @@
     animation: spin 1s infinite linear;
 }
 
-.button--secondary.button--loading::after,
-.button--ghost.button--loading::after {
+.button_secondary.button_loading::after,
+.button_ghost.button_loading::after {
     border: 2px solid var(--color-border-primary);
     border-top-color: var(--color-text-primary);
 }
 
 /* Icon support */
-.button__icon {
+.button_icon {
     display: inline-flex;
     margin-right: var(--space-2);
 }
 
-.button__icon--right {
+.button_icon_right {
     margin-right: 0;
     margin-left: var(--space-2);
 }
 
-.button--icon-only {
+.button_icon_only {
     padding: var(--space-2);
 }
 
 /* Ripple effect */
-.button__ripple {
+.button_ripple {
     position: absolute;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.4);
@@ -183,30 +183,30 @@
 }
 
 /* Focus state */
-.button:focus-visible {
+.button_base:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-primary-500);
 }
 
 /* Group buttons */
-.button-group {
+.button_group {
     display: inline-flex;
 }
 
-.button-group .button {
+.button_group .button_base {
     border-radius: 0;
 }
 
-.button-group .button:first-child {
+.button_group .button_base:first-child {
     border-top-left-radius: var(--radius-md);
     border-bottom-left-radius: var(--radius-md);
 }
 
-.button-group .button:last-child {
+.button_group .button_base:last-child {
     border-top-right-radius: var(--radius-md);
     border-bottom-right-radius: var(--radius-md);
 }
 
-.button-group .button:not(:first-child) {
+.button_group .button_base:not(:first-child) {
     margin-left: -1px;
 }

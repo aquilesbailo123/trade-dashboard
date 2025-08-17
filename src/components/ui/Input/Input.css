@@ -1,9 +1,9 @@
-.input {
+.input_container {
     display: block;
     width: 100%;
 }
 
-.input__label {
+.input_label {
     display: block;
     margin-bottom: var(--space-1);
     font-size: var(--font-size-sm);
@@ -12,7 +12,7 @@
     transition: color var(--transition-fast) var(--transition-timing-ease);
 }
 
-.input__field {
+.input_field {
     width: 100%;
     background-color: var(--color-surface-primary);
     color: var(--color-text-primary);
@@ -27,34 +27,34 @@
     outline: none;
 }
 
-.input__field::placeholder {
+.input_field::placeholder {
     color: var(--color-text-tertiary);
     opacity: 0.7;
 }
 
-.input__field:hover {
+.input_field:hover {
     border-color: var(--color-border-hover);
 }
 
-.input__field:focus {
+.input_field:focus {
     border-color: var(--color-primary-500);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 /* Error state */
-.input--error .input__label {
+.input_error .input_label {
     color: var(--color-danger-500);
 }
 
-.input--error .input__field {
+.input_field_error {
     border-color: var(--color-danger-500);
 }
 
-.input--error .input__field:focus {
+.input_field_error:focus {
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
 }
 
-.input__error-message {
+.input_error_message {
     margin-top: var(--space-1);
     font-size: var(--font-size-xs);
     color: var(--color-danger-500);
@@ -62,34 +62,34 @@
 }
 
 /* Disabled state */
-.input--disabled .input__label,
-.input--disabled .input__field {
+.input_disabled .input_label,
+.input_disabled .input_field {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.input--disabled .input__field:hover {
+.input_disabled .input_field:hover {
     border-color: var(--color-border-primary);
 }
 
 /* Size variants */
-.input--sm .input__field {
+.input_sm .input_field {
     padding: var(--space-1) var(--space-2);
     font-size: var(--font-size-sm);
 }
 
-.input--lg .input__field {
+.input_lg .input_field {
     padding: var(--space-3) var(--space-4);
     font-size: var(--font-size-lg);
 }
 
 /* Animation for focus */
-.input__field:focus ~ .input__highlight {
+.input_field:focus ~ .input_highlight {
     transform: scaleX(1);
     opacity: 1;
 }
 
-.input__highlight {
+.input_highlight {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -105,12 +105,12 @@
 }
 
 /* Floating label animation */
-.input--floating {
+.input_floating {
     position: relative;
     padding-top: var(--space-4);
 }
 
-.input--floating .input__label {
+.input_floating .input_label {
     position: absolute;
     top: calc(var(--space-4) + var(--space-2));
     left: var(--space-3);
@@ -123,22 +123,22 @@
     padding: 0 var(--space-1);
 }
 
-.input--floating .input__field:focus + .input__label,
-.input--floating.input--has-value .input__label {
+.input_floating .input_field:focus + .input_label,
+.input_floating.input_has_value .input_label {
     transform: translateY(calc(-1 * var(--space-4) - var(--space-1))) scale(0.85);
     color: var(--color-primary-500);
 }
 
 /* Icon support */
-.input--with-icon {
+.input_with_icon {
     position: relative;
 }
 
-.input--with-icon .input__field {
+.input_with_icon .input_field {
     padding-left: calc(var(--space-8));
 }
 
-.input__icon {
+.input_icon {
     position: absolute;
     left: var(--space-3);
     top: 50%;
@@ -148,16 +148,16 @@
     transition: color var(--transition-fast) var(--transition-timing-ease);
 }
 
-.input__field:focus ~ .input__icon {
+.input_field:focus ~ .input_icon {
     color: var(--color-primary-500);
 }
 
 /* Loading state */
-.input--loading .input__field {
+.input_loading .input_field {
     padding-right: var(--space-8);
 }
 
-.input__loader {
+.input_loader {
     position: absolute;
     right: var(--space-3);
     top: 50%;

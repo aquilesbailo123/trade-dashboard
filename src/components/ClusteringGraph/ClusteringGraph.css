@@ -1,0 +1,93 @@
+.clustering-graph-container {
+  background-color: var(--bg-surface);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.clustering-graph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.clustering-graph-header h3 {
+  font-size: 16px;
+  color: var(--text-color-primary);
+  font-weight: 600;
+  margin: 0;
+}
+
+.clustering-graph-legend {
+  display: flex;
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-label {
+  font-size: 12px;
+  color: var(--text-color-secondary);
+}
+
+.clustering-graph-canvas {
+  position: relative;
+  background-color: var(--bg-surface);
+  border-radius: 6px;
+  border: 1px solid var(--gray-100);
+  margin-bottom: 10px;
+}
+
+.cluster-tooltip {
+  font-size: 12px;
+  color: var(--text-color-primary);
+}
+
+.tooltip-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 5px;
+}
+
+.tooltip-risk {
+  font-weight: 600;
+}
+
+.tooltip-count {
+  color: var(--text-color-secondary);
+}
+
+.tooltip-info {
+  font-style: italic;
+  color: var(--text-color-secondary);
+  font-size: 11px;
+}
+
+.clustering-graph-info {
+  font-size: 13px;
+  color: var(--text-color-secondary);
+  line-height: 1.4;
+}
+
+.clustering-graph-info p {
+  margin: 0;
+}
+
+.cluster-point:hover circle {
+  stroke-width: 3px;
+  filter: brightness(1.1);
+  transition: all 0.2s ease;
+}

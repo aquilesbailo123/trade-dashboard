@@ -1,7 +1,7 @@
 /* Settings page */
 
-.settingsPage { display: grid; gap: 12px; }
-.settingsTitle { margin: 0; }
-.settingsCard { padding: 16px; }
-.settingsIntro { margin-top: 0; }
-.settingsList { margin: 0; padding-left: 18px; }
+.settings_page { display: grid; gap: 12px; }
+.settings_title { margin: 0; }
+.settings_card { padding: 16px; }
+.settings_intro { margin-top: 0; }
+.settings_list { margin: 0; padding-left: 18px; }

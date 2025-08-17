@@ -1,9 +1,47 @@
 /* Login page */
 
-.loginPage { display: grid; place-items: center; height: 100vh; padding: 16px; background: radial-gradient(600px 300px at 50% -20%, rgba(59,130,246,0.18), transparent 60%), var(--color-bg); }
-.loginCard { width: 420px; padding: 24px; animation: slideUp 400ms ease; }
-.loginTitle { margin: 0 0 6px; }
-.loginSubtitle { margin: 0 0 16px; }
-.loginFields { display: grid; gap: 12px; }
+.login_page {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    padding: var(--space-4);
+    background: radial-gradient(600px 300px at 50% -20%, var(--color-primary-100), transparent 60%), var(--color-surface-default);
+}
 
-@keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.login_card {
+    width: 420px;
+    padding: var(--space-6);
+    background: var(--color-surface-elevated);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    animation: slideUp 400ms ease;
+}
+
+.login_title {
+    margin: 0 0 var(--space-1);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-xl);
+}
+
+.login_subtitle {
+    margin: 0 0 var(--space-4);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.login_fields {
+    display: grid;
+    gap: var(--space-3);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

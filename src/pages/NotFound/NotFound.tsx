@@ -27,14 +27,14 @@ const Icons = {
 
 export default function NotFound() {
     return (
-        <div className="notFoundPage" style={{ width: "100%", padding: "1.5rem", display: "grid", placeItems: "center", minHeight: "calc(100vh - 60px)" }}>
-            <div className="notFoundCard">
-                <div className="notFoundIcon">
+        <div className="not_found_page">
+            <div className="not_found_card">
+                <div className="not_found_icon">
                     <Icons.AlertTriangle size={48} />
                 </div>
-                <h1 className="notFoundTitle">404</h1>
-                <p className="notFoundText">The page you are looking for could not be found.</p>
-                <Link className="notFoundButton" to={routes.home}>
+                <h1 className="not_found_title">404</h1>
+                <p className="not_found_text">The page you are looking for could not be found.</p>
+                <Link className="not_found_button" to={routes.home}>
                     <Icons.Home size={16} />
                     <span>Return to Dashboard</span>
                 </Link>

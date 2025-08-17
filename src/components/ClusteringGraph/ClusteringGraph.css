@@ -1,54 +1,149 @@
-.clustering-graph-container {
-  background-color: var(--bg-surface);
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
-  padding: 20px;
+.clustering_graph_container {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
   width: 100%;
+  max-width: 100%;
   overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal) var(--transition-timing-smooth),
+              box-shadow var(--transition-normal) var(--transition-timing-smooth);
+}
+
+.clustering-graph-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--color-primary-400) 50%, 
+    transparent);
+}
+
+.clustering-graph-container:hover {
+  /* transform: translateY(-2px); */
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 768px) {
+  .clustering-graph-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  
+  .clustering-graph-legend {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .legend-item {
+    padding: var(--space-1) var(--space-2);
+  }
+  
+  .legend-label {
+    font-size: var(--font-size-xxs);
+  }
 }
 
 .clustering-graph-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .clustering-graph-header h3 {
-  font-size: 16px;
-  color: var(--text-color-primary);
-  font-weight: 600;
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .clustering-graph-legend {
   display: flex;
-  gap: 12px;
+  gap: var(--space-4);
+  align-items: center;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  transition: all var(--transition-fast) var(--transition-timing-smooth);
+}
+
+.legend-item:hover {
+  background: var(--color-surface-elevated);
+  /* transform: translateY(-1px); */
 }
 
 .legend-color {
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
+  box-shadow: 0 0 4px currentColor;
 }
 
+/* Removed animation */
+
 .legend-label {
-  font-size: 12px;
-  color: var(--text-color-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.01em;
 }
 
 .clustering-graph-canvas {
   position: relative;
-  background-color: var(--bg-surface);
-  border-radius: 6px;
-  border: 1px solid var(--gray-100);
-  margin-bottom: 10px;
+  background: var(--color-surface-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-primary);
+  overflow: hidden;
+  box-shadow: var(--shadow-inner);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.clustering-svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: filter var(--transition-normal) var(--transition-timing-smooth);
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.clustering-svg:hover {
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15));
+}
+
+/* Axes and labels styling */
+.clustering-svg text {
+  font-family: var(--font-family-base);
+  /* No transition by default */
+}
+
+.clustering-svg line {
+  shape-rendering: crispEdges;
 }
 
 .cluster-tooltip {
@@ -77,17 +172,169 @@
 }
 
 .clustering-graph-info {
-  font-size: 13px;
-  color: var(--text-color-secondary);
-  line-height: 1.4;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  text-align: center;
+  padding: var(--space-4);
+  background: var(--color-surface-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-primary);
+  margin-top: var(--space-4);
 }
 
 .clustering-graph-info p {
   margin: 0;
+  font-style: italic;
 }
 
-.cluster-point:hover circle {
-  stroke-width: 3px;
+/* Transaction point animations - simplified */
+.transaction-point {
+  cursor: pointer;
+}
+
+/* No transform on hover to prevent glitching when moving cursor */
+.transaction-point:hover .transaction-circle {
+  opacity: 0.9;
+  transition: opacity var(--transition-fast) var(--transition-timing-smooth);
+}
+
+.transaction-point.outlier-ring {
+  transition: opacity var(--transition-fast) var(--transition-timing-smooth);
+}
+
+.transaction-point:hover .outlier-ring {
+  opacity: 0.8;
+}
+
+.selection-indicator {
+  transition: opacity var(--transition-fast) var(--transition-timing-smooth);
+}
+
+.transaction-point.outlier {
+  /* Static style without animation */
+  filter: brightness(1.2);
+}
+
+.transaction-point.selected {
+  /* Static style without animation */
+  stroke: var(--color-primary-400);
+  stroke-width: 2px;
+}
+
+/* Transaction circle styling - transitions only on hover */
+
+.transaction-point:hover .transaction-circle {
   filter: brightness(1.1);
-  transition: all 0.2s ease;
+  transition: filter var(--transition-fast) var(--transition-timing-smooth);
+}
+
+/* Zone styling */
+/* Zone path styling - transitions only on hover */
+
+.clustering-svg:hover .normal-zone-path,
+.clustering-svg:hover .anomaly-zone-path {
+  opacity: 0.8;
+  transition: opacity var(--transition-fast) var(--transition-timing-smooth);
+}
+
+.axis-line {
+  stroke: var(--color-border-primary);
+  stroke-width: 1.5;
+}
+
+.tick-line {
+  stroke: var(--color-border-secondary);
+  stroke-width: 1;
+}
+
+.axis-label {
+  fill: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  letter-spacing: -0.01em;
+}
+
+.tick-label {
+  fill: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
+  transform: translateY(2px);
+}
+
+.zone-label {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+
+/* Enhanced tooltip - using theme variables */
+.transaction-tooltip {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  padding: var(--space-3) var(--space-4);
+  pointer-events: none;
+  z-index: var(--z-index-tooltip);
+  /* Animation moved to keyframes */
+  animation: tooltipFadeIn var(--transition-fast) var(--transition-timing-smooth);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+  padding-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.tooltip-risk {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tooltip-id {
+  font-family: var(--font-family-monospace);
+  font-size: var(--font-size-xxs);
+  color: var(--color-text-secondary);
+}
+
+.tooltip-amount {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  margin: var(--space-1) 0;
+  color: var(--color-primary-500);
+}
+
+.tooltip-user {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.tooltip-info {
+  font-style: italic;
+  font-size: var(--font-size-xxs);
+  color: var(--color-text-tertiary);
+  text-align: center;
+  margin-top: var(--space-2);
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--color-border-secondary);
 }

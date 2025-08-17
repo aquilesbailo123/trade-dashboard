@@ -1,7 +1,426 @@
-/* Settings page */
+/* Settings page - Fraud Detection Settings Dashboard */
 
-.settings_page { display: grid; gap: 12px; }
-.settings_title { margin: 0; }
-.settings_card { padding: 16px; }
-.settings_intro { margin-top: 0; }
-.settings_list { margin: 0; padding-left: 18px; }
+.settings_container {
+    padding: 24px;
+    background: var(--color-background);
+    min-height: 100vh;
+}
+
+/* Header */
+.settings_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.settings_header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.settings_header_actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.settings_save_button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-primary-500);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.settings_save_button:hover {
+    background: var(--color-primary-600);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Dashboard */
+.settings_dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.settings_dashboard_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Overview Section */
+.settings_overview_section {
+    margin-bottom: 24px;
+}
+
+.settings_overview_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.settings_overview_card {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.settings_overview_card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--color-primary-300);
+}
+
+.settings_overview_card.active {
+    border-color: var(--color-primary-500);
+    background: linear-gradient(135deg, var(--color-surface-primary) 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+
+.settings_overview_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--color-primary-100);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    color: var(--color-primary-600);
+}
+
+.settings_overview_content h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 8px 0;
+}
+
+.settings_overview_content p {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+/* Settings Sections */
+.settings_section {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.settings_section_header {
+    padding: 24px;
+    border-bottom: 1px solid var(--color-border-primary);
+    background: var(--color-surface-secondary);
+}
+
+.settings_section_header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 8px 0;
+}
+
+.settings_section_header p {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.settings_card {
+    padding: 24px;
+}
+
+/* Form Elements */
+.settings_form_grid {
+    display: grid;
+    gap: 24px;
+}
+
+.settings_form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings_label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+}
+
+.settings_label svg {
+    color: var(--color-text-muted);
+}
+
+.settings_input_group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.settings_range {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border-primary);
+    outline: none;
+    cursor: pointer;
+    /* -webkit-appearance: none; */
+}
+
+.settings_range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-primary-500);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.settings_range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-primary-500);
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.settings_value {
+    font-weight: 600;
+    color: var(--color-primary-600);
+    min-width: 40px;
+    text-align: right;
+}
+
+.settings_input {
+    padding: 12px 16px;
+    border: 1px solid var(--color-border-primary);
+    border-radius: 8px;
+    background: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    font-size: 14px;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.settings_input:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.settings_checkbox_label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    padding: 12px 0;
+}
+
+.settings_checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-border-primary);
+    border-radius: 4px;
+    background: var(--color-surface-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.settings_checkbox:checked {
+    background: var(--color-primary-500);
+    border-color: var(--color-primary-500);
+}
+
+.settings_description {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin: 4px 0 0 0;
+    line-height: 1.4;
+}
+
+/* API Key Section */
+.settings_api_key_section {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.settings_api_key_section .settings_input {
+    flex: 1;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    font-size: 13px;
+}
+
+.settings_regenerate_button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-warning-500);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.settings_regenerate_button:hover {
+    background: var(--color-warning-600);
+    transform: translateY(-1px);
+}
+
+/* Status Grid */
+.settings_status_grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    padding: 24px;
+}
+
+.settings_status_card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--color-surface-secondary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.2s ease;
+}
+
+.settings_status_card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.settings_status_card.healthy {
+    border-left: 4px solid var(--color-success-500);
+}
+
+.settings_status_card.warning {
+    border-left: 4px solid var(--color-warning-500);
+}
+
+.settings_status_card.error {
+    border-left: 4px solid var(--color-danger-500);
+}
+
+.settings_status_indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.settings_status_card.healthy .settings_status_indicator {
+    background: var(--color-success-500);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.settings_status_card.warning .settings_status_indicator {
+    background: var(--color-warning-500);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.settings_status_card.error .settings_status_indicator {
+    background: var(--color-danger-500);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.settings_status_content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 4px 0;
+}
+
+.settings_status_value {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .settings_container {
+        padding: 16px;
+    }
+    
+    .settings_header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .settings_overview_grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .settings_form_grid {
+        gap: 20px;
+    }
+    
+    .settings_api_key_section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .settings_status_grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .settings_status_card {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings_container {
+        padding: 12px;
+    }
+    
+    .settings_header h1 {
+        font-size: 24px;
+    }
+    
+    .settings_overview_card,
+    .settings_card {
+        padding: 20px;
+    }
+    
+    .settings_section_header {
+        padding: 20px;
+    }
+}

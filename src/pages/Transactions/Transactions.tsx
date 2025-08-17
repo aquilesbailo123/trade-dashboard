@@ -104,6 +104,29 @@ const Icons = {
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
+    ),
+    Eye: ({ size = 16, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+    ),
+    X: ({ size = 16, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    ),
+    Check: ({ size = 16, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+    ),
+    Flag: ({ size = 16, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+            <line x1="4" y1="22" x2="4" y2="15"></line>
+        </svg>
     )
 };
 
@@ -164,7 +187,7 @@ const TransactionClusterViz = ({ timeRange = '7d' }: { timeRange?: string }) => 
 const TransactionChartVisualization = ({ timeRange, showVolume = true }: TransactionChartProps) => {
     // Chart dimensions
     const chartHeight = 200;
-    const viewBoxWidth = 100; // SVG viewBox width
+    const viewBoxWidth = 400; // SVG viewBox width
   
     // Generate sample data based on timeRange
     const chartData = useMemo(() => {
@@ -231,7 +254,7 @@ const TransactionChartVisualization = ({ timeRange, showVolume = true }: Transac
             // Scale x from 0 to viewBoxWidth based on position in array
             const x = (i / (chartData.length - 1)) * viewBoxWidth;
             // Scale y from minY-maxY range to 0-chartHeight (inverted, since SVG y goes down)
-            const y = adjustedHeight - (((p.y - minY) / range) * adjustedHeight);
+            const y = adjustedHeight - (((p.y - minY) / range) * (adjustedHeight - 20)) - 10;
             return {x, y};
         });
         
@@ -240,8 +263,7 @@ const TransactionChartVisualization = ({ timeRange, showVolume = true }: Transac
   
     const getAreaPath = () => {
         const adjustedHeight = showVolume ? chartHeight - 50 : chartHeight;
-        const viewBoxWidth = 100;
-        return `${getPath()} L ${viewBoxWidth} ${adjustedHeight} L 0 ${adjustedHeight} Z`;
+        return `${getPath()} L ${viewBoxWidth} ${adjustedHeight - 10} L 0 ${adjustedHeight - 10} Z`;
     };
 
     const getMAPath = () => {
@@ -276,9 +298,9 @@ const TransactionChartVisualization = ({ timeRange, showVolume = true }: Transac
   
     return (
         <div className="transactions_chart">
-            <svg width="100%" height={chartHeight} viewBox={`0 0 ${viewBoxWidth} ${chartHeight}`} preserveAspectRatio="none">
+            <svg width="100%" height={chartHeight} viewBox={`0 0 ${viewBoxWidth} ${chartHeight}`} preserveAspectRatio="xMidYMid meet">
                 {/* Background grid */}
-                <rect width={viewBoxWidth} height={chartHeight} fill="var(--color-surface-primary)" fillOpacity="0.03" rx="1" />
+                <rect width={viewBoxWidth} height={chartHeight} fill="var(--color-surface-secondary)" fillOpacity="0.5" rx="4" />
                 
                 {/* Grid lines - horizontal */}
                 {[...Array(5)].map((_, i) => {
@@ -286,19 +308,38 @@ const TransactionChartVisualization = ({ timeRange, showVolume = true }: Transac
                     return (
                         <g key={`h-grid-${i}`}>
                             <line 
-                                x1="0" y1={yPos} x2="100" y2={yPos}
-                                stroke="var(--color-border-primary)" strokeWidth="0.5" strokeDasharray="1 1" 
-                                vectorEffect="non-scaling-stroke"
+                                x1="0" y1={yPos} x2={viewBoxWidth} y2={yPos}
+                                stroke="var(--color-border-primary)" strokeWidth="1" strokeDasharray="4 4" 
+                                opacity="0.3"
+                            />
+                        </g>
+                    );
+                })}
+                
+                {/* Grid lines - vertical */}
+                {[...Array(6)].map((_, i) => {
+                    const xPos = (viewBoxWidth / 5) * i;
+                    return (
+                        <g key={`v-grid-${i}`}>
+                            <line 
+                                x1={xPos} y1="0" x2={xPos} y2={adjustedHeight}
+                                stroke="var(--color-border-primary)" strokeWidth="1" strokeDasharray="4 4" 
+                                opacity="0.3"
                             />
                         </g>
                     );
                 })}
                 
                 {/* Area chart */}
+                <defs>
+                    <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="var(--color-primary-500)" stopOpacity="0.3" />
+                        <stop offset="100%" stopColor="var(--color-primary-500)" stopOpacity="0.05" />
+                    </linearGradient>
+                </defs>
                 <path 
                     d={getAreaPath()} 
-                    fill="var(--color-primary-500)" 
-                    fillOpacity="0.1" 
+                    fill="url(#chartGradient)" 
                     className="transactions_chart_area"
                 />
                 
@@ -307,8 +348,9 @@ const TransactionChartVisualization = ({ timeRange, showVolume = true }: Transac
                     d={getPath()} 
                     fill="none" 
                     stroke="var(--color-primary-500)" 
-                    strokeWidth="1.2"
-                    vectorEffect="non-scaling-stroke"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="transactions_chart_line"
                 />
                 
@@ -317,10 +359,10 @@ const TransactionChartVisualization = ({ timeRange, showVolume = true }: Transac
                     d={getMAPath()} 
                     fill="none" 
                     stroke="var(--color-accent-400)"
-                    strokeWidth="0.8"
-                    opacity="0.8"
-                    strokeDasharray="1 2"
-                    vectorEffect="non-scaling-stroke"
+                    strokeWidth="2"
+                    opacity="0.7"
+                    strokeDasharray="8 4"
+                    strokeLinecap="round"
                     className="transactions_chart_ma_line"
                 />
                 
@@ -329,13 +371,21 @@ const TransactionChartVisualization = ({ timeRange, showVolume = true }: Transac
                     <line 
                         x1="0" 
                         y1={priceY} 
-                        x2="100" 
+                        x2={viewBoxWidth} 
                         y2={priceY}
                         stroke="var(--color-primary-400)" 
-                        strokeWidth="0.5" 
-                        strokeDasharray="1 2" 
-                        vectorEffect="non-scaling-stroke"
+                        strokeWidth="2" 
+                        strokeDasharray="8 4" 
+                        opacity="0.6"
                         className="transactions_chart_price_line"
+                    />
+                    <circle 
+                        cx={viewBoxWidth - 10} 
+                        cy={priceY} 
+                        r="4" 
+                        fill="var(--color-primary-500)" 
+                        stroke="var(--color-surface-primary)" 
+                        strokeWidth="2"
                     />
                 </g>
             </svg>
@@ -458,58 +508,57 @@ export default function Transactions() {
                 </div>
             </section>
 
-            <div className="transactions_dashboard_grid">
-                {/* Chart panel */}
-                <section className="transactions_chart_panel transactions_main_chart">
-                    <div className="transactions_card">
-                        <div className="transactions_card_header">
-                            <h3>Transaction Volume</h3>
-                            <div className="transactions_time_controls">
-                                <button 
-                                    className={`transactions_control_button ${timeRange === "24h" ? "active" : ""}`}
-                                    onClick={() => setTimeRange("24h")}
-                                >
-                                    24h
-                                </button>
-                                <button 
-                                    className={`transactions_control_button ${timeRange === "7d" ? "active" : ""}`}
-                                    onClick={() => setTimeRange("7d")}
-                                >
-                                    7d
-                                </button>
-                                <button 
-                                    className={`transactions_control_button ${timeRange === "30d" ? "active" : ""}`}
-                                    onClick={() => setTimeRange("30d")}
-                                >
-                                    30d
-                                </button>
-                                <button 
-                                    className={`transactions_control_button ${timeRange === "90d" ? "active" : ""}`}
-                                    onClick={() => setTimeRange("90d")}
-                                >
-                                    90d
-                                </button>
-                            </div>
+            {/* Main content grid with chart and activity panel */}
+            <div className="transactions_analysis_grid">
+                {/* Chart visualization section */}
+                <section className="transactions_chart_section">
+                    <div className="transactions_section_header">
+                        <h3>Transaction Volume Analysis</h3>
+                        <div className="transactions_time_controls">
+                            <button 
+                                className={`transactions_control_button ${timeRange === "24h" ? "active" : ""}`}
+                                onClick={() => setTimeRange("24h")}
+                            >
+                                24h
+                            </button>
+                            <button 
+                                className={`transactions_control_button ${timeRange === "7d" ? "active" : ""}`}
+                                onClick={() => setTimeRange("7d")}
+                            >
+                                7d
+                            </button>
+                            <button 
+                                className={`transactions_control_button ${timeRange === "30d" ? "active" : ""}`}
+                                onClick={() => setTimeRange("30d")}
+                            >
+                                30d
+                            </button>
+                            <button 
+                                className={`transactions_control_button ${timeRange === "90d" ? "active" : ""}`}
+                                onClick={() => setTimeRange("90d")}
+                            >
+                                90d
+                            </button>
                         </div>
-                        
-                        <div className="transactions_chart_container">
-                            <TransactionChartVisualization timeRange={timeRange} showVolume={true} />
+                    </div>
+                    
+                    <div className="transactions_chart_container">
+                        <TransactionChartVisualization timeRange={timeRange} showVolume={true} />
+                    </div>
+                    
+                    <div className="transactions_cluster_container">
+                        <h4 className="transactions_subheading">Transaction Clusters</h4>
+                        <TransactionClusterViz timeRange={timeRange} />
+                    </div>
+                    
+                    <div className="transactions_chart_legend">
+                        <div className="transactions_legend_item">
+                            <div className="transactions_legend_color" style={{background: 'var(--color-primary-500)'}}></div>
+                            <span>Transaction Volume</span>
                         </div>
-                        
-                        <div className="transactions_cluster_container">
-                            <h4 className="transactions_subheading">Transaction Clusters</h4>
-                            <TransactionClusterViz timeRange={timeRange} />
-                        </div>
-                        
-                        <div className="transactions_chart_legend">
-                            <div className="transactions_legend_item">
-                                <div className="transactions_legend_color" style={{background: 'var(--color-primary-500)'}}></div>
-                                <span>Transaction Volume</span>
-                            </div>
-                            <div className="transactions_legend_item">
-                                <div className="transactions_legend_color" style={{background: 'var(--color-accent-400)'}}></div>
-                                <span>7-day Moving Avg</span>
-                            </div>
+                        <div className="transactions_legend_item">
+                            <div className="transactions_legend_color" style={{background: 'var(--color-accent-400)'}}></div>
+                            <span>7-day Moving Avg</span>
                         </div>
                     </div>
                 </section>
@@ -562,7 +611,7 @@ export default function Transactions() {
                         </button>
                     </div>
                     
-                    <div className="transactions_panel_header">
+                    {/* <div className="transactions_panel_header">
                         <div className="transactions_panel_header_left">
                             <h3>Transaction Alerts</h3>
                             <div className="transactions_panel_header_subtitle">Recent activity</div>
@@ -602,7 +651,7 @@ export default function Transactions() {
                                 <div className="transactions_activity_item_time">45 minutes ago</div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </section>
                 
                 {/* Transactions panel */}
@@ -657,10 +706,22 @@ export default function Transactions() {
                                                 <Td>{new Date(t.createdAt).toLocaleString()}</Td>
                                                 <Td>
                                                     <div className="transactions_action_buttons">
-                                                        <button className="transactions_action_button">View</button>
+                                                        <button className="transactions_action_button" title="View Details">
+                                                            <Icons.Eye size={14} />
+                                                        </button>
                                                         {t.status === 'pending' && (
-                                                            <button className="transactions_action_button transactions_action_button_danger">
-                                                                Cancel
+                                                            <button className="transactions_action_button transactions_action_button_danger" title="Cancel Transaction">
+                                                                <Icons.X size={14} />
+                                                            </button>
+                                                        )}
+                                                        {t.status === 'approved' && (
+                                                            <button className="transactions_action_button transactions_action_button_success" title="Approved">
+                                                                <Icons.Check size={14} />
+                                                            </button>
+                                                        )}
+                                                        {t.status === 'flagged' && (
+                                                            <button className="transactions_action_button transactions_action_button_warning" title="Flagged">
+                                                                <Icons.Flag size={14} />
                                                             </button>
                                                         )}
                                                     </div>

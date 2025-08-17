@@ -5,6 +5,72 @@ import ClusteringGraph from '../../components/ClusteringGraph/ClusteringGraph';
 import './Home.css';
 import './transaction-details.css';
 
+// Icon components for consistent styling
+interface IconProps {
+    size?: number;
+    color?: string;
+}
+
+const Icons = {
+    Search: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    ),
+    Check: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+    ),
+    Flag: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+            <line x1="4" y1="22" x2="4" y2="15"></line>
+        </svg>
+    ),
+    X: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    ),
+    MousePointer: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
+            <path d="M13 13l6 6"></path>
+        </svg>
+    ),
+    Filter: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+    ),
+    RefreshCw: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+    ),
+    Eye: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+    ),
+    ChevronLeft: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    ),
+    ChevronRight: ({ size = 18, color = "currentColor" }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    )
+};
+
 // Extended Transaction type with UI properties
 type Transaction = ApiTransaction & {
   risk?: 'low' | 'medium' | 'high';
@@ -56,7 +122,7 @@ const Home: React.FC = () => {
         <h1>Transaction Anomaly Detection</h1>
         <div className="home_header_actions">
           <div className="home_search_bar">
-            <i className="fas fa-search"></i>
+            <Icons.Search size={16} />
             <input type="text" placeholder="Search transactions..." />
           </div>
         </div>
@@ -123,20 +189,20 @@ const Home: React.FC = () => {
                     
                     <div className="transaction_actions">
                       <button className="action_button approve">
-                        <i className="fas fa-check"></i> Approve
+                        <Icons.Check size={16} /> Approve
                       </button>
                       <button className="action_button flag">
-                        <i className="fas fa-flag"></i> Flag
+                        <Icons.Flag size={16} /> Flag
                       </button>
                       <button className="action_button reject">
-                        <i className="fas fa-times"></i> Reject
+                        <Icons.X size={16} /> Reject
                       </button>
                     </div>
                   </div>
                 ) : (
                   <div className="transaction_details_placeholder">
                     <div className="placeholder_icon">
-                      <i className="fas fa-mouse-pointer"></i>
+                      <Icons.MousePointer size={24} />
                     </div>
                     <p>Click on any transaction in the clustering graph to view its details</p>
                   </div>
@@ -200,7 +266,7 @@ const Home: React.FC = () => {
               <h3>Recent Transactions</h3>
               <div className="table_actions">
                 <div className="filter_container">
-                  <i className="fas fa-filter"></i>
+                  <Icons.Filter size={16} />
                   <select className="filter_select">
                     <option value="all">All Transactions</option>
                     <option value="high">High Risk Only</option>
@@ -209,7 +275,7 @@ const Home: React.FC = () => {
                   </select>
                 </div>
                 <button className="refresh_button">
-                  <i className="fas fa-sync-alt"></i> Refresh
+                  <Icons.RefreshCw size={16} /> Refresh
                 </button>
               </div>
             </div>
@@ -253,10 +319,10 @@ const Home: React.FC = () => {
                       <td>
                         <div className="action-buttons">
                           <button className="icon-button" title="View Details">
-                            <i className="fas fa-eye"></i>
+                            <Icons.Eye size={16} />
                           </button>
                           <button className="icon-button" title="Flag Transaction">
-                            <i className="fas fa-flag"></i>
+                            <Icons.Flag size={16} />
                           </button>
                         </div>
                       </td>
@@ -266,9 +332,9 @@ const Home: React.FC = () => {
               </table>
             </div>
             <div className="pagination">
-              <button className="pagination-button" disabled><i className="fas fa-chevron-left"></i></button>
+              <button className="pagination-button" disabled><Icons.ChevronLeft size={16} /></button>
               <span className="pagination-info">Page 1 of 5</span>
-              <button className="pagination-button"><i className="fas fa-chevron-right"></i></button>
+              <button className="pagination-button"><Icons.ChevronRight size={16} /></button>
             </div>
           </section>
         </div>

@@ -2,13 +2,12 @@
 
 /* Page layout */
 .transactions_page {
-  color: var(--color-text-primary);
-  position: relative;
-  width: 100%;
-  padding: 1.5rem;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 1.5rem;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--space-8);
+    padding: var(--space-4) var(--space-8);
+    /* max-width: 1480px; */
+    margin: 0 auto
 }
 
 /* Dashboard header */
@@ -263,6 +262,8 @@
 
 /* Dashboard Grid Layout */
 .transactions_dashboard_grid {
+  grid-column: span 12;
+
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 1.5rem;

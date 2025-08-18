@@ -72,12 +72,25 @@ const Icons = {
 };
 
 // Extended Transaction type with UI properties
-type Transaction = ApiTransaction & {
-  risk?: 'low' | 'medium' | 'high';
-  isOutlier?: boolean;
-  contractType?: string;
-  contractMonth?: string;
-  client?: string;
+// type Transaction = ApiTransaction & {
+//   risk?: 'low' | 'medium' | 'high';
+//   isOutlier?: boolean;
+//   contractType?: string;
+//   contractMonth?: string;
+//   client?: string;
+// };
+
+// User trading data structure for time-based clustering
+type UserTradingData = {
+  userId: string;
+  userName: string;
+  averageTradeTime: number; // Hour of day (0-23)
+  totalTrades: number;
+  transactions: (ApiTransaction & { tradeHour: number })[];
+  risk: 'low' | 'medium' | 'high';
+  isOutlier: boolean;
+  x?: number;
+  y?: number;
 };
 
 const Home: React.FC = () => {
@@ -92,12 +105,12 @@ const Home: React.FC = () => {
     client: `Client ${Math.floor(Math.random() * 100)}`
   })) || [], [data]);
 
-  // State for transaction management
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  // State for user management
+  const [selectedUser, setSelectedUser] = useState<UserTradingData | null>(null);
 
-  // Handler for clicking on a transaction point
-  const handleTransactionClick = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
+  // Handler for clicking on a user point
+  const handleUserClick = (userData: UserTradingData) => {
+    setSelectedUser(userData);
   };
 
   // Calculate metrics for dashboard
@@ -134,68 +147,58 @@ const Home: React.FC = () => {
           <div className="transaction_analysis_grid">
             {/* Transaction Clustering Graph */}
             <ClusteringGraph 
-              onTransactionClick={handleTransactionClick} 
+              onTransactionClick={handleUserClick} 
               height={400} 
             />
 
-            {/* Transaction Details Panel */}
+            {/* User Details Panel */}
             <section className="transaction_details_section">
               <div className="section_header">
-                <h3>Transaction Details</h3>
+                <h3>User Details</h3>
               </div>
               <div className="transaction_details_container">
-                {selectedTransaction ? (
+                {selectedUser ? (
                   <div className="transaction_details">
                     <div className="transaction_header">
-                      <h4>Transaction #{selectedTransaction.id}</h4>
-                      <span className={`risk_badge ${selectedTransaction.isOutlier ? 'high' : selectedTransaction.risk || 'low'}`}>
-                        {selectedTransaction.isOutlier ? 'High Risk' : selectedTransaction.risk ? `${selectedTransaction.risk.charAt(0).toUpperCase() + selectedTransaction.risk.slice(1)} Risk` : 'Low Risk'}
+                      <h4>{selectedUser.userName}</h4>
+                      <span className={`risk_badge ${selectedUser.isOutlier ? 'high' : selectedUser.risk || 'low'}`}>
+                        {selectedUser.isOutlier ? 'High Risk' : selectedUser.risk ? `${selectedUser.risk.charAt(0).toUpperCase() + selectedUser.risk.slice(1)} Risk` : 'Low Risk'}
                       </span>
                     </div>
                     
                     <div className="transaction_info">
                       <div className="detail_row">
-                        <span className="detail_label">Amount:</span>
-                        <span className="detail_value">{selectedTransaction.currency} {selectedTransaction.amount?.toFixed(2)}</span>
+                        <span className="detail_label">Total Trades:</span>
+                        <span className="detail_value">{selectedUser.totalTrades}</span>
                       </div>
                       <div className="detail_row">
-                        <span className="detail_label">User:</span>
-                        <span className="detail_value">{selectedTransaction.user}</span>
-                      </div>
-                      <div className="detail_row">
-                        <span className="detail_label">Date:</span>
-                        <span className="detail_value">{new Date(selectedTransaction.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      <div className="detail_row">
-                        <span className="detail_label">Status:</span>
-                        <span className="detail_value status_value">
-                          <span className={`status_indicator ${selectedTransaction.status || 'pending'}`}></span>
-                          {selectedTransaction.status ? selectedTransaction.status.charAt(0).toUpperCase() + selectedTransaction.status.slice(1) : 'Pending'}
+                        <span className="detail_label">Average Trade Time:</span>
+                        <span className="detail_value">
+                          {Math.floor(selectedUser.averageTradeTime)}:{String(Math.floor((selectedUser.averageTradeTime % 1) * 60)).padStart(2, '0')}
                         </span>
                       </div>
-                      {selectedTransaction.contractType && (
-                        <div className="detail_row">
-                          <span className="detail_label">Contract Type:</span>
-                          <span className="detail_value">{selectedTransaction.contractType}</span>
-                        </div>
-                      )}
-                      {selectedTransaction.client && (
-                        <div className="detail_row">
-                          <span className="detail_label">Client:</span>
-                          <span className="detail_value">{selectedTransaction.client}</span>
-                        </div>
-                      )}
+                      <div className="detail_row">
+                        <span className="detail_label">Risk Assessment:</span>
+                        <span className="detail_value status_value">
+                          <span className={`status_indicator ${selectedUser.isOutlier ? 'high' : selectedUser.risk}`}></span>
+                          {selectedUser.isOutlier ? 'Anomalous trading hours detected' : 'Normal trading pattern'}
+                        </span>
+                      </div>
+                      <div className="detail_row">
+                        <span className="detail_label">Recent Transactions:</span>
+                        <span className="detail_value">{selectedUser.transactions.length} in last 30 days</span>
+                      </div>
                     </div>
                     
                     <div className="transaction_actions">
                       <button className="action_button approve">
-                        <Icons.Check size={16} /> Approve
+                        <Icons.Check size={16} /> Approve User
                       </button>
                       <button className="action_button flag">
-                        <Icons.Flag size={16} /> Flag
+                        <Icons.Flag size={16} /> Flag for Review
                       </button>
                       <button className="action_button reject">
-                        <Icons.X size={16} /> Reject
+                        <Icons.X size={16} /> Suspend User
                       </button>
                     </div>
                   </div>
@@ -204,7 +207,7 @@ const Home: React.FC = () => {
                     <div className="placeholder_icon">
                       <Icons.MousePointer size={24} />
                     </div>
-                    <p>Click on any transaction in the clustering graph to view its details</p>
+                    <p>Click on any user in the clustering graph to view their trading details</p>
                   </div>
                 )}
               </div>
@@ -298,7 +301,7 @@ const Home: React.FC = () => {
                     <tr 
                       key={tx.id} 
                       className={tx.isOutlier ? 'high-risk-row' : tx.risk === 'medium' ? 'medium-risk-row' : 'low-risk-row'}
-                      onClick={() => handleTransactionClick(tx)}
+                      onClick={() => setSelectedUser(null)}
                     >
                       <td className="tx-id">{tx.id}</td>
                       <td className="tx-amount">

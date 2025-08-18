@@ -2,17 +2,21 @@ import React, { useState, useMemo } from 'react';
 import type { Transaction as ApiTransaction } from '../../api/queries';
 import './ClusteringGraph.css';
 
-// Transaction data structure - extend API type with UI specific properties
-type Transaction = ApiTransaction & {
-  risk?: 'low' | 'medium' | 'high';
+// User trading data structure for time-based clustering
+type UserTradingData = {
+  userId: string;
+  userName: string;
+  averageTradeTime: number; // Hour of day (0-23)
+  totalTrades: number;
+  transactions: (ApiTransaction & { tradeHour: number })[];
+  risk: 'low' | 'medium' | 'high';
+  isOutlier: boolean;
   x?: number;
   y?: number;
-  isOutlier?: boolean;
-  contractType?: string; // Added for mock data generation
 };
 
 interface ClusteringGraphProps {
-  onTransactionClick?: (transaction: Transaction) => void;
+  onTransactionClick?: (userData: UserTradingData) => void;
   width?: number;
   height?: number;
 }
@@ -20,9 +24,9 @@ interface ClusteringGraphProps {
 const ClusteringGraph: React.FC<ClusteringGraphProps> = ({ onTransactionClick, width: propWidth, height = 400 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = React.useState(propWidth || 800);
-  const [selectedTransaction, setSelectedTransaction] = useState<string | null>(null);
-  const [tooltipInfo, setTooltipInfo] = useState<{visible: boolean, x: number, y: number, transaction: Transaction | null}>(
-    {visible: false, x: 0, y: 0, transaction: null}
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [tooltipInfo, setTooltipInfo] = useState<{visible: boolean, x: number, y: number, userData: UserTradingData | null}>(
+    {visible: false, x: 0, y: 0, userData: null}
   );
 
   // Update container width when ref changes or on resize
@@ -48,125 +52,155 @@ const ClusteringGraph: React.FC<ClusteringGraphProps> = ({ onTransactionClick, w
   // If propWidth is provided, use it, otherwise use measured width capped at a reasonable maximum
   const width = propWidth || Math.min(containerWidth, 800);
   
-  // Generate random transaction data for visualization with main cluster in bottom-left
-  const transactionData = useMemo(() => {
-    const generateRandomTransactions = (count: number): Transaction[] => {
-      const contractTypes = ['Futures', 'Options', 'Swaps', 'Forwards'];
+  // Generate user trading data based on time patterns
+  const userTradingData = useMemo(() => {
+    const generateUserTradingData = (): UserTradingData[] => {
       const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CHF'];
-      const users = ['Acme Corp', 'Globex', 'Initech', 'Umbrella Corp', 'Wayne Enterprises'];
+      const userNames = ['Acme Corp', 'Globex Ltd', 'Initech Inc', 'Umbrella Corp', 'Wayne Enterprises', 
+                        'Stark Industries', 'Oscorp', 'LexCorp', 'Daily Planet', 'Cyberdyne Systems',
+                        'Weyland Corp', 'Tyrell Corp', 'Soylent Corp', 'Massive Dynamic', 'Aperture Science'];
       const statuses = ['approved', 'pending', 'rejected', 'flagged'] as const;
       
-      // Create transaction points with structured positions
-      const transactions: Transaction[] = [];
-      
-      // Margin for axes and labels - keep points away from edges
+      const users: UserTradingData[] = [];
       const margin = 40;
       const plotWidth = width - (2 * margin);
       const plotHeight = height - (2 * margin);
       
-      // Create main cluster in bottom-left corner (low anomaly region)
-      const clusterCenterX = margin + (plotWidth * 0.2); // 20% from left
-      const clusterCenterY = height - margin - (plotHeight * 0.2); // 20% from bottom
-      
-      // Normal transactions - clustered in bottom left (low anomaly area)
-      for (let i = 0; i < count - 10; i++) {
-        // Modified Box-Muller transform for tighter cluster
-        const u = 1 - Math.random();
-        const v = 1 - Math.random();
-        const z0 = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-        const z1 = Math.sqrt(-2.0 * Math.log(u)) * Math.sin(2.0 * Math.PI * v);
+      // Generate normal users who trade during market hours (9:30 AM - 4:00 PM)
+      for (let i = 0; i < 12; i++) {
+        const userName = userNames[i];
+        const userId = `user-${i}`;
         
-        // Tighter, more concentrated distribution
-        const spreadFactor = 50; // Controls how tightly clustered the points are
-        const x = clusterCenterX + (z0 * spreadFactor * 0.8); // Slightly oval in X direction
-        const y = clusterCenterY + (z1 * spreadFactor * 0.6); // Slightly less spread in Y
+        // Normal trading hours: 9.5 to 16 (9:30 AM to 4:00 PM)
+        // Peak hours: 9.5-10.5 (market open) and 15-16 (market close)
+        let averageTradeTime: number;
+        if (Math.random() < 0.4) {
+          // 40% trade during market open (9:30-10:30)
+          averageTradeTime = 9.5 + Math.random() * 1;
+        } else if (Math.random() < 0.3) {
+          // 30% trade during market close (3:00-4:00 PM)
+          averageTradeTime = 15 + Math.random() * 1;
+        } else {
+          // 30% trade during regular hours (10:30 AM - 3:00 PM)
+          averageTradeTime = 10.5 + Math.random() * 4.5;
+        }
         
-        // Calculate risk based on distance from origin (higher = more risky)
-        // This creates a gradient effect where points further from bottom-left are medium risk
-        const distanceFromOrigin = Math.sqrt(
-          Math.pow((x - clusterCenterX) / spreadFactor, 2) + 
-          Math.pow((y - clusterCenterY) / spreadFactor, 2)
-        );
-        const risk = distanceFromOrigin > 1.2 ? 'medium' : 'low';
+        const totalTrades = 5 + Math.floor(Math.random() * 15); // 5-20 trades
         
-        transactions.push({
-          id: `trans-normal-${i}`,
-          contractType: contractTypes[Math.floor(Math.random() * contractTypes.length)],
-          amount: Math.floor(Math.random() * 10000) / 100 + 50,
-          currency: currencies[Math.floor(Math.random() * currencies.length)],
-          user: users[Math.floor(Math.random() * users.length)],
-          status: statuses[Math.floor(Math.random() * statuses.length)],
-          createdAt: new Date(Date.now() - Math.floor(Math.random() * 30) * 86400000).toISOString(),
-          risk,
+        // Generate transactions for this user
+        const transactions: (ApiTransaction & { tradeHour: number })[] = [];
+        for (let j = 0; j < totalTrades; j++) {
+          // Add some variation around average trade time
+          const tradeHour = Math.max(0, Math.min(23, averageTradeTime + (Math.random() - 0.5) * 2));
+          
+          transactions.push({
+            id: `${userId}-trans-${j}`,
+            amount: Math.floor(Math.random() * 10000) / 100 + 100,
+            currency: currencies[Math.floor(Math.random() * currencies.length)],
+            user: userName,
+            status: statuses[Math.floor(Math.random() * statuses.length)],
+            createdAt: new Date(Date.now() - Math.floor(Math.random() * 30) * 86400000).toISOString(),
+            tradeHour
+          });
+        }
+        
+        // Position on graph: X = time (0-24 hours), Y = number of trades
+        const x = margin + (averageTradeTime / 24) * plotWidth;
+        const y = height - margin - (totalTrades / 25) * plotHeight;
+        
+        users.push({
+          userId,
+          userName,
+          averageTradeTime,
+          totalTrades,
+          transactions,
+          risk: 'low',
+          isOutlier: false,
           x,
-          y,
-          isOutlier: false
+          y
         });
       }
       
-      // Create outliers - positioned far from main cluster toward top-right (high anomaly region)
-      for (let i = 0; i < 10; i++) {
-        // Create distinct outlier patterns in the high-anomaly region (upper right quadrant)
-        let x, y;
+      // Generate anomalous users who trade at unusual hours
+      for (let i = 0; i < 3; i++) {
+        const userName = userNames[12 + i];
+        const userId = `user-anomaly-${i}`;
         
-        // Randomize position in top-right area (high anomaly zone)
-        // Place in top-right quadrant with some random variation
-        const anomalyFactor = 0.35 + (Math.random() * 0.4); // 0.35-0.75 - controls how far outliers are
+        // Unusual trading hours: midnight to 6 AM or 8 PM to midnight
+        let averageTradeTime: number;
+        if (Math.random() < 0.5) {
+          // Late night trading (8 PM - midnight)
+          averageTradeTime = 20 + Math.random() * 4;
+        } else {
+          // Very early morning trading (midnight - 6 AM)
+          averageTradeTime = Math.random() * 6;
+        }
         
-        // Calculate outlier position - creates a diagonal pattern of outliers
-        // going toward the top-right (high anomaly) corner
-        x = margin + (plotWidth * (0.6 + anomalyFactor * (i % 3 === 0 ? 0.3 : 0.2)));
-        y = margin + (plotHeight * (0.1 + anomalyFactor * (i % 2 === 0 ? 0.2 : 0.3)));
+        const totalTrades = 8 + Math.floor(Math.random() * 12); // 8-20 trades
         
-        // Add some randomness to prevent too uniform distribution
-        x += (Math.random() - 0.5) * 60;
-        y += (Math.random() - 0.5) * 60;
+        // Generate transactions for this user
+        const transactions: (ApiTransaction & { tradeHour: number })[] = [];
+        for (let j = 0; j < totalTrades; j++) {
+          const tradeHour = Math.max(0, Math.min(23, averageTradeTime + (Math.random() - 0.5) * 1.5));
+          
+          transactions.push({
+            id: `${userId}-trans-${j}`,
+            amount: Math.floor(Math.random() * 50000) / 100 + 500, // Higher amounts
+            currency: currencies[Math.floor(Math.random() * currencies.length)],
+            user: userName,
+            status: statuses[Math.floor(Math.random() * statuses.length)],
+            createdAt: new Date(Date.now() - Math.floor(Math.random() * 7) * 86400000).toISOString(),
+            tradeHour
+          });
+        }
         
-        transactions.push({
-          id: `trans-outlier-${i}`,
-          contractType: contractTypes[Math.floor(Math.random() * contractTypes.length)],
-          amount: Math.floor(Math.random() * 50000) / 100 + 500, // Higher amounts for outliers
-          currency: currencies[Math.floor(Math.random() * currencies.length)],
-          user: users[Math.floor(Math.random() * users.length)],
-          status: statuses[Math.floor(Math.random() * statuses.length)],
-          createdAt: new Date(Date.now() - Math.floor(Math.random() * 5) * 86400000).toISOString(), // More recent
+        // Position on graph: X = time (0-24 hours), Y = number of trades
+        const x = margin + (averageTradeTime / 24) * plotWidth;
+        const y = height - margin - (totalTrades / 25) * plotHeight;
+        
+        users.push({
+          userId,
+          userName,
+          averageTradeTime,
+          totalTrades,
+          transactions,
           risk: 'high',
+          isOutlier: true,
           x,
-          y,
-          isOutlier: true
+          y
         });
       }
       
-      return transactions;
+      return users;
     };
     
-    return generateRandomTransactions(120); // 110 normal + 10 outliers
+    return generateUserTradingData();
   }, [width, height]);
   
-  const handleTransactionClick = (transaction: Transaction) => {
-    setSelectedTransaction(selectedTransaction === transaction.id ? null : transaction.id);
+  const handleUserClick = (userData: UserTradingData) => {
+    setSelectedUser(selectedUser === userData.userId ? null : userData.userId);
     // Call the parent component's handler if provided
     if (onTransactionClick) {
-      onTransactionClick(transaction);
+      onTransactionClick(userData);
     }
   };
   
-  const handleTransactionMouseEnter = (event: React.MouseEvent, transaction: Transaction) => {
+  const handleUserMouseEnter = (event: React.MouseEvent, userData: UserTradingData) => {
     setTooltipInfo({
       visible: true,
       x: event.nativeEvent.offsetX,
       y: event.nativeEvent.offsetY,
-      transaction
+      userData
     });
   };
   
-  const handleTransactionMouseLeave = () => {
+  const handleUserMouseLeave = () => {
     setTooltipInfo(prev => ({ ...prev, visible: false }));
   };
   
   // Define axis labels
-  const xAxisLabel = "Transaction Complexity";
-  const yAxisLabel = "Behavioral Deviation";
+  const xAxisLabel = "Time of Day (Hours)";
+  const yAxisLabel = "Number of Trades";
 
   // Define plot area with margins for axes
   const margin = 40; // margin for axes and labels
@@ -293,35 +327,41 @@ const ClusteringGraph: React.FC<ClusteringGraphProps> = ({ onTransactionClick, w
             {yAxisLabel}
           </text>
 
-          {/* X-axis ticks and labels */}
+          {/* X-axis ticks and labels - Time of Day */}
           <line x1={margin} y1={height - margin} x2={margin} y2={height - margin + 5} className="tick-line" />
-          <text x={margin} y={height - margin + 20} textAnchor="middle" className="tick-label">0</text>
+          <text x={margin} y={height - margin + 20} textAnchor="middle" className="tick-label">0:00</text>
           
           <line x1={margin + plotWidth*0.25} y1={height - margin} x2={margin + plotWidth*0.25} y2={height - margin + 5} className="tick-line" />
-          <text x={margin + plotWidth*0.25} y={height - margin + 20} textAnchor="middle" className="tick-label">Low</text>
+          <text x={margin + plotWidth*0.25} y={height - margin + 20} textAnchor="middle" className="tick-label">6:00</text>
           
           <line x1={margin + plotWidth*0.5} y1={height - margin} x2={margin + plotWidth*0.5} y2={height - margin + 5} className="tick-line" />
-          <text x={margin + plotWidth*0.5} y={height - margin + 20} textAnchor="middle" className="tick-label">Medium</text>
+          <text x={margin + plotWidth*0.5} y={height - margin + 20} textAnchor="middle" className="tick-label">12:00</text>
           
           <line x1={margin + plotWidth*0.75} y1={height - margin} x2={margin + plotWidth*0.75} y2={height - margin + 5} className="tick-line" />
-          <text x={margin + plotWidth*0.75} y={height - margin + 20} textAnchor="middle" className="tick-label">High</text>
+          <text x={margin + plotWidth*0.75} y={height - margin + 20} textAnchor="middle" className="tick-label">18:00</text>
 
-          {/* Y-axis ticks and labels */}
+          <line x1={width - margin} y1={height - margin} x2={width - margin} y2={height - margin + 5} className="tick-line" />
+          <text x={width - margin} y={height - margin + 20} textAnchor="middle" className="tick-label">24:00</text>
+
+          {/* Y-axis ticks and labels - Number of Trades */}
           <line x1={margin} y1={height - margin} x2={margin - 5} y2={height - margin} className="tick-line" />
           <text x={margin - 10} y={height - margin} textAnchor="end" alignmentBaseline="middle" className="tick-label">0</text>
           
           <line x1={margin} y1={height - margin - plotHeight*0.25} x2={margin - 5} y2={height - margin - plotHeight*0.25} className="tick-line" />
-          <text x={margin - 10} y={height - margin - plotHeight*0.25} textAnchor="end" alignmentBaseline="middle" className="tick-label">Low</text>
+          <text x={margin - 10} y={height - margin - plotHeight*0.25} textAnchor="end" alignmentBaseline="middle" className="tick-label">5</text>
           
           <line x1={margin} y1={height - margin - plotHeight*0.5} x2={margin - 5} y2={height - margin - plotHeight*0.5} className="tick-line" />
-          <text x={margin - 10} y={height - margin - plotHeight*0.5} textAnchor="end" alignmentBaseline="middle" className="tick-label">Medium</text>
+          <text x={margin - 10} y={height - margin - plotHeight*0.5} textAnchor="end" alignmentBaseline="middle" className="tick-label">10</text>
           
           <line x1={margin} y1={height - margin - plotHeight*0.75} x2={margin - 5} y2={height - margin - plotHeight*0.75} className="tick-line" />
-          <text x={margin - 10} y={height - margin - plotHeight*0.75} textAnchor="end" alignmentBaseline="middle" className="tick-label">High</text>
+          <text x={margin - 10} y={height - margin - plotHeight*0.75} textAnchor="end" alignmentBaseline="middle" className="tick-label">15</text>
+
+          <line x1={margin} y1={margin} x2={margin - 5} y2={margin} className="tick-line" />
+          <text x={margin - 10} y={margin} textAnchor="end" alignmentBaseline="middle" className="tick-label">20</text>
           
-          {/* Risk zones */}
+          {/* Normal trading hours zone (9:30 AM - 4:00 PM) */}
           <path 
-            d={`M ${margin} ${height - margin} L ${margin + plotWidth*0.4} ${height - margin} L ${margin + plotWidth*0.4} ${height - margin - plotHeight*0.4} L ${margin} ${height - margin - plotHeight*0.4} Z`}
+            d={`M ${margin + (9.5/24) * plotWidth} ${height - margin} L ${margin + (16/24) * plotWidth} ${height - margin} L ${margin + (16/24) * plotWidth} ${margin} L ${margin + (9.5/24) * plotWidth} ${margin} Z`}
             fill="rgba(16, 185, 129, 0.05)"
             stroke="rgba(16, 185, 129, 0.2)"
             strokeWidth="1"
@@ -329,17 +369,26 @@ const ClusteringGraph: React.FC<ClusteringGraphProps> = ({ onTransactionClick, w
             className="normal-zone-path"
           />
           <text 
-            x={margin + plotWidth*0.2} 
-            y={height - margin - plotHeight*0.2} 
+            x={margin + (12.75/24) * plotWidth} 
+            y={height - margin - plotHeight*0.1} 
             textAnchor="middle" 
             fill="rgba(16, 185, 129, 0.7)" 
             className="zone-label"
           >
-            Normal Zone
+            Normal Trading Hours
           </text>
           
+          {/* Anomalous trading hours zones (midnight-6AM and 8PM-midnight) */}
           <path 
-            d={`M ${margin + plotWidth*0.6} ${height - margin - plotHeight*0.6} L ${width - margin} ${height - margin - plotHeight*0.6} L ${width - margin} ${margin} L ${margin + plotWidth*0.6} ${margin} Z`}
+            d={`M ${margin} ${height - margin} L ${margin + (6/24) * plotWidth} ${height - margin} L ${margin + (6/24) * plotWidth} ${margin} L ${margin} ${margin} Z`}
+            fill="rgba(239, 68, 68, 0.05)"
+            stroke="rgba(239, 68, 68, 0.2)"
+            strokeWidth="1"
+            strokeDasharray="5,5"
+            className="anomaly-zone-path"
+          />
+          <path 
+            d={`M ${margin + (20/24) * plotWidth} ${height - margin} L ${width - margin} ${height - margin} L ${width - margin} ${margin} L ${margin + (20/24) * plotWidth} ${margin} Z`}
             fill="rgba(239, 68, 68, 0.05)"
             stroke="rgba(239, 68, 68, 0.2)"
             strokeWidth="1"
@@ -347,45 +396,54 @@ const ClusteringGraph: React.FC<ClusteringGraphProps> = ({ onTransactionClick, w
             className="anomaly-zone-path"
           />
           <text 
-            x={width - margin - plotWidth*0.2} 
-            y={margin + plotHeight*0.2} 
+            x={margin + (3/24) * plotWidth} 
+            y={margin + plotHeight*0.1} 
             textAnchor="middle" 
             fill="rgba(239, 68, 68, 0.7)" 
             className="zone-label"
           >
-            Anomaly Zone
+            Anomalous Hours
+          </text>
+          <text 
+            x={margin + (22/24) * plotWidth} 
+            y={margin + plotHeight*0.1} 
+            textAnchor="middle" 
+            fill="rgba(239, 68, 68, 0.7)" 
+            className="zone-label"
+          >
+            Anomalous Hours
           </text>
           
-          {/* Individual Transaction Points with Enhanced Animations */}
-          {transactionData.map((transaction) => {
-            const isSelected = selectedTransaction === transaction.id;
+          {/* Individual User Points */}
+          {userTradingData.map((userData) => {
+            const isSelected = selectedUser === userData.userId;
             
             // Fixed radius without animation
-            const baseRadius = transaction.isOutlier ? 7 : 4;
+            const baseRadius = userData.isOutlier ? 7 : 4;
             const radius = baseRadius + (isSelected ? 3 : 0);
             
-            const gradientId = transaction.isOutlier ? 'outlierGradient' : 
-                              transaction.risk === 'medium' ? 'mediumGradient' : 
+            const gradientId = userData.isOutlier ? 'outlierGradient' : 
+                              userData.risk === 'medium' ? 'mediumGradient' : 
                               'normalGradient';
             
             const filterId = isSelected ? 'pulseGlow' : 
-                           transaction.isOutlier ? 'outlierGlow' : 
+                           userData.isOutlier ? 'outlierGlow' : 
                            'normalGlow';
             
             return (
               <g 
-                key={transaction.id} 
-                onClick={() => handleTransactionClick(transaction)}
-                onMouseEnter={(e) => handleTransactionMouseEnter(e, transaction)}
-                onMouseLeave={handleTransactionMouseLeave}
-                className={`transaction-point ${transaction.isOutlier ? 'outlier' : 'normal'} ${isSelected ? 'selected' : ''}`}
+                key={userData.userId} 
+                onClick={() => handleUserClick(userData)}
+                onMouseEnter={(e) => handleUserMouseEnter(e, userData)}
+                onMouseLeave={handleUserMouseLeave}
+                className={`user-point ${userData.isOutlier ? 'outlier' : 'normal'} ${isSelected ? 'selected' : ''}`}
                 style={{ cursor: 'pointer' }}
               >
                 {/* Outer ring for outliers - no pulse animation */}
-                {transaction.isOutlier && (
+                {userData.isOutlier && (
                   <circle 
-                    cx={transaction.x} 
-                    cy={transaction.y} 
+                    cx={userData.x} 
+                    cy={userData.y} 
                     r={radius + 8}
                     fill="none"
                     stroke="rgba(239, 68, 68, 0.3)"
@@ -395,25 +453,25 @@ const ClusteringGraph: React.FC<ClusteringGraphProps> = ({ onTransactionClick, w
                   />
                 )}
                 
-                {/* Main transaction point */}
+                {/* Main user point */}
                 <circle 
-                  cx={transaction.x} 
-                  cy={transaction.y} 
+                  cx={userData.x} 
+                  cy={userData.y} 
                   r={radius}
                   fill={`url(#${gradientId})`}
-                  stroke={transaction.isOutlier ? 'rgba(239, 68, 68, 0.9)' : 
-                         transaction.risk === 'medium' ? 'rgba(245, 158, 11, 0.7)' : 
+                  stroke={userData.isOutlier ? 'rgba(239, 68, 68, 0.9)' : 
+                         userData.risk === 'medium' ? 'rgba(245, 158, 11, 0.7)' : 
                          'rgba(16, 185, 129, 0.7)'}
-                  strokeWidth={transaction.isOutlier ? 2 : 1}
+                  strokeWidth={userData.isOutlier ? 2 : 1}
                   filter={`url(#${filterId})`}
-                  className="transaction-circle"
+                  className="user-circle"
                 />
                 
                 {/* Selection indicator - no animation */}
                 {isSelected && (
                   <circle 
-                    cx={transaction.x} 
-                    cy={transaction.y} 
+                    cx={userData.x} 
+                    cy={userData.y} 
                     r={radius + 12}
                     fill="none"
                     stroke="rgba(99, 102, 241, 0.8)"
@@ -428,9 +486,9 @@ const ClusteringGraph: React.FC<ClusteringGraphProps> = ({ onTransactionClick, w
           })}
         </svg>
         
-        {tooltipInfo.visible && tooltipInfo.transaction && (
+        {tooltipInfo.visible && tooltipInfo.userData && (
           <div 
-            className="transaction-tooltip" 
+            className="user-tooltip" 
             style={{ 
               position: 'absolute', 
               left: tooltipInfo.x + 10, 
@@ -445,30 +503,32 @@ const ClusteringGraph: React.FC<ClusteringGraphProps> = ({ onTransactionClick, w
           >
             <div className="tooltip-header">
               <span className="tooltip-risk" style={{ 
-                color: tooltipInfo.transaction.isOutlier ? 'var(--danger-500)' : 
-                       tooltipInfo.transaction.risk === 'medium' ? 'var(--warning-500)' : 
+                color: tooltipInfo.userData.isOutlier ? 'var(--danger-500)' : 
+                       tooltipInfo.userData.risk === 'medium' ? 'var(--warning-500)' : 
                        'var(--success-500)'
               }}>
-                {tooltipInfo.transaction.isOutlier ? 'High' : 
-                 (tooltipInfo.transaction.risk ? 
-                  tooltipInfo.transaction.risk.charAt(0).toUpperCase() + 
-                  tooltipInfo.transaction.risk.slice(1) : 
+                {tooltipInfo.userData.isOutlier ? 'High' : 
+                 (tooltipInfo.userData.risk ? 
+                  tooltipInfo.userData.risk.charAt(0).toUpperCase() + 
+                  tooltipInfo.userData.risk.slice(1) : 
                   'Low')} Risk
               </span>
-              <span className="tooltip-id">{tooltipInfo.transaction.id}</span>
+              <span className="tooltip-id">{tooltipInfo.userData.userName}</span>
             </div>
-            <div className="tooltip-amount">
-              {tooltipInfo.transaction.currency} {tooltipInfo.transaction.amount?.toFixed(2)}
+            <div className="tooltip-trades">
+              {tooltipInfo.userData.totalTrades} trades
             </div>
-            <div className="tooltip-user">{tooltipInfo.transaction.user}</div>
+            <div className="tooltip-time">
+              Avg time: {Math.floor(tooltipInfo.userData.averageTradeTime)}:{String(Math.floor((tooltipInfo.userData.averageTradeTime % 1) * 60)).padStart(2, '0')}
+            </div>
             <div className="tooltip-info">
-              Click to view details
+              Click to view user details
             </div>
           </div>
         )}
       </div>
       <div className="clustering-graph-info">
-        <p>Each point represents a single transaction plotted by Transaction Complexity (x-axis) and Behavioral Deviation (y-axis). Points clustered in the bottom left are normal transactions, while those in the top right indicate anomalies that require investigation.</p>
+        <p>Each point represents a user plotted by their average trading time (x-axis) and total number of trades (y-axis). Users trading during normal market hours (9:30 AM - 4:00 PM) appear in the green zone, while those trading at unusual hours appear in red anomalous zones.</p>
       </div>
     </div>
   );

@@ -95,7 +95,7 @@ type UserTradingData = {
 
 const Home: React.FC = () => {
   // Data fetching from backend
-  const { data: tradesData, isLoading: tradesLoading, error: tradesError, refetch } = useTrades(300); // Last 5 minutes
+  const { data: tradesData, isLoading: tradesLoading, error: tradesError, refetch } = useTrades(1000000); // Last 5 minutes
   const validation = useTradeValidation();
   
   // Pagination state
@@ -107,17 +107,19 @@ const Home: React.FC = () => {
   const processedTrades = useMemo(() => {
     if (!tradesData?.trades) return [];
     
-    return tradesData.trades.map(trade => ({
-      ...trade,
-      // Map backend trade data to display format
-      user: trade.client,
-      amount: trade.price,
-      currency: trade.contract_type,
-      createdAt: trade.date_of_execution,
-      status: trade.is_validated ? 'approved' : (trade.is_anomaly ? 'flagged' : 'pending'),
-      risk: trade.is_anomaly ? 'high' : (trade.anomaly_score && trade.anomaly_score < -0.1 ? 'low' : 'medium'),
-      isOutlier: trade.is_anomaly || false
-    }));
+    return tradesData.trades
+      .map(trade => ({
+        ...trade,
+        // Map backend trade data to display format
+        user: trade.client,
+        amount: trade.price,
+        currency: trade.contract_type,
+        createdAt: trade.date_of_execution,
+        status: trade.is_validated ? 'approved' : (trade.is_anomaly ? 'flagged' : 'pending'),
+        risk: trade.is_anomaly ? 'high' : (trade.anomaly_score && trade.anomaly_score < -0.1 ? 'low' : 'medium'),
+        isOutlier: trade.is_anomaly || false
+      }))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Sort by most recent first
   }, [tradesData]);
 
   // Filter trades based on risk level
@@ -390,7 +392,7 @@ const Home: React.FC = () => {
                           </div>
                         </td>
                         <td>{trade.user}</td>
-                        <td>{new Date(trade.createdAt).toLocaleDateString()}</td>
+                        <td>{new Date(trade.createdAt).toLocaleDateString()} {new Date(trade.createdAt).toLocaleTimeString()}</td>
                         <td className={trade.pnl >= 0 ? 'positive-pnl' : 'negative-pnl'}>
                           ${trade.pnl?.toFixed(2)}
                         </td>
@@ -400,7 +402,7 @@ const Home: React.FC = () => {
                           </span>
                         </td>
                         <td>
-                          <div>
+                          <div className="risk-container">
                             <span className={`risk-badge ${trade.isOutlier ? 'high' : trade.risk || 'low'}`}>
                               {trade.isOutlier ? 'High' : trade.risk ? trade.risk.charAt(0).toUpperCase() + trade.risk.slice(1) : 'Low'}
                             </span>
@@ -467,7 +469,7 @@ const Home: React.FC = () => {
                   <Icons.ChevronLeft size={16} />
                 </button>
                 <span className="pagination-info">
-                  Page {currentPage} of {totalPages} ({filteredTrades.length} total)
+                  Page {currentPage} of {totalPages}
                 </span>
                 <button 
                   className="pagination-button" 

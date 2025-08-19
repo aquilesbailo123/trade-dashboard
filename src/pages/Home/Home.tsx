@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import type { Transaction as ApiTransaction } from '../../api/queries';
 import { useTrades, useTradeValidation, useStats } from '../../hooks/useTrades';
-import ClusteringGraph from '../../components/ClusteringGraph/ClusteringGraph';
+import { useProfitLossData } from '../../hooks/useProfitLossData';
+import BoxPlot from '../../components/BoxPlot/BoxPlot';
+import ComparisonGraph from '../../components/ComparisonGraph/ComparisonGraph';
 import './Home.css';
 import './transaction-details.css';
 
@@ -9,89 +10,91 @@ import './transaction-details.css';
 interface IconProps {
     size?: number;
     color?: string;
+    className?: string;
 }
 
 const Icons = {
-    Search: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    Search: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
     ),
-    Check: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    Check: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
     ),
-    Flag: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    Flag: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
             <line x1="4" y1="22" x2="4" y2="15"></line>
         </svg>
     ),
-    X: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    X: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
     ),
-    MousePointer: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    MousePointer: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
             <path d="M13 13l6 6"></path>
         </svg>
     ),
-    Filter: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    Filter: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
         </svg>
     ),
-    RefreshCw: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    RefreshCw: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <polyline points="23 4 23 10 17 10"></polyline>
             <polyline points="1 20 1 14 7 14"></polyline>
             <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
         </svg>
     ),
-    Eye: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    Eye: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
             <circle cx="12" cy="12" r="3"></circle>
         </svg>
     ),
-    ChevronLeft: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    ChevronLeft: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
     ),
-    ChevronRight: ({ size = 18, color = "currentColor" }: IconProps) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    ChevronRight: ({ size = 18, color = "currentColor", className }: IconProps) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
             <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
     )
 };
 
-// Extended Transaction type with UI properties
-// type Transaction = ApiTransaction & {
-//   risk?: 'low' | 'medium' | 'high';
-//   isOutlier?: boolean;
-//   contractType?: string;
-//   contractMonth?: string;
-//   client?: string;
-// };
+// We're using the TradeData interface instead of Transaction
 
-// User trading data structure for time-based clustering
-type UserTradingData = {
-  userId: string;
-  userName: string;
-  averageTradeTime: number; // Hour of day (0-23)
-  totalTrades: number;
-  transactions: (ApiTransaction & { tradeHour: number })[];
-  risk: 'low' | 'medium' | 'high';
-  isOutlier: boolean;
-  x?: number;
-  y?: number;
-};
+// Trade data interface for detailed analysis
+interface TradeData {
+  id: string | number;
+  client: string;
+  price: number;
+  contract_type: string;
+  date_of_execution: string;
+  is_validated?: boolean;
+  is_anomaly?: boolean;
+  anomaly_score?: number;
+  pnl?: number; // Profit and loss field
+  user: string;
+  amount: number;
+  currency: string;
+  createdAt: string;
+  status: string;
+  risk?: string;
+  isOutlier?: boolean;
+  contract_month?: string;
+}
 
 const Home: React.FC = () => {
   // Data fetching from backend
@@ -139,13 +142,57 @@ const Home: React.FC = () => {
     setCurrentPage(1);
   }, [riskFilter]);
 
-
-  // State for user management
-  const [selectedUser, setSelectedUser] = useState<UserTradingData | null>(null);
-
-  // Handler for clicking on a user point
-  const handleUserClick = (userData: UserTradingData) => {
-    setSelectedUser(userData);
+  // State for selected trade - will be used to show detailed trade information in future implementation
+  const [selectedTrade, setSelectedTrade] = useState<TradeData | null>(null);
+  
+  // Prepare trade details component for display
+  const tradeDetailsComponent = selectedTrade ? (
+    <div className="selected-trade-details">
+      <h4>Selected Trade Details</h4>
+      <div className="detail-row">
+        <span className="detail-label">ID:</span>
+        <span className="detail-value">{selectedTrade.id}</span>
+      </div>
+      <div className="detail-row">
+        <span className="detail-label">Client:</span>
+        <span className="detail-value">{selectedTrade.client}</span>
+      </div>
+      <div className="detail-row">
+        <span className="detail-label">Amount:</span>
+        <span className="detail-value">${selectedTrade.price?.toFixed(2)}</span>
+      </div>
+      <div className="detail-row">
+        <span className="detail-label">Contract:</span>
+        <span className="detail-value">{selectedTrade.contract_type}</span>
+      </div>
+      <div className="detail-row">
+        <span className="detail-label">Date:</span>
+        <span className="detail-value">{new Date(selectedTrade.date_of_execution).toLocaleString()}</span>
+      </div>
+      <div className="detail-row">
+        <span className="detail-label">Risk Status:</span>
+        <span className="detail-value risk-status">
+          <span className={`status-indicator ${selectedTrade.is_anomaly || selectedTrade.isOutlier ? 'high' : 'normal'}`}></span>
+          {selectedTrade.is_anomaly || selectedTrade.isOutlier ? 'High Risk' : 'Normal'}
+        </span>
+      </div>
+    </div>
+  ) : null;
+  
+  // P&L data for BoxPlot
+  const { data: profitLossData, isLoading: plDataLoading } = useProfitLossData();
+  
+  // Handler for clicking on an outlier point
+  const handleOutlierClick = (outlier: any) => {
+    // Find the trade corresponding to the outlier if needed
+    console.log('Outlier clicked:', outlier);
+    // Future implementation: search for this trade in the processedTrades array
+  };
+  
+  // Handler for clicking on a trade point in the comparison graph
+  const handleTradeClick = (trade: TradeData) => {
+    setSelectedTrade(trade);
+    console.log('Trade selected:', trade);
   };
 
   // Calculate metrics for dashboard using backend stats data
@@ -205,76 +252,65 @@ const Home: React.FC = () => {
 
       <div className="home_dashboard">
         <div className="home_dashboard_wrapper">
-          {/* Main content grid with clustering graph and details panel */}
-          <div className="transaction_analysis_grid">
-            {/* Transaction Clustering Graph */}
-            <ClusteringGraph 
-              onTransactionClick={handleUserClick} 
-              height={400} 
-            />
+          {/* Main content grid with dual analysis graphs */}
+          <div className="dashboard_graph_grid">
+            {/* BoxPlot for P&L Distribution */}
+              {plDataLoading ? (
+                <div className="loading_container">
+                  <Icons.RefreshCw size={24} className="icon-primary" />
+                  <p>Loading profit/loss data...</p>
+                </div>
+              ) : profitLossData ? (
+                <BoxPlot
+                  title="Profit/Loss Distribution"
+                  data={profitLossData}
+                  height={400}
+                  onOutlierClick={handleOutlierClick}
+                />
+              ) : (
+                <div className="error_container">
+                  <Icons.X size={24} className="icon-danger" />
+                  <p>Failed to load profit/loss data</p>
+                </div>
+              )}
 
-            {/* User Details Panel */}
-            <section className="transaction_details_section">
+            {/* Comparison Graph for Trade Variables */}
+              {tradesLoading ? (
+                <div className="loading_container">
+                  <Icons.RefreshCw size={24} className="icon-primary" />
+                  <p>Loading trade data...</p>
+                </div>
+              ) : tradesError ? (
+                <div className="error_container">
+                  <Icons.X size={24} className="icon-danger" />
+                  <p>Failed to load trade data</p>
+                </div>
+              ) : (
+                <ComparisonGraph
+                  trades={processedTrades}
+                  height={400}
+                  onTradeClick={handleTradeClick}
+                />
+              )}
+          </div>
+          
+          {/* Trade Details Section - Show when a trade is selected */}
+          {selectedTrade && (
+            <section className="trade_details_section">
               <div className="section_header">
-                <h3>User Details</h3>
+                <h3>Trade Details</h3>
+                <button 
+                  className="close-button" 
+                  onClick={() => setSelectedTrade(null)}
+                >
+                  <Icons.X size={16} />
+                </button>
               </div>
-              <div className="transaction_details_container">
-                {selectedUser ? (
-                  <div className="transaction_details">
-                    <div className="transaction_header">
-                      <h4>{selectedUser.userName}</h4>
-                      <span className={`risk_badge ${selectedUser.isOutlier ? 'high' : selectedUser.risk || 'low'}`}>
-                        {selectedUser.isOutlier ? 'High Risk' : selectedUser.risk ? `${selectedUser.risk.charAt(0).toUpperCase() + selectedUser.risk.slice(1)} Risk` : 'Low Risk'}
-                      </span>
-                    </div>
-                    
-                    <div className="transaction_info">
-                      <div className="detail_row">
-                        <span className="detail_label">Total Trades:</span>
-                        <span className="detail_value">{selectedUser.totalTrades}</span>
-                      </div>
-                      <div className="detail_row">
-                        <span className="detail_label">Average Trade Time:</span>
-                        <span className="detail_value">
-                          {Math.floor(selectedUser.averageTradeTime)}:{String(Math.floor((selectedUser.averageTradeTime % 1) * 60)).padStart(2, '0')}
-                        </span>
-                      </div>
-                      <div className="detail_row">
-                        <span className="detail_label">Risk Assessment:</span>
-                        <span className="detail_value status_value">
-                          <span className={`status_indicator ${selectedUser.isOutlier ? 'high' : selectedUser.risk}`}></span>
-                          {selectedUser.isOutlier ? 'Anomalous trading hours detected' : 'Normal trading pattern'}
-                        </span>
-                      </div>
-                      <div className="detail_row">
-                        <span className="detail_label">Recent Transactions:</span>
-                        <span className="detail_value">{selectedUser.transactions.length} in last 30 days</span>
-                      </div>
-                    </div>
-                    
-                    <div className="transaction_actions">
-                      <button className="action_button approve">
-                        <Icons.Check size={16} /> Approve User
-                      </button>
-                      <button className="action_button flag">
-                        <Icons.Flag size={16} /> Flag for Review
-                      </button>
-                      <button className="action_button reject">
-                        <Icons.X size={16} /> Suspend User
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="transaction_details_placeholder">
-                    <div className="placeholder_icon">
-                      <Icons.MousePointer size={24} />
-                    </div>
-                    <p>Click on any user in the clustering graph to view their trading details</p>
-                  </div>
-                )}
+              <div className="trade_details_container">
+                {tradeDetailsComponent}
               </div>
             </section>
-          </div>
+          )}
 
           {/* Risk Metrics Summary Section */}
           <section className="metrics_summary_section">
@@ -349,7 +385,7 @@ const Home: React.FC = () => {
               {tradesError ? (
                 <div className="empty-state">
                   <div className="empty-state-icon">
-                    <Icons.X size={48} color="#ef4444" />
+                    <Icons.X size={48} className="icon-danger" />
                   </div>
                   <h3>Unable to connect to backend</h3>
                   <p>No transactions available. Please check if the backend service is running.</p>
@@ -360,7 +396,7 @@ const Home: React.FC = () => {
               ) : tradesLoading ? (
                 <div className="empty-state">
                   <div className="empty-state-icon">
-                    <Icons.RefreshCw size={48} color="#3b82f6" />
+                    <Icons.RefreshCw size={48} className="icon-primary" />
                   </div>
                   <h3>Loading transactions...</h3>
                   <p>Fetching latest trade data from the backend.</p>
@@ -368,7 +404,7 @@ const Home: React.FC = () => {
               ) : paginatedTrades.length === 0 ? (
                 <div className="empty-state">
                   <div className="empty-state-icon">
-                    <Icons.Search size={48} color="#6b7280" />
+                    <Icons.Search size={48} className="icon-secondary" />
                   </div>
                   <h3>No transactions yet</h3>
                   <p>{filteredTrades.length === 0 ? 'No trades found in the selected time window.' : `No ${riskFilter} risk transactions found.`}</p>
@@ -392,7 +428,7 @@ const Home: React.FC = () => {
                       <tr 
                         key={trade.id} 
                         className={trade.isOutlier ? 'high-risk-row' : trade.risk === 'medium' ? 'medium-risk-row' : 'low-risk-row'}
-                        onClick={() => setSelectedUser(null)}
+                        onClick={() => handleTradeClick(trade)}
                       >
                         <td className="tx-id">{trade.id}</td>
                         <td className="tx-amount">

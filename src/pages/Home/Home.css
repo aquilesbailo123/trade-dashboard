@@ -1674,6 +1674,29 @@ gap: 1rem;
 margin-bottom: 1.75rem;
 }
 
+.loading_container, .error_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 1rem;
+}
+
+/* Graph container styles */
+.graph_panel {
+  background-color: var(--color-surface-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-8);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0; /* Prevents content overflow */
+  overflow: hidden;
+}
+
 .home_chart_container {
   position: relative;
   width: 100%;
@@ -2301,18 +2324,18 @@ transition: all 0.2s ease;
 }
 
 /* Main analysis grid: graph + details */
-.transaction_analysis_grid {
+.dashboard_graph_grid {
   grid-column: span 12;
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--space-6);
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
   width: 100%;
   max-width: 100%;
   overflow: hidden;
 }
 
 @media (max-width: 992px) {
-  .transaction_analysis_grid {
+  .dashboard_graph_grid {
     grid-template-columns: 1fr;
     gap: var(--space-6);
   }
@@ -2689,6 +2712,14 @@ padding: 0;
   color: var(--color-primary-400);
 }
 
+/* Icon utility classes */
+.icon-primary { color: var(--color-primary-500); }
+.icon-secondary { color: var(--color-text-secondary); }
+.icon-success { color: var(--color-success-500); }
+.icon-warning { color: var(--color-warning-500); }
+.icon-danger { color: var(--color-error-500); }
+.icon-info { color: var(--color-info-500); }
+
 /* Row severity tints */
 .high-risk-row { background: rgba(239, 68, 68, 0.05); }
 .medium-risk-row { background: rgba(245, 158, 11, 0.05); }
@@ -2720,7 +2751,7 @@ padding: 0;
     align-items: flex-start;
   }
 }
-.low-risk-row { background: rgba(16,185,129,0.05); }
+/* Duplicate removed */
 
 /* Pagination */
 .pagination { display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding-top: 0.75rem; }
@@ -2730,7 +2761,7 @@ padding: 0;
 
 /* Responsive tweaks */
 @media (max-width: 1200px) {
-  .transaction_analysis_grid { grid-template-columns: 1fr; }
+  .dashboard_graph_grid { grid-template-columns: 1fr; }
   .metrics_grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {

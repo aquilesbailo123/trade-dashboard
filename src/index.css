@@ -3,6 +3,33 @@
 /* Base styles are now defined in theme.css */
 /* This file contains app-wide styles that aren't component-specific */
 
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-secondary);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-400);
+  border-radius: 8px;
+  border: 2px solid var(--color-surface-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-500);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-400) var(--color-surface-secondary);
+}
+
 
 a {
   font-weight: var(--font-weight-medium);

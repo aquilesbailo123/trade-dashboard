@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { Transaction as ApiTransaction } from '../../api/queries';
-import { useTrades, useTradeValidation } from '../../hooks/useTrades';
+import { useTrades, useTradeValidation, useStats } from '../../hooks/useTrades';
 import ClusteringGraph from '../../components/ClusteringGraph/ClusteringGraph';
 import './Home.css';
 import './transaction-details.css';
@@ -97,6 +97,7 @@ const Home: React.FC = () => {
   // Data fetching from backend
   const { data: tradesData, isLoading: tradesLoading, error: tradesError, refetch } = useTrades(1000000); // Last 5 minutes
   const validation = useTradeValidation();
+  const { data: statsData, isLoading: statsLoading } = useStats();
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -147,20 +148,30 @@ const Home: React.FC = () => {
     setSelectedUser(userData);
   };
 
-  // Calculate metrics for dashboard using real trade data
+  // Calculate metrics for dashboard using backend stats data
   const metricValues = useMemo(() => {
+    if (statsData) {
+      // Use backend stats for accurate system-wide metrics
+      return {
+        totalTrades: statsData.total_trades,
+        validatedTrades: statsData.validated_trades,
+        detectedAnomalies: statsData.detected_anomalies,
+        anomalyRate: statsData.anomaly_rate
+      };
+    }
+    
+    // Fallback to processed trades if stats not available
     const total = processedTrades.length;
     const highRisk = processedTrades.filter(tx => tx.isOutlier || tx.risk === 'high').length;
-    const mediumRisk = processedTrades.filter(tx => tx.risk === 'medium').length;
-    const lowRisk = processedTrades.filter(tx => tx.risk === 'low' || tx.risk === undefined).length;
+    const validated = processedTrades.filter(tx => tx.status === 'approved').length;
     
     return {
-      total,
-      highRisk,
-      mediumRisk,
-      lowRisk
+      totalTrades: total,
+      validatedTrades: validated,
+      detectedAnomalies: highRisk,
+      anomalyRate: total > 0 ? highRisk / total : 0
     };
-  }, [processedTrades]);
+  }, [statsData, processedTrades]);
 
   // Pagination handlers
   const handlePreviousPage = () => {
@@ -268,48 +279,48 @@ const Home: React.FC = () => {
           {/* Risk Metrics Summary Section */}
           <section className="metrics_summary_section">
             <div className="metrics_grid">
-              <div className="metric_card high">
+              <div className="metric_card total">
                 <div className="metric_header">
-                  <h3>High Risk</h3>
+                  <h3>Total Trades</h3>
                 </div>
                 <div className="metric_value">
-                  {metricValues.highRisk}
-                  <span className="metric_unit">transactions</span>
+                  {metricValues.totalTrades}
+                  <span className="metric_unit">trades</span>
                 </div>
-                <div className="metric_info">Potential fraud requiring investigation</div>
+                <div className="metric_info">Total trades processed by the system</div>
+              </div>
+              
+              <div className="metric_card high">
+                <div className="metric_header">
+                  <h3>Detected Anomalies</h3>
+                </div>
+                <div className="metric_value">
+                  {metricValues.detectedAnomalies}
+                  <span className="metric_unit">trades</span>
+                </div>
+                <div className="metric_info">Trades flagged as anomalous by ML model</div>
               </div>
               
               <div className="metric_card medium">
                 <div className="metric_header">
-                  <h3>Medium Risk</h3>
+                  <h3>Validated Trades</h3>
                 </div>
                 <div className="metric_value">
-                  {metricValues.mediumRisk}
-                  <span className="metric_unit">transactions</span>
+                  {metricValues.validatedTrades}
+                  <span className="metric_unit">trades</span>
                 </div>
-                <div className="metric_info">Transactions that need review</div>
-              </div>
-              
-              <div className="metric_card low">
-                <div className="metric_header">
-                  <h3>Low Risk</h3>
-                </div>
-                <div className="metric_value">
-                  {metricValues.lowRisk}
-                  <span className="metric_unit">transactions</span>
-                </div>
-                <div className="metric_info">Normal transaction patterns</div>
+                <div className="metric_info">Trades that received human validation</div>
               </div>
 
-              <div className="metric_card total">
+              <div className="metric_card low">
                 <div className="metric_header">
-                  <h3>Total</h3>
+                  <h3>Anomaly Rate</h3>
                 </div>
                 <div className="metric_value">
-                  {metricValues.total}
-                  <span className="metric_unit">transactions</span>
+                  {(metricValues.anomalyRate * 100).toFixed(1)}
+                  <span className="metric_unit">%</span>
                 </div>
-                <div className="metric_info">Overall transaction count</div>
+                <div className="metric_info">Percentage of trades flagged as anomalous</div>
               </div>
             </div>
           </section>

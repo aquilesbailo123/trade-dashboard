@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { useTransactions } from '../../api/queries';
 import type { Transaction as ApiTransaction } from '../../api/queries';
+import { useTrades, useTradeValidation } from '../../hooks/useTrades';
 import ClusteringGraph from '../../components/ClusteringGraph/ClusteringGraph';
 import './Home.css';
 import './transaction-details.css';
@@ -94,16 +94,48 @@ type UserTradingData = {
 };
 
 const Home: React.FC = () => {
-  // Data fetching
-  const { data } = useTransactions();
-  const txs = useMemo(() => data?.map(tx => ({
-    ...tx,
-    risk: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)] as 'low' | 'medium' | 'high',
-    isOutlier: Math.random() > 0.9,
-    contractType: ['Futures', 'Options', 'Spot', 'Margin'][Math.floor(Math.random() * 4)],
-    contractMonth: ['January', 'March', 'June', 'September', 'December'][Math.floor(Math.random() * 5)],
-    client: `Client ${Math.floor(Math.random() * 100)}`
-  })) || [], [data]);
+  // Data fetching from backend
+  const { data: tradesData, isLoading: tradesLoading, error: tradesError, refetch } = useTrades(300); // Last 5 minutes
+  const validation = useTradeValidation();
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [riskFilter, setRiskFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
+
+  // Process trades data for display
+  const processedTrades = useMemo(() => {
+    if (!tradesData?.trades) return [];
+    
+    return tradesData.trades.map(trade => ({
+      ...trade,
+      // Map backend trade data to display format
+      user: trade.client,
+      amount: trade.price,
+      currency: trade.contract_type,
+      createdAt: trade.date_of_execution,
+      status: trade.is_validated ? 'approved' : (trade.is_anomaly ? 'flagged' : 'pending'),
+      risk: trade.is_anomaly ? 'high' : (trade.anomaly_score && trade.anomaly_score < -0.1 ? 'low' : 'medium'),
+      isOutlier: trade.is_anomaly || false
+    }));
+  }, [tradesData]);
+
+  // Filter trades based on risk level
+  const filteredTrades = useMemo(() => {
+    if (riskFilter === 'all') return processedTrades;
+    return processedTrades.filter(trade => trade.risk === riskFilter);
+  }, [processedTrades, riskFilter]);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredTrades.length / pageSize);
+  const startIndex = (currentPage - 1) * pageSize;
+  const paginatedTrades = filteredTrades.slice(startIndex, startIndex + pageSize);
+
+  // Reset to first page when filter changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [riskFilter]);
+
 
   // State for user management
   const [selectedUser, setSelectedUser] = useState<UserTradingData | null>(null);
@@ -113,12 +145,12 @@ const Home: React.FC = () => {
     setSelectedUser(userData);
   };
 
-  // Calculate metrics for dashboard
+  // Calculate metrics for dashboard using real trade data
   const metricValues = useMemo(() => {
-    const total = txs.length;
-    const highRisk = txs.filter(tx => tx.isOutlier || tx.risk === 'high').length;
-    const mediumRisk = txs.filter(tx => tx.risk === 'medium').length;
-    const lowRisk = txs.filter(tx => tx.risk === 'low' || tx.risk === undefined).length;
+    const total = processedTrades.length;
+    const highRisk = processedTrades.filter(tx => tx.isOutlier || tx.risk === 'high').length;
+    const mediumRisk = processedTrades.filter(tx => tx.risk === 'medium').length;
+    const lowRisk = processedTrades.filter(tx => tx.risk === 'low' || tx.risk === undefined).length;
     
     return {
       total,
@@ -126,7 +158,24 @@ const Home: React.FC = () => {
       mediumRisk,
       lowRisk
     };
-  }, [txs]);
+  }, [processedTrades]);
+
+  // Pagination handlers
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(1, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(totalPages, prev + 1));
+  };
+
+  const handleRiskFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setRiskFilter(event.target.value as 'all' | 'high' | 'medium' | 'low');
+  };
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   return (
     <div className="home_container">
@@ -270,75 +319,165 @@ const Home: React.FC = () => {
               <div className="table_actions">
                 <div className="filter_container">
                   <Icons.Filter size={16} />
-                  <select className="filter_select">
+                  <select className="filter_select" value={riskFilter} onChange={handleRiskFilterChange}>
                     <option value="all">All Transactions</option>
                     <option value="high">High Risk Only</option>
                     <option value="medium">Medium Risk Only</option>
                     <option value="low">Low Risk Only</option>
                   </select>
                 </div>
-                <button className="refresh_button">
-                  <Icons.RefreshCw size={16} /> Refresh
+                <button className="refresh_button" onClick={handleRefresh} disabled={tradesLoading}>
+                  <Icons.RefreshCw size={16} /> {tradesLoading ? 'Loading...' : 'Refresh'}
                 </button>
               </div>
             </div>
             
             <div className="table_container">
-              <table className="transactions_table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Amount</th>
-                    <th>User</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Risk Level</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {txs.slice(0, 10).map((tx) => (
-                    <tr 
-                      key={tx.id} 
-                      className={tx.isOutlier ? 'high-risk-row' : tx.risk === 'medium' ? 'medium-risk-row' : 'low-risk-row'}
-                      onClick={() => setSelectedUser(null)}
-                    >
-                      <td className="tx-id">{tx.id}</td>
-                      <td className="tx-amount">
-                        <strong>{tx.currency} {tx.amount?.toFixed(2)}</strong>
-                      </td>
-                      <td>{tx.user}</td>
-                      <td>{new Date(tx.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        <span className={`status-badge ${tx.status || 'pending'}`}>
-                          {tx.status || 'Pending'}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`risk-badge ${tx.isOutlier ? 'high' : tx.risk || 'low'}`}>
-                          {tx.isOutlier ? 'High' : tx.risk ? tx.risk.charAt(0).toUpperCase() + tx.risk.slice(1) : 'Low'}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="action-buttons">
-                          <button className="icon-button" title="View Details">
-                            <Icons.Eye size={16} />
-                          </button>
-                          <button className="icon-button" title="Flag Transaction">
-                            <Icons.Flag size={16} />
-                          </button>
-                        </div>
-                      </td>
+              {tradesError ? (
+                <div className="empty-state">
+                  <div className="empty-state-icon">
+                    <Icons.X size={48} color="#ef4444" />
+                  </div>
+                  <h3>Unable to connect to backend</h3>
+                  <p>No transactions available. Please check if the backend service is running.</p>
+                  <button className="refresh_button" onClick={handleRefresh}>
+                    <Icons.RefreshCw size={16} /> Try Again
+                  </button>
+                </div>
+              ) : tradesLoading ? (
+                <div className="empty-state">
+                  <div className="empty-state-icon">
+                    <Icons.RefreshCw size={48} color="#3b82f6" />
+                  </div>
+                  <h3>Loading transactions...</h3>
+                  <p>Fetching latest trade data from the backend.</p>
+                </div>
+              ) : paginatedTrades.length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-state-icon">
+                    <Icons.Search size={48} color="#6b7280" />
+                  </div>
+                  <h3>No transactions yet</h3>
+                  <p>{filteredTrades.length === 0 ? 'No trades found in the selected time window.' : `No ${riskFilter} risk transactions found.`}</p>
+                </div>
+              ) : (
+                <table className="transactions_table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Contract & Price</th>
+                      <th>Client</th>
+                      <th>Date</th>
+                      <th>P&L</th>
+                      <th>Status</th>
+                      <th>Risk Level</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {paginatedTrades.map((trade, index) => (
+                      <tr 
+                        key={trade.id} 
+                        className={trade.isOutlier ? 'high-risk-row' : trade.risk === 'medium' ? 'medium-risk-row' : 'low-risk-row'}
+                        onClick={() => setSelectedUser(null)}
+                      >
+                        <td className="tx-id">{trade.id}</td>
+                        <td className="tx-amount">
+                          <div>
+                            <strong>{trade.currency} ${trade.amount?.toFixed(2)}</strong>
+                            <br />
+                            <small>{trade.contract_month}</small>
+                          </div>
+                        </td>
+                        <td>{trade.user}</td>
+                        <td>{new Date(trade.createdAt).toLocaleDateString()}</td>
+                        <td className={trade.pnl >= 0 ? 'positive-pnl' : 'negative-pnl'}>
+                          ${trade.pnl?.toFixed(2)}
+                        </td>
+                        <td>
+                          <span className={`status-badge ${trade.status || 'pending'}`}>
+                            {trade.status === 'approved' ? 'Validated' : trade.status === 'flagged' ? 'Flagged' : 'Pending'}
+                          </span>
+                        </td>
+                        <td>
+                          <div>
+                            <span className={`risk-badge ${trade.isOutlier ? 'high' : trade.risk || 'low'}`}>
+                              {trade.isOutlier ? 'High' : trade.risk ? trade.risk.charAt(0).toUpperCase() + trade.risk.slice(1) : 'Low'}
+                            </span>
+                            {trade.anomaly_score && (
+                              <>
+                                <br />
+                                <small>Score: {trade.anomaly_score.toFixed(3)}</small>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="action-buttons">
+                            <button className="icon-button" title="View Details">
+                              <Icons.Eye size={16} />
+                            </button>
+                            {!trade.is_validated && (
+                              <button 
+                                className="icon-button" 
+                                title="Validate as Normal"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  validation.mutate({
+                                    record_index: startIndex + index,
+                                    is_anomaly: false
+                                  });
+                                }}
+                                disabled={validation.isPending}
+                              >
+                                <Icons.Check size={16} />
+                              </button>
+                            )}
+                            <button 
+                              className="icon-button" 
+                              title={trade.is_validated ? "Already Validated" : "Flag as Anomaly"}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (!trade.is_validated) {
+                                  validation.mutate({
+                                    record_index: startIndex + index,
+                                    is_anomaly: true
+                                  });
+                                }
+                              }}
+                              disabled={validation.isPending || trade.is_validated}
+                            >
+                              <Icons.Flag size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
-            <div className="pagination">
-              <button className="pagination-button" disabled><Icons.ChevronLeft size={16} /></button>
-              <span className="pagination-info">Page 1 of 5</span>
-              <button className="pagination-button"><Icons.ChevronRight size={16} /></button>
-            </div>
+            {!tradesError && !tradesLoading && paginatedTrades.length > 0 && (
+              <div className="pagination">
+                <button 
+                  className="pagination-button" 
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                >
+                  <Icons.ChevronLeft size={16} />
+                </button>
+                <span className="pagination-info">
+                  Page {currentPage} of {totalPages} ({filteredTrades.length} total)
+                </span>
+                <button 
+                  className="pagination-button" 
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  <Icons.ChevronRight size={16} />
+                </button>
+              </div>
+            )}
           </section>
         </div>
       </div>

@@ -1,5 +1,63 @@
 /* Home page - premium enterprise UI */
 
+/* Empty state styles for transactions table */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-8);
+  text-align: center;
+  min-height: 300px;
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+}
+
+.empty-state-icon {
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.empty-state h3 {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  margin: 0 0 var(--space-4) 0;
+  color: var(--text-secondary);
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+.empty-state .refresh_button {
+  margin-top: var(--space-2);
+}
+
+/* P&L styling */
+.positive-pnl {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.negative-pnl {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
 /* Base layout - sleek enterprise design */
 .home_page {
     display: grid;

@@ -97,7 +97,7 @@ const Home: React.FC = () => {
   // Data fetching from backend
   const { data: tradesData, isLoading: tradesLoading, error: tradesError, refetch } = useTrades(1000000); // Last 5 minutes
   const validation = useTradeValidation();
-  const { data: statsData, isLoading: statsLoading } = useStats();
+  const { data: statsData } = useStats();
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);

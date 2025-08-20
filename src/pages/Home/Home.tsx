@@ -1,8 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { useTrades, useTradeValidation, useStats } from '../../hooks/useTrades';
+import { 
+  useTrades, 
+  // useTradeValidation, 
+  useStats 
+} from '../../hooks/useTrades';
 import { useProfitLossData, type ProfitLossDataPoint } from '../../hooks/useProfitLossData';
 import BoxPlot from '../../components/BoxPlot/BoxPlot';
 import ComparisonGraph from '../../components/ComparisonGraph/ComparisonGraph';
+import TradeReviewModal from '../../components/TradeReviewModal/TradeReviewModal';
 import './Home.css';
 import './transaction-details.css';
 
@@ -99,7 +104,7 @@ interface TradeData {
 const Home: React.FC = () => {
   // Data fetching from backend
   const { data: tradesData, isLoading: tradesLoading, error: tradesError, refetch } = useTrades(1000000); // Last 5 minutes
-  const validation = useTradeValidation();
+  // const validation = useTradeValidation();
   const { data: statsData } = useStats();
   
   // Pagination state
@@ -147,6 +152,31 @@ const Home: React.FC = () => {
   
   // State for selected trade details
   const [selectedTrade, setSelectedTrade] = useState<any>(null);
+  
+  // State for review modal
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [tradeToReview, setTradeToReview] = useState<any>(null);
+  
+  // Handler for opening the review modal
+  const handleOpenReviewModal = (trade: any) => {
+    setTradeToReview(trade);
+    setIsReviewModalOpen(true);
+  };
+  
+  // Placeholder handlers for marking trades
+  const handleMarkTradeGood = () => {
+    console.log('Trade marked as good:', tradeToReview?.id);
+    // Here you would implement the actual API call to mark the trade
+    // For now we just close the modal
+    setIsReviewModalOpen(false);
+  };
+  
+  const handleMarkTradeBad = () => {
+    console.log('Trade marked as bad:', tradeToReview?.id);
+    // Here you would implement the actual API call to mark the trade
+    // For now we just close the modal
+    setIsReviewModalOpen(false);
+  };
 
   // Handler for clicking on an outlier point
   const handleOutlierClick = (outlier: ProfitLossDataPoint) => {
@@ -220,20 +250,28 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="home_container">
-      {/* Dashboard header */}
-      {/* <header className="home_header">
-        <h1>Transaction Anomaly Detection</h1>
-        <div className="home_header_actions">
-          <div className="home_search_bar">
-            <Icons.Search size={16} />
-            <input type="text" placeholder="Search transactions..." />
+    <main className="home_container">
+      {/* TradeReviewModal - Will only show when isReviewModalOpen is true */}
+      <TradeReviewModal
+        trade={tradeToReview}
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        onMarkGood={handleMarkTradeGood}
+        onMarkBad={handleMarkTradeBad}
+      />
+      
+      {/* Dashboard Header */}
+      {/* <header className="dashboard_header">
+        <div className="header_search">
+          <div className="search_icon">
+            <Icons.Search />
           </div>
+          <input type="text" placeholder="Search trades..." />
         </div>
       </header> */}
 
       {/* Risk Metrics Summary Section */}
-      <section className="metrics_summary_section">
+          <section className="metrics_summary_section">
             <div className="metrics_grid">
               <div className="metric_card total">
                 <div className="metric_header">
@@ -328,52 +366,60 @@ const Home: React.FC = () => {
           {/* Trade Details Section - Always visible */}
           {selectedTrade ? (
             <div className="trade_details_row_container">
-              <div className="trade_details_header">
-                <button 
-                  className="icon-button" 
-                  onClick={() => setSelectedTrade(null)}
-                  title="Clear selection"
-                >
-                  <Icons.X size={16} />
-                </button>
-                <span>Trade details</span>
+              <div className="trade_details_left">
+                <div className="trade_details_header">
+                  <button 
+                    className="icon-button" 
+                    onClick={() => setSelectedTrade(null)}
+                    title="Clear selection"
+                  >
+                    <Icons.X size={16} />
+                  </button>
+                  <span>Selected Trade Details</span>
+                </div>
+                <div className="trade_details_row">
+                  <div className="trade_cell">
+                    <span className="cell_label">ID:</span>
+                    <span className="cell_value">{selectedTrade.id}</span>
+                  </div>
+                  <div className="trade_cell">
+                    <span className="cell_label">Client:</span>
+                    <span className="cell_value">{selectedTrade.client}</span>
+                  </div>
+                  <div className="trade_cell">
+                    <span className="cell_label">Price:</span>
+                    <span className="cell_value">${selectedTrade.price?.toFixed(2)}</span>
+                  </div>
+                  <div className="trade_cell">
+                    <span className="cell_label">Amount:</span>
+                    <span className="cell_value">${selectedTrade.amount?.toFixed(2)}</span>
+                  </div>
+                  <div className="trade_cell">
+                    <span className="cell_label">P&L:</span>
+                    <span className={`cell_value ${(selectedTrade.pnl || 0) >= 0 ? 'positive-pnl' : 'negative-pnl'}`}>
+                      ${selectedTrade.pnl?.toFixed(2) || '0.00'}
+                    </span>
+                  </div>
+                  <div className="trade_cell">
+                    <span className="cell_label">Risk:</span>
+                    <span className={`risk-badge ${selectedTrade.risk?.toLowerCase() || 'low'}`}>
+                      {selectedTrade.risk || 'Low'}
+                    </span>
+                  </div>
+                  <div className="trade_cell">
+                    <span className="cell_label">Date:</span>
+                    <span className="cell_value">
+                      {selectedTrade.date_of_execution ? new Date(selectedTrade.date_of_execution).toLocaleDateString() : 'N/A'}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="trade_details_row">
-                <div className="trade_cell">
-                  <span className="cell_label">ID:</span>
-                  <span className="cell_value">{selectedTrade.id}</span>
-                </div>
-                <div className="trade_cell">
-                  <span className="cell_label">Client:</span>
-                  <span className="cell_value">{selectedTrade.client}</span>
-                </div>
-                <div className="trade_cell">
-                  <span className="cell_label">Price:</span>
-                  <span className="cell_value">${selectedTrade.price?.toFixed(2)}</span>
-                </div>
-                <div className="trade_cell">
-                  <span className="cell_label">Amount:</span>
-                  <span className="cell_value">${selectedTrade.amount?.toFixed(2)}</span>
-                </div>
-                <div className="trade_cell">
-                  <span className="cell_label">P&L:</span>
-                  <span className={`cell_value ${(selectedTrade.pnl || 0) >= 0 ? 'positive-pnl' : 'negative-pnl'}`}>
-                    ${selectedTrade.pnl?.toFixed(2) || '0.00'}
-                  </span>
-                </div>
-                <div className="trade_cell">
-                  <span className="cell_label">Risk:</span>
-                  <span className={`risk-badge ${selectedTrade.risk?.toLowerCase() || 'low'}`}>
-                    {selectedTrade.risk || 'Low'}
-                  </span>
-                </div>
-                <div className="trade_cell">
-                  <span className="cell_label">Date:</span>
-                  <span className="cell_value">
-                    {selectedTrade.date_of_execution ? new Date(selectedTrade.date_of_execution).toLocaleDateString() : 'N/A'}
-                  </span>
-                </div>
-              </div>
+              <button 
+                className="review-button" 
+                onClick={() => handleOpenReviewModal(selectedTrade)}
+              >
+                Review Trade
+              </button>
             </div>
           ) : (
             <div className="trade_details_row_container empty_trade_row">
@@ -447,7 +493,7 @@ const Home: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedTrades.map((trade, index) => (
+                    {paginatedTrades.map((trade, _) => (
                       <tr 
                         key={trade.id} 
                         className={trade.isOutlier ? 'high-risk-row' : trade.risk === 'medium' ? 'medium-risk-row' : 'low-risk-row'}
@@ -486,41 +532,17 @@ const Home: React.FC = () => {
                         </td>
                         <td>
                           <div className="action-buttons">
-                            <button className="icon-button" title="View Details">
-                              <Icons.Eye size={16} />
-                            </button>
-                            {!trade.is_validated && (
+                            {/* Review button */}
+                            {trade.status == 'pending' || true ? (
                               <button 
-                                className="icon-button" 
-                                title="Validate as Normal"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  validation.mutate({
-                                    record_index: startIndex + index,
-                                    is_anomaly: false
-                                  });
-                                }}
-                                disabled={validation.isPending}
+                                className="review-button" 
+                                onClick={() => handleOpenReviewModal(trade)}
                               >
-                                <Icons.Check size={16} />
+                                Review Trade
                               </button>
+                            ) : (
+                              null
                             )}
-                            <button 
-                              className="icon-button" 
-                              title={trade.is_validated ? "Already Validated" : "Flag as Anomaly"}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (!trade.is_validated) {
-                                  validation.mutate({
-                                    record_index: startIndex + index,
-                                    is_anomaly: true
-                                  });
-                                }
-                              }}
-                              disabled={validation.isPending || trade.is_validated}
-                            >
-                              <Icons.Flag size={16} />
-                            </button>
                           </div>
                         </td>
                       </tr>
@@ -553,7 +575,7 @@ const Home: React.FC = () => {
           </section>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

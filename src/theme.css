@@ -52,7 +52,7 @@
     --color-text-disabled: #4b5563;
     
     /* Border colors */
-    --color-border-primary: #2a335a;
+    --color-border-primary: #383f60;
     --color-border-secondary: #1f2547;
     --color-border-focus: var(--color-primary-500);
     --color-border-hover: var(--color-primary-400);

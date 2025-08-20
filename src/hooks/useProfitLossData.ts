@@ -19,29 +19,29 @@ export type BoxPlotData = {
 };
 
 export type ProfitLossData = {
-  perTrade: BoxPlotData;
+  perDay: BoxPlotData;
   perYear: BoxPlotData;
 };
 
 // Generate random data for boxplot
 const generateRandomProfitLossData = (): ProfitLossData => {
-  // Generate random P&L per trade
-  const tradeSampleSize = 100;
-  const tradeValues: number[] = [];
-  const tradeOutliers: ProfitLossDataPoint[] = [];
+  // Generate random P&L per day
+  const daySampleSize = 100;
+  const dayValues: number[] = [];
+  const dayOutliers: ProfitLossDataPoint[] = [];
 
   // Generate base data points
-  for (let i = 0; i < tradeSampleSize; i++) {
+  for (let i = 0; i < daySampleSize; i++) {
     // Generate mostly in range -100 to 300 with normal distribution
     const value = Math.round((Math.random() + Math.random() + Math.random() - 1.5) * 200);
-    tradeValues.push(value);
+    dayValues.push(value);
     
     // Add some outliers
     if (i % 30 === 0) {
       const outlierValue = Math.random() < 0.5 ? -500 - Math.random() * 500 : 1000 + Math.random() * 2000;
-      const outlierId = `trade-outlier-${i}`;
+      const outlierId = `day-outlier-${i}`;
       
-      tradeOutliers.push({
+      dayOutliers.push({
         id: outlierId,
         traderId: `trader-${Math.floor(Math.random() * 10)}`,
         value: outlierValue,
@@ -52,14 +52,14 @@ const generateRandomProfitLossData = (): ProfitLossData => {
   }
 
   // Sort values for quartile calculation
-  tradeValues.sort((a, b) => a - b);
+  dayValues.sort((a, b) => a - b);
 
-  // Calculate quartiles for per trade
-  const tradeMin = Math.min(...tradeValues);
-  const tradeMax = Math.max(...tradeValues);
-  const tradeQ1 = tradeValues[Math.floor(tradeSampleSize * 0.25)];
-  const tradeMedian = tradeValues[Math.floor(tradeSampleSize * 0.5)];
-  const tradeQ3 = tradeValues[Math.floor(tradeSampleSize * 0.75)];
+  // Calculate quartiles for per day
+  const dayMin = Math.min(...dayValues);
+  const dayMax = Math.max(...dayValues);
+  const dayQ1 = dayValues[Math.floor(daySampleSize * 0.25)];
+  const dayMedian = dayValues[Math.floor(daySampleSize * 0.5)];
+  const dayQ3 = dayValues[Math.floor(daySampleSize * 0.75)];
 
   // Generate yearly data (slightly different distribution)
   const yearSampleSize = 20; // 20 traders
@@ -98,14 +98,14 @@ const generateRandomProfitLossData = (): ProfitLossData => {
   const yearQ3 = yearValues[Math.floor(yearSampleSize * 0.75)];
 
   return {
-    perTrade: {
-      min: tradeMin,
-      q1: tradeQ1,
-      median: tradeMedian,
-      q3: tradeQ3,
-      max: tradeMax,
-      outliers: tradeOutliers,
-      totalSample: tradeSampleSize
+    perDay: {
+      min: dayMin,
+      q1: dayQ1,
+      median: dayMedian,
+      q3: dayQ3,
+      max: dayMax,
+      outliers: dayOutliers,
+      totalSample: daySampleSize
     },
     perYear: {
       min: yearMin,

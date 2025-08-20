@@ -1,12 +1,14 @@
 .comparison-graph-container {
   /* width: 100%; */
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-md);
   padding: var(--space-6);
   background-color: var(--color-surface-primary);
   border: 1px solid var(--color-border-primary);
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
 .comparison-graph-header {

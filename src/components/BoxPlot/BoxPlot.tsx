@@ -19,9 +19,9 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
   currency = 'USD',
   onOutlierClick
 }) => {
-  // View mode state (per trade or per year)
-  const [viewMode, setViewMode] = useState<'perTrade' | 'perYear'>('perTrade');
-  const activeData = data[viewMode];
+  // View mode state (per day or per year)
+  const [viewMode, setViewMode] = useState<'perDay' | 'perYear'>('perDay');
+  const activeData = data[viewMode as keyof ProfitLossData];
   
   // Refs and responsive sizing
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,7 +59,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
   const centerY = margin.top + plotHeight / 2;
 
   // Calculate value range with 10% padding on both sides
-  const rawValues = [...activeData.outliers.map(o => o.value), activeData.min, activeData.max, activeData.q1, activeData.q3, activeData.median];
+  const rawValues = [...activeData.outliers.map((o: ProfitLossDataPoint) => o.value), activeData.min, activeData.max, activeData.q1, activeData.q3, activeData.median];
   const dataMin = Math.min(...rawValues);
   const dataMax = Math.max(...rawValues);
   const dataRange = dataMax - dataMin;
@@ -130,10 +130,10 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
       
       <div className="boxplot-toggle">
         <button 
-          className={`boxplot-toggle-button ${viewMode === 'perTrade' ? 'active' : ''}`}
-          onClick={() => setViewMode('perTrade')}
+          className={`boxplot-toggle-button ${viewMode === 'perDay' ? 'active' : ''}`}
+          onClick={() => setViewMode('perDay')}
         >
-          Per Trade
+          Per Day
         </button>
         <button 
           className={`boxplot-toggle-button ${viewMode === 'perYear' ? 'active' : ''}`}
@@ -170,7 +170,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
             y1={centerY}
             x2={width - margin.right}
             y2={centerY}
-            stroke="var(--color-border-secondary)"
+            stroke="var(--color-border-primary)"
             strokeWidth="1"
           />
           
@@ -182,7 +182,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
                 y1={centerY - 5}
                 x2={scaleX(tick)}
                 y2={centerY + 5}
-                stroke="var(--color-border-secondary)"
+                stroke="var(--color-border-primary)"
                 strokeWidth="1"
               />
               <text
@@ -204,7 +204,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
               y1={centerY - boxHeight*1.5}
               x2={scaleX(0)}
               y2={centerY + boxHeight*1.5}
-              stroke="var(--color-border-secondary)"
+              stroke="var(--color-border-primary)"
               strokeWidth="1"
               strokeDasharray="4,4"
             />
@@ -331,7 +331,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
           </text>
           
           {/* Outlier points */}
-          {activeData.outliers.map((outlier, index) => (
+          {activeData.outliers.map((outlier: ProfitLossDataPoint, index: number) => (
             <circle
               key={index}
               cx={scaleX(outlier.value)}
@@ -369,7 +369,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
       
       <div className="boxplot-summary">
         <p>
-          Distribution of profit/loss {viewMode === 'perTrade' ? 'per trade' : 'per year'} across {activeData.totalSample} data points, with {activeData.outliers.length} outliers identified.
+          Distribution of profit/loss {viewMode === 'perDay' ? 'per day' : 'per year'} across {activeData.totalSample} data points, with {activeData.outliers.length} outliers identified.
         </p>
       </div>
     </div>

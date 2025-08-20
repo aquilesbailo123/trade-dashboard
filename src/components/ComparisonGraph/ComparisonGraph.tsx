@@ -109,7 +109,7 @@ const ComparisonGraph: React.FC<ComparisonGraphProps> = ({
 
   // Set actual width based on prop or container
   const width = propWidth || containerWidth;
-  const margin = { top: 20, right: 20, bottom: 40, left: 90 }; // Increased left margin for Y-axis labels
+  const margin = { top: 20, right: 60, bottom: 40, left: 90 }; // Increased left margin for Y-axis labels
 
   // Filter and process trades data for the chart
   const validTrades = useMemo(() => {
@@ -278,9 +278,10 @@ const ComparisonGraph: React.FC<ComparisonGraphProps> = ({
               y1={height - margin.bottom} 
               x2={width - margin.right} 
               y2={height - margin.bottom}
-              stroke="#64748b"
+              stroke="var(--color-border-primary"
               strokeWidth="1.5"
             />
+            {/* Label */}
             <text 
               x={width / 2} 
               y={height - 5}
@@ -297,9 +298,10 @@ const ComparisonGraph: React.FC<ComparisonGraphProps> = ({
               y1={margin.top} 
               x2={margin.left} 
               y2={height - margin.bottom}
-              stroke="#64748b"
+              stroke="var(--color-border-primary)"
               strokeWidth="1.5"
             />
+            {/* Label */}
             <text 
               transform={`rotate(-90, ${margin.left/3}, ${height/2})`}
               x={margin.left/4} 
@@ -322,7 +324,7 @@ const ComparisonGraph: React.FC<ComparisonGraphProps> = ({
                     y1={height - margin.bottom} 
                     x2={x} 
                     y2={height - margin.bottom + 5}
-                    stroke="#64748b"
+                    stroke="var(--color-border-primary)"
                     strokeWidth="1"
                   />
                   <text 
@@ -350,7 +352,7 @@ const ComparisonGraph: React.FC<ComparisonGraphProps> = ({
                     y1={y} 
                     x2={margin.left} 
                     y2={y}
-                    stroke="#64748b"
+                    stroke="var(--color-border-primary)"
                     strokeWidth="1"
                   />
                   <text 

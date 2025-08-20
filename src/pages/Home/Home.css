@@ -1786,6 +1786,20 @@ gap: 1rem;
 margin-bottom: 1.75rem;
 }
 
+/* Loading dots animation */
+@keyframes loadingDots {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.loading-dots {
+  display: inline-block;
+  animation: loadingDots 1.5s infinite ease-in-out;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
 .loading_container, .error_container {
     display: flex;
     align-items: center;

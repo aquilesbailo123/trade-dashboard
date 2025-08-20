@@ -222,9 +222,9 @@ const Home: React.FC = () => {
           <div className="dashboard_graph_grid">
             {/* BoxPlot for P&L Distribution */}
               {plDataLoading ? (
-                <div className="loading_container">
-                  <Icons.RefreshCw size={24} className="icon-primary" />
-                  <p>Loading profit/loss data...</p>
+                <div className="loading_container" style={{ height: '586.5px' }}>
+                  <Icons.RefreshCw size={24} className="icon-primary animate-spin" />
+                  <p className="animate-pulse">Loading profit/loss data<span className="loading-dots">...</span></p>
                 </div>
               ) : profitLossData ? (
                 <BoxPlot
@@ -242,9 +242,9 @@ const Home: React.FC = () => {
 
             {/* Comparison Graph for Trade Variables */}
               {tradesLoading ? (
-                <div className="loading_container">
-                  <Icons.RefreshCw size={24} className="icon-primary" />
-                  <p>Loading trade data...</p>
+                <div className="loading_container" style={{ height: '586.5px' }}>
+                  <Icons.RefreshCw size={24} className="icon-primary animate-spin" />
+                  <p className="animate-pulse">Loading trade data<span className="loading-dots">...</span></p>
                 </div>
               ) : tradesError ? (
                 <div className="error_container">
@@ -330,7 +330,7 @@ const Home: React.FC = () => {
                   {metricValues.totalTrades}
                   <span className="metric_unit">trades</span>
                 </div>
-                <div className="metric_info">Total trades processed by the system</div>
+                <div className="metric_info">Total trades displayed</div>
               </div>
               
               <div className="metric_card high">

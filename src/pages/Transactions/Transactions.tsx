@@ -442,7 +442,7 @@ export default function Transactions() {
             <header className="transactions_header">
                 <div className="transactions_header_title">
                     <h1>Transactions</h1>
-                    <div className="transactions_header_subtitle">Monitor and manage payment activity</div>
+                    <div className="transactions_header_subtitle">Monitor and manage trading activity</div>
                 </div>
 
                 <div className="transactions_controls">

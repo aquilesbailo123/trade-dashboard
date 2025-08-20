@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useTrades, useTradeValidation, useStats } from '../../hooks/useTrades';
-import { useProfitLossData } from '../../hooks/useProfitLossData';
+import { useProfitLossData, type ProfitLossDataPoint } from '../../hooks/useProfitLossData';
 import BoxPlot from '../../components/BoxPlot/BoxPlot';
 import ComparisonGraph from '../../components/ComparisonGraph/ComparisonGraph';
 import './Home.css';
@@ -142,17 +142,33 @@ const Home: React.FC = () => {
     setCurrentPage(1);
   }, [riskFilter]);
 
-  // State for selected trade - will be used to show detailed trade information in future implementation
-  const [selectedTrade, setSelectedTrade] = useState<TradeData | null>(null);
-  
   // P&L data for BoxPlot
   const { data: profitLossData, isLoading: plDataLoading } = useProfitLossData();
   
+  // State for selected trade details
+  const [selectedTrade, setSelectedTrade] = useState<any>(null);
+
   // Handler for clicking on an outlier point
-  const handleOutlierClick = (outlier: any) => {
-    // Find the trade corresponding to the outlier if needed
+  const handleOutlierClick = (outlier: ProfitLossDataPoint) => {
     console.log('Outlier clicked:', outlier);
-    // Future implementation: search for this trade in the processedTrades array
+    
+    // Create trade object from the outlier data with format matching the display in trade details section
+    const tradeDetails = {
+      id: outlier.id || `outlier-${Date.now()}`,
+      client: `Client ${outlier.traderId?.split('-').pop() || 'Unknown'}`,
+      price: Math.abs(outlier.value) / 100,
+      amount: Math.abs(outlier.value),
+      pnl: outlier.value,
+      risk: outlier.value < 0 ? (outlier.value < -500 ? 'High' : 'Medium') : 'Low',
+      date_of_execution: outlier.date,
+      sales_person: `SP-${Math.floor(Math.random() * 1000)}`,
+      contract_type: outlier.contractType || 'WTI',
+      contract_month: new Date(outlier.date).toLocaleDateString('en-US', { month: 'long' }) + '/' + new Date(outlier.date).getFullYear().toString().substr(-2),
+      anomaly_score: outlier.value < 0 ? 0.8 : 0.3
+    };
+    
+    // Set the trade details to show in the trade details section
+    setSelectedTrade(tradeDetails);
   };
   
   // Handler for clicking on a trade point in the comparison graph
@@ -215,6 +231,55 @@ const Home: React.FC = () => {
           </div>
         </div>
       </header> */}
+
+      {/* Risk Metrics Summary Section */}
+      <section className="metrics_summary_section">
+            <div className="metrics_grid">
+              <div className="metric_card total">
+                <div className="metric_header">
+                  <h3>Total Trades</h3>
+                </div>
+                <div className="metric_value">
+                  {metricValues.totalTrades}
+                  <span className="metric_unit">trades</span>
+                </div>
+                <div className="metric_info">Total trades displayed</div>
+              </div>
+              
+              <div className="metric_card high">
+                <div className="metric_header">
+                  <h3>Detected Anomalies</h3>
+                </div>
+                <div className="metric_value">
+                  {metricValues.detectedAnomalies}
+                  <span className="metric_unit">trades</span>
+                </div>
+                <div className="metric_info">Trades flagged as anomalous by ML model</div>
+              </div>
+              
+              <div className="metric_card medium">
+                <div className="metric_header">
+                  <h3>Validated Trades</h3>
+                </div>
+                <div className="metric_value">
+                  {metricValues.validatedTrades}
+                  <span className="metric_unit">trades</span>
+                </div>
+                <div className="metric_info">Trades that received human validation</div>
+              </div>
+
+              <div className="metric_card low">
+                <div className="metric_header">
+                  <h3>Anomaly Rate</h3>
+                </div>
+                <div className="metric_value">
+                  {(metricValues.anomalyRate * 100).toFixed(1)}
+                  <span className="metric_unit">%</span>
+                </div>
+                <div className="metric_info">Percentage of trades flagged as anomalous</div>
+              </div>
+            </div>
+          </section>
 
       <div className="home_dashboard">
         <div className="home_dashboard_wrapper">
@@ -318,55 +383,6 @@ const Home: React.FC = () => {
               </div>
             </div>
           )}
-
-          {/* Risk Metrics Summary Section */}
-          <section className="metrics_summary_section">
-            <div className="metrics_grid">
-              <div className="metric_card total">
-                <div className="metric_header">
-                  <h3>Total Trades</h3>
-                </div>
-                <div className="metric_value">
-                  {metricValues.totalTrades}
-                  <span className="metric_unit">trades</span>
-                </div>
-                <div className="metric_info">Total trades displayed</div>
-              </div>
-              
-              <div className="metric_card high">
-                <div className="metric_header">
-                  <h3>Detected Anomalies</h3>
-                </div>
-                <div className="metric_value">
-                  {metricValues.detectedAnomalies}
-                  <span className="metric_unit">trades</span>
-                </div>
-                <div className="metric_info">Trades flagged as anomalous by ML model</div>
-              </div>
-              
-              <div className="metric_card medium">
-                <div className="metric_header">
-                  <h3>Validated Trades</h3>
-                </div>
-                <div className="metric_value">
-                  {metricValues.validatedTrades}
-                  <span className="metric_unit">trades</span>
-                </div>
-                <div className="metric_info">Trades that received human validation</div>
-              </div>
-
-              <div className="metric_card low">
-                <div className="metric_header">
-                  <h3>Anomaly Rate</h3>
-                </div>
-                <div className="metric_value">
-                  {(metricValues.anomalyRate * 100).toFixed(1)}
-                  <span className="metric_unit">%</span>
-                </div>
-                <div className="metric_info">Percentage of trades flagged as anomalous</div>
-              </div>
-            </div>
-          </section>
 
           {/* Transactions Table */}
           <section className="transactions_table_section">

@@ -133,13 +133,13 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
           className={`boxplot-toggle-button ${viewMode === 'perDay' ? 'active' : ''}`}
           onClick={() => setViewMode('perDay')}
         >
-          Per Day
+          PnL per day
         </button>
         <button 
           className={`boxplot-toggle-button ${viewMode === 'perYear' ? 'active' : ''}`}
           onClick={() => setViewMode('perYear')}
         >
-          Per Year
+          PnL per year
         </button>
       </div>
       

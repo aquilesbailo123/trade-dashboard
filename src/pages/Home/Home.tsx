@@ -206,7 +206,7 @@ const Home: React.FC = () => {
   return (
     <div className="home_container">
       {/* Dashboard header */}
-      <header className="home_header">
+      {/* <header className="home_header">
         <h1>Transaction Anomaly Detection</h1>
         <div className="home_header_actions">
           <div className="home_search_bar">
@@ -214,7 +214,7 @@ const Home: React.FC = () => {
             <input type="text" placeholder="Search transactions..." />
           </div>
         </div>
-      </header>
+      </header> */}
 
       <div className="home_dashboard">
         <div className="home_dashboard_wrapper">
@@ -230,7 +230,7 @@ const Home: React.FC = () => {
                 <BoxPlot
                   title="Profit/Loss Distribution"
                   data={profitLossData}
-                  height={400}
+                  height={350}
                   onOutlierClick={handleOutlierClick}
                 />
               ) : (
@@ -254,17 +254,16 @@ const Home: React.FC = () => {
               ) : (
                 <ComparisonGraph
                   trades={processedTrades}
-                  height={400}
+                  height={350}
                   onTradeClick={handleTradeClick}
                 />
               )}
           </div>
           
           {/* Trade Details Section - Always visible */}
-          <section className="trade_details_panel">
-            <div className="panel_header">
-              <h3>Trade Details</h3>
-              {selectedTrade && (
+          {selectedTrade ? (
+            <div className="trade_details_row_container">
+              <div className="trade_details_header">
                 <button 
                   className="icon-button" 
                   onClick={() => setSelectedTrade(null)}
@@ -272,84 +271,53 @@ const Home: React.FC = () => {
                 >
                   <Icons.X size={16} />
                 </button>
-              )}
-            </div>
-            <div className="trade_details_content">
-              {selectedTrade ? (
-                <div className="trade_details_row">
-                  <div className="trade_cell">
-                    <span className="cell_label">ID:</span>
-                    <span className="cell_value">{selectedTrade.id}</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Client:</span>
-                    <span className="cell_value">{selectedTrade.client}</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Price:</span>
-                    <span className="cell_value">${selectedTrade.price?.toFixed(2)}</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Amount:</span>
-                    <span className="cell_value">${selectedTrade.amount?.toFixed(2)}</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">P&L:</span>
-                    <span className={`cell_value ${(selectedTrade.pnl || 0) >= 0 ? 'positive-pnl' : 'negative-pnl'}`}>
-                      ${selectedTrade.pnl?.toFixed(2) || '0.00'}
-                    </span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Risk:</span>
-                    <span className={`risk-badge ${selectedTrade.risk?.toLowerCase() || 'low'}`}>
-                      {selectedTrade.risk || 'Low'}
-                    </span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Date:</span>
-                    <span className="cell_value">
-                      {selectedTrade.date_of_execution ? new Date(selectedTrade.date_of_execution).toLocaleDateString() : 'N/A'}
-                    </span>
-                  </div>
+                <span>Trade details</span>
+              </div>
+              <div className="trade_details_row">
+                <div className="trade_cell">
+                  <span className="cell_label">ID:</span>
+                  <span className="cell_value">{selectedTrade.id}</span>
                 </div>
-              ) : (
-                <div className="trade_details_row empty_trade_row">
-                  <div className="trade_cell">
-                    <span className="cell_label">ID:</span>
-                    <span className="cell_value empty_value">-</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Client:</span>
-                    <span className="cell_value empty_value">-</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Price:</span>
-                    <span className="cell_value empty_value">-</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Amount:</span>
-                    <span className="cell_value empty_value">-</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">P&L:</span>
-                    <span className="cell_value empty_value">-</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Risk:</span>
-                    <span className="cell_value empty_value">-</span>
-                  </div>
-                  <div className="trade_cell">
-                    <span className="cell_label">Date:</span>
-                    <span className="cell_value empty_value">-</span>
-                  </div>
-                  <div className="empty_message">
-                    <Icons.Eye size={16} />
-                    <span>Click on any point in the graph above to view trade details</span>
-                  </div>
+                <div className="trade_cell">
+                  <span className="cell_label">Client:</span>
+                  <span className="cell_value">{selectedTrade.client}</span>
                 </div>
-              )}
+                <div className="trade_cell">
+                  <span className="cell_label">Price:</span>
+                  <span className="cell_value">${selectedTrade.price?.toFixed(2)}</span>
+                </div>
+                <div className="trade_cell">
+                  <span className="cell_label">Amount:</span>
+                  <span className="cell_value">${selectedTrade.amount?.toFixed(2)}</span>
+                </div>
+                <div className="trade_cell">
+                  <span className="cell_label">P&L:</span>
+                  <span className={`cell_value ${(selectedTrade.pnl || 0) >= 0 ? 'positive-pnl' : 'negative-pnl'}`}>
+                    ${selectedTrade.pnl?.toFixed(2) || '0.00'}
+                  </span>
+                </div>
+                <div className="trade_cell">
+                  <span className="cell_label">Risk:</span>
+                  <span className={`risk-badge ${selectedTrade.risk?.toLowerCase() || 'low'}`}>
+                    {selectedTrade.risk || 'Low'}
+                  </span>
+                </div>
+                <div className="trade_cell">
+                  <span className="cell_label">Date:</span>
+                  <span className="cell_value">
+                    {selectedTrade.date_of_execution ? new Date(selectedTrade.date_of_execution).toLocaleDateString() : 'N/A'}
+                  </span>
+                </div>
+              </div>
             </div>
-          </section>
+          ) : (
+            <div className="trade_details_row_container empty_trade_row">
+              <div className="empty_message">
+                <Icons.Eye size={16} />
+                <span>Click on any point in the graph above to view trade details</span>
+              </div>
+            </div>
+          )}
 
           {/* Risk Metrics Summary Section */}
           <section className="metrics_summary_section">

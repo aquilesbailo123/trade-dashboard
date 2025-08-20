@@ -59,7 +59,7 @@ export default function DashboardLayout() {
     return (
         <div className="dashboard_layout_root">
             <aside className={`dashboard_layout_sidebar ${isMobileMenuOpen ? "is_open" : ""}`}>
-                <div className="dashboard_layout_brand">Fraud Detection Admin</div>
+                <div className="dashboard_layout_brand">Transaction Anomaly Detection</div>
                 <nav className="dashboard_layout_nav">
                     <NavLink to={routes.home} className={({ isActive }) => `dashboard_layout_nav_link ${isActive ? "is_active" : ""}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="dashboard_layout_nav_icon">

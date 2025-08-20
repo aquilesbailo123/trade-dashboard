@@ -122,7 +122,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
             <span className="legend-label">Box (Q1-Q3)</span>
           </div>
           <div className="legend-item">
-            <span className="legend-color" style={{ backgroundColor: 'var(--color-error-500)' }}></span>
+            <span className="legend-color" style={{ backgroundColor: 'var(--color-danger-500)' }}></span>
             <span className="legend-label">Outliers</span>
           </div>
         </div>
@@ -334,12 +334,12 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
           {activeData.outliers.map((outlier: ProfitLossDataPoint, index: number) => (
             <circle
               key={index}
-              cx={scaleX(outlier.value)}
+              cx={scaleX(outlier.value)}   
               cy={centerY}
               r={5}
-              fill="var(--color-error-400)"
-              stroke="var(--color-error-600)"
-              strokeWidth={1.5}
+              fill="var(--color-danger-500)"
+              // stroke="var(--color-error-600)"
+              // strokeWidth={1.5}
               opacity={0.9}
               onMouseEnter={(e) => handleMouseEnter(e, outlier.value, `Outlier: ${outlier.traderId}`)}
               onMouseLeave={handleMouseLeave}

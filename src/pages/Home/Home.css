@@ -2542,7 +2542,7 @@ transition: all 0.2s ease;
 .home_container {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: var(--grid-gap);
+  gap: var(--space-6);
   padding: var(--space-4) var(--space-6);
   margin: 0 auto;
   min-height: 100vh;
@@ -2619,7 +2619,7 @@ transition: all 0.2s ease;
   grid-column: span 12;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
+  gap: var(--space-6);
   width: 100%;
   max-width: 100%;
   overflow: hidden;
@@ -2796,7 +2796,7 @@ transition: all 0.2s ease;
 .metrics_grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-4);
+  gap: var(--space-6);
 }
 
 @media (max-width: 1200px) {

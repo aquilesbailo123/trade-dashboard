@@ -222,6 +222,7 @@
 /* Trade Details Panel - Table-like styling */
 .trade_details_panel {
     background: var(--glass-bg);
+    grid-column: span 12;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
@@ -267,7 +268,7 @@
 .trade_cell {
     display: flex;
     align-items: center;
-    gap: var(--space-1);
+    gap: var(--space-3);
     white-space: nowrap;
 }
 

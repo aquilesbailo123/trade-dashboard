@@ -143,7 +143,7 @@ const Home: React.FC = () => {
   }, [riskFilter]);
 
   // State for selected trade - will be used to show detailed trade information in future implementation
-  const [_, setSelectedTrade] = useState<TradeData | null>(null);
+  const [selectedTrade, setSelectedTrade] = useState<TradeData | null>(null);
   
   // P&L data for BoxPlot
   const { data: profitLossData, isLoading: plDataLoading } = useProfitLossData();
@@ -261,7 +261,7 @@ const Home: React.FC = () => {
           </div>
           
           {/* Trade Details Section - Always visible */}
-          {/* <section className="trade_details_panel">
+          <section className="trade_details_panel">
             <div className="panel_header">
               <h3>Trade Details</h3>
               {selectedTrade && (
@@ -349,7 +349,7 @@ const Home: React.FC = () => {
                 </div>
               )}
             </div>
-          </section> */}
+          </section>
 
           {/* Risk Metrics Summary Section */}
           <section className="metrics_summary_section">

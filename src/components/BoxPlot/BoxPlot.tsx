@@ -369,7 +369,7 @@ const BoxPlot: React.FC<BoxPlotProps> = ({
       
       <div className="boxplot-summary">
         <p>
-          Distribution of profit/loss {viewMode === 'perDay' ? 'per day' : 'per year'} across {activeData.totalSample} data points, with {activeData.outliers.length} outliers identified.
+          Distribution of profit/loss {viewMode === 'perDay' ? 'per day' : 'per year'}, with {activeData.outliers.length} outliers identified.
         </p>
       </div>
     </div>

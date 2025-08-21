@@ -3,7 +3,7 @@
 /* Layout structure */
 .dashboard_layout_root {
     display: grid;
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: auto 1fr;
     height: 100vh;
     width: 100%;
     position: relative;
@@ -20,10 +20,17 @@
     padding: 1.75rem 1.25rem;
     display: flex;
     flex-direction: column;
-    transition: all 0.3s var(--transition-timing-smooth);
+    transition: width 0.3s var(--transition-timing-smooth), padding 0.3s var(--transition-timing-smooth);
     z-index: 10;
     position: relative;
     box-shadow: var(--shadow-lg);
+    width: 240px;
+}
+
+/* Collapsed sidebar styling */
+.dashboard_layout_sidebar.is_collapsed {
+    width: 40px;
+    padding: 1.75rem 0.75rem;
 }
 
 /* Premium gradient border for sidebar */
@@ -61,8 +68,56 @@
     letter-spacing: 0.5px;
     padding: 0 0.5rem;
     position: relative;
-    display: inline-block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     color: var(--color-text-primary);
+}
+
+/* Brand text with transition */
+.brand_text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.3s ease, width 0.3s ease;
+    flex: 1;
+    margin-right: 8px;
+}
+
+.is_collapsed .brand_text {
+    width: 0;
+    opacity: 0;
+    margin-right: 0;
+}
+
+.dashboard_layout_sidebar:not(.is_collapsed) .brand_text {
+    width: auto;
+    opacity: 1;
+}
+
+/* Toggle button for sidebar */
+.sidebar_toggle {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    padding: 4px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-left: 0;
+    flex-shrink: 0;
+}
+
+.sidebar_toggle:hover {
+    background-color: rgba(var(--rgb-primary-200), 0.2);
+    color: var(--color-primary-500);
+}
+
+.is_collapsed .sidebar_toggle {
+    margin: 0 auto;
 }
 
 @keyframes gradientShift {
@@ -95,13 +150,34 @@
     background: rgba(var(--rgb-surface-elevated), 0.5);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Adjust nav link for collapsed sidebar */
+.is_collapsed .dashboard_layout_nav_link {
+    padding: 0.85rem;
+    justify-content: center;
+}
+
+/* Hide text in nav links when sidebar is collapsed */
+.is_collapsed .dashboard_layout_nav_link span {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
 }
 
 .dashboard_layout_nav_icon {
     margin-right: var(--space-3);
-    transition: transform 0.3s var(--transition-timing-smooth);
+    transition: all 0.3s var(--transition-timing-smooth);
     color: var(--color-text-secondary);
     opacity: 0.8;
+    flex-shrink: 0;
+}
+
+.is_collapsed .dashboard_layout_nav_icon {
+    margin-right: 0;
 }
 
 .dashboard_layout_nav_link:hover {
@@ -309,6 +385,18 @@
     .dashboard_layout_root {
         grid-template-columns: 200px 1fr;
     }
+}
+
+/* Icon only button styling when sidebar is collapsed */
+.icon_only {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.85rem 0;
+}
+
+.icon_only .dashboard_layout_nav_icon {
+    margin-right: 0;
 }
 
 @media (max-width: 768px) {

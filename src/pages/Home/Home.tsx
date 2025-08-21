@@ -117,12 +117,16 @@ const Home: React.FC = () => {
   
   // State for pausing live updates
   const [isLiveUpdatePaused, setIsLiveUpdatePaused] = useState(false);
+  
+  // State to store highest trade ID when paused
+  const [pausedMaxTradeId, setPausedMaxTradeId] = useState<string | number | null>(null);
 
   // Process trades data for display
   const processedTrades = useMemo(() => {
     if (!tradesData?.trades) return [];
     
-    return tradesData.trades
+    // Convert trades to our display format
+    const mappedTrades = tradesData.trades
       .map(trade => ({
         ...trade,
         // Map backend trade data to display format
@@ -136,9 +140,22 @@ const Home: React.FC = () => {
           (trade.is_anomaly ? 'flagged' : 'pending'),
         risk: trade.is_anomaly ? 'high' : (trade.anomaly_score && trade.anomaly_score < -0.1 ? 'low' : 'medium'),
         isOutlier: trade.is_anomaly || false
-      }))
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Sort by most recent first
-  }, [tradesData]);
+      }));
+
+    // Filter out trades with IDs higher than the pause point when paused
+    const filteredTrades = isLiveUpdatePaused && pausedMaxTradeId !== null 
+      ? mappedTrades.filter(trade => {
+          const tradeId = typeof trade.id === 'string' ? parseInt(trade.id, 10) : Number(trade.id);
+          const maxId = typeof pausedMaxTradeId === 'string' ? parseInt(pausedMaxTradeId, 10) : Number(pausedMaxTradeId);
+          return tradeId <= maxId;
+        })
+      : mappedTrades;
+      
+    // Sort by most recent first
+    return filteredTrades.sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }, [tradesData, isLiveUpdatePaused, pausedMaxTradeId]);
 
   // Filter trades based on risk level and pending review status
   const filteredTrades = useMemo(() => {
@@ -311,7 +328,20 @@ const Home: React.FC = () => {
   
   // Toggle pause/resume of live updates
   const handleToggleLiveUpdates = () => {
-    setIsLiveUpdatePaused(prev => !prev);
+    setIsLiveUpdatePaused(prev => {
+      // If we're toggling from unpaused to paused, record the highest trade ID
+      if (!prev && processedTrades.length > 0) {
+        // Find the highest ID in the current trades list
+        const highestId = Math.max(...processedTrades.map(trade => 
+          typeof trade.id === 'string' ? parseInt(trade.id, 10) : Number(trade.id)
+        ));
+        setPausedMaxTradeId(highestId);
+      } else if (prev) {
+        // If we're unpausing, reset the saved ID
+        setPausedMaxTradeId(null);
+      }
+      return !prev;
+    });
   };
   
   // Toggle showing only pending reviews
@@ -503,7 +533,14 @@ const Home: React.FC = () => {
           {/* Transactions Table */}
           <section className="transactions_table_section">
             <div className="panel_header">
-              <h3>Recent Transactions</h3>
+              <h3>
+                Recent Transactions
+                {isLiveUpdatePaused ? (
+                  <span className="status_badge paused">Paused</span>
+                ) : (
+                  <span className="status_badge live">Live</span>
+                )}
+              </h3>
               <div className="table_actions">
                 {/* <div className="filter_container">
                   <Icons.Filter size={16} />
@@ -550,7 +587,7 @@ const Home: React.FC = () => {
               </div>
             </div>
             
-            <div className="table_container">
+            <div className={`table_container ${isLiveUpdatePaused ? 'paused' : ''}`}>
               {tradesError ? (
                 <div className="empty-state">
                   <div className="empty-state-icon">
@@ -656,7 +693,7 @@ const Home: React.FC = () => {
                         <td>
                           <div className="action-buttons">
                             {/* Review button - only show for unvalidated trades */}
-                            {!trade.is_validated ? (
+                            {trade.is_anomaly && !trade.is_validated ? (
                               <button 
                                 className="review-button" 
                                 onClick={() => handleOpenReviewModal(trade)}
@@ -664,12 +701,19 @@ const Home: React.FC = () => {
                               >
                                 Review Trade
                               </button>
-                            ) : (
+                            ) : trade.is_validated ? (
                               <span 
                                 className="reviewed-label"
                                 title="This trade has already been reviewed by compliance"
                               >
                                 Reviewed
+                              </span>
+                            ) : (
+                              <span 
+                                className="no-action-label"
+                                title="This trade appears normal and requires no action"
+                              >
+                                No action necessary
                               </span>
                             )}
                           </div>

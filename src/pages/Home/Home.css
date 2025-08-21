@@ -94,6 +94,13 @@
   font-style: italic;
 }
 
+.no-action-label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  font-style: italic;
+  opacity: 0.85;
+}
+
 @keyframes pulse {
   0%, 100% {
     opacity: 0.6;
@@ -2982,6 +2989,27 @@ transition: all 0.2s ease;
   align-items: center;
   gap: var(--space-3);
 }
+.filter_button {
+  font-size: var(--font-size-sm);
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: all var(--transition-normal) var(--transition-timing-smooth);
+}
+
+.filter_button.paused {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--color-danger-600);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  font-weight: 600;
+}
+
 .filter_select {
   padding: var(--space-2) var(--space-4);
   background: var(--color-surface-primary);
@@ -3019,6 +3047,61 @@ transition: all 0.2s ease;
   overflow-x: auto; 
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+/* Status badges for live updates */
+.status_badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.status_badge.live {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--color-success-700);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status_badge.live::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-success-500);
+  border-radius: 50%;
+  margin-right: 6px;
+  animation: pulse 2s infinite;
+}
+
+.status_badge.paused {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--color-danger-700);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* Subtle styling for paused table */
+.table_container.paused .transactions_table {
+  opacity: 0.9;
 }
 .transactions_table { 
   width: 100%; 

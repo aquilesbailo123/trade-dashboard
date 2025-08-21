@@ -110,7 +110,13 @@ const Home: React.FC = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
-  const [riskFilter, setRiskFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
+  const [riskFilter, _] = useState<'all' | 'high' | 'medium' | 'low'>('all');
+  
+  // State for showing only pending reviews
+  const [showPendingOnly, setShowPendingOnly] = useState(false);
+  
+  // State for pausing live updates
+  const [isLiveUpdatePaused, setIsLiveUpdatePaused] = useState(false);
 
   // Process trades data for display
   const processedTrades = useMemo(() => {
@@ -134,11 +140,22 @@ const Home: React.FC = () => {
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // Sort by most recent first
   }, [tradesData]);
 
-  // Filter trades based on risk level
+  // Filter trades based on risk level and pending review status
   const filteredTrades = useMemo(() => {
-    if (riskFilter === 'all') return processedTrades;
-    return processedTrades.filter(trade => trade.risk === riskFilter);
-  }, [processedTrades, riskFilter]);
+    // Start with risk filter
+    let filtered = riskFilter === 'all' 
+      ? processedTrades 
+      : processedTrades.filter(trade => trade.risk === riskFilter);
+    
+    // Apply pending review filter if enabled
+    if (showPendingOnly) {
+      filtered = filtered.filter(trade => 
+        trade.is_anomaly && !trade.is_validated
+      );
+    }
+    
+    return filtered;
+  }, [processedTrades, riskFilter, showPendingOnly]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredTrades.length / pageSize);
@@ -282,12 +299,24 @@ const Home: React.FC = () => {
     setCurrentPage(prev => Math.min(totalPages, prev + 1));
   };
 
-  const handleRiskFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setRiskFilter(event.target.value as 'all' | 'high' | 'medium' | 'low');
-  };
+  // const handleRiskFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setRiskFilter(event.target.value as 'all' | 'high' | 'medium' | 'low');
+  // };
 
   const handleRefresh = () => {
-    refetch();
+    if (!isLiveUpdatePaused) {
+      refetch();
+    }
+  };
+  
+  // Toggle pause/resume of live updates
+  const handleToggleLiveUpdates = () => {
+    setIsLiveUpdatePaused(prev => !prev);
+  };
+  
+  // Toggle showing only pending reviews
+  const handleTogglePendingOnly = () => {
+    setShowPendingOnly(prev => !prev);
   };
 
   return (
@@ -476,18 +505,48 @@ const Home: React.FC = () => {
             <div className="panel_header">
               <h3>Recent Transactions</h3>
               <div className="table_actions">
-                <div className="filter_container">
+                {/* <div className="filter_container">
                   <Icons.Filter size={16} />
-                  <select className="filter_select" value={riskFilter} onChange={handleRiskFilterChange}>
+                  <select 
+                    className="filter_select" 
+                    value={riskFilter} 
+                    onChange={handleRiskFilterChange}
+                    title="Filter trades by risk level"
+                  >
                     <option value="all">All Transactions</option>
                     <option value="high">High Risk Only</option>
                     <option value="medium">Medium Risk Only</option>
                     <option value="low">Low Risk Only</option>
                   </select>
-                </div>
-                <button className="refresh_button" onClick={handleRefresh} disabled={tradesLoading}>
-                  <Icons.RefreshCw size={16} /> {tradesLoading ? 'Loading...' : 'Refresh'}
+                </div> */}
+                
+                {/* Pending reviews filter */}
+                <button 
+                  className={`filter_button ${showPendingOnly ? 'active' : ''}`} 
+                  onClick={handleTogglePendingOnly}
+                  title="Show only trades that need review"
+                >
+                  <Icons.Flag size={16} /> 
+                  {showPendingOnly ? 'Showing Pending Only' : 'Show Pending Reviews'}
                 </button>
+                
+                {/* Pause/Resume live updates button */}
+                <button 
+                  className={`filter_button ${isLiveUpdatePaused ? 'paused' : ''}`} 
+                  onClick={handleToggleLiveUpdates}
+                  title={isLiveUpdatePaused ? "Resume live updates" : "Pause live updates"}
+                >
+                  {isLiveUpdatePaused ? '▶ Resume' : '⏸ Pause'}
+                </button>
+                
+                {/* <button 
+                  className="filter_button" 
+                  onClick={handleRefresh} 
+                  disabled={tradesLoading || isLiveUpdatePaused}
+                  title="Manually refresh trade data"
+                >
+                  <Icons.RefreshCw size={16} /> {tradesLoading ? 'Loading...' : 'Refresh'}
+                </button> */}
               </div>
             </div>
             
@@ -557,15 +616,22 @@ const Home: React.FC = () => {
                           <div className="status-container-row">
                             {/* Show model prediction for non-validated trades */}
                             {!trade.is_validated && (
-                              <span className={`status-badge ${trade.is_anomaly ? 'flagged' : 'approved'}`} title="ML model prediction">
+                              <span 
+                                className={`status-badge ${trade.is_anomaly ? 'flagged' : 'approved'}`} 
+                                title={trade.is_anomaly ? "Flagged by ML model - needs review" : "Validated by ML model"}
+                                data-tooltip={trade.is_anomaly ? "This trade was flagged as potentially fraudulent by the ML model" : "This trade appears to be normal according to the ML model"}
+                              >
                                 {trade.is_anomaly ? 'Flagged' : 'Validated'}
                               </span>
                             )}
                             
                             {/* Show manual validation status with special color */}
                             {trade.is_validated && (
-                              <span className={`status-badge manual-${trade.validated_classification ? 'flagged' : 'approved'}`} 
-                                title="Manually validated by compliance officer">
+                              <span 
+                                className={`status-badge manual-${trade.validated_classification ? 'flagged' : 'approved'}`} 
+                                title={`Manually ${trade.validated_classification ? 'flagged' : 'approved'} by compliance officer`}
+                                data-tooltip="This trade has been manually reviewed by a compliance officer"
+                              >
                                 {trade.validated_classification ? 'Flagged' : 'Approved'}
                               </span>
                             )}
@@ -573,7 +639,10 @@ const Home: React.FC = () => {
                         </td>
                         <td>
                           <div className="risk-container">
-                            <span className={`risk-badge ${trade.isOutlier ? 'high' : trade.risk || 'low'}`}>
+                            <span 
+                              className={`risk-badge ${trade.isOutlier ? 'high' : trade.risk || 'low'}`}
+                              title={`${trade.isOutlier ? 'High' : trade.risk ? trade.risk.charAt(0).toUpperCase() + trade.risk.slice(1) : 'Low'} risk trade - ${trade.anomaly_score ? `anomaly score: ${trade.anomaly_score.toFixed(3)}` : 'no anomaly score available'}`}
+                            >
                               {trade.isOutlier ? 'High' : trade.risk ? trade.risk.charAt(0).toUpperCase() + trade.risk.slice(1) : 'Low'}
                             </span>
                             {trade.anomaly_score && (
@@ -591,11 +660,15 @@ const Home: React.FC = () => {
                               <button 
                                 className="review-button" 
                                 onClick={() => handleOpenReviewModal(trade)}
+                                title="Open the compliance review modal for this trade"
                               >
                                 Review Trade
                               </button>
                             ) : (
-                              <span className="reviewed-label">
+                              <span 
+                                className="reviewed-label"
+                                title="This trade has already been reviewed by compliance"
+                              >
                                 Reviewed
                               </span>
                             )}

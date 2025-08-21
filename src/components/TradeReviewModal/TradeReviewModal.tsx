@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './TradeReviewModal.css';
 
 // List of possible client types
@@ -52,11 +52,15 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
     }
   }, [reviewComments]);
   
+  // Generate a random client type only once when trade changes
+  // Must be defined before any conditional returns to maintain React hooks rules
+  const clientType = useMemo(() => {
+    if (!trade) return '';
+    return trade.client_type || CLIENT_TYPES[Math.floor(Math.random() * CLIENT_TYPES.length)];
+  }, [trade?.id, trade?.client_type]);
+  
   // Early return if modal is not open or trade is not available
   if (!isOpen || !trade) return null;
-  
-  // Generate a random client type if not available
-  const clientType = trade.client_type || CLIENT_TYPES[Math.floor(Math.random() * CLIENT_TYPES.length)];
   
   // Function to initiate approval process
   const initiateApprove = () => {
@@ -129,7 +133,10 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
             <div className="compliance-id">ID: {trade.id}</div>
           </div>
           <div className="compliance-review-status">
-            <div className={`status-badge ${trade.is_validated ? 'status-reviewed' : 'status-pending'}`}>
+            <div 
+              className={`status-badge ${trade.is_validated ? 'status-reviewed' : 'status-pending'}`}
+              title={trade.is_validated ? 'This trade has been reviewed by compliance' : 'This trade is awaiting compliance review'}
+            >
               {trade.is_validated ? 'Reviewed' : 'Pending Review'}
             </div>
             <button className="close-button" onClick={onClose}>×</button>
@@ -140,18 +147,21 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
           <button 
             className={`tab-button ${selectedTab === 'details' ? 'active' : ''}`}
             onClick={() => setSelectedTab('details')}
+            title="View basic trade information and counterparty details"
           >
             Trade Details
           </button>
           <button 
             className={`tab-button ${selectedTab === 'risk' ? 'active' : ''}`}
             onClick={() => setSelectedTab('risk')}
+            title="View anomaly scores, risk level, and price deviation analysis"
           >
             Risk Assessment
           </button>
           <button 
             className={`tab-button ${selectedTab === 'compliance' ? 'active' : ''}`}
             onClick={() => setSelectedTab('compliance')}
+            title="Complete compliance checklist and add review comments"
           >
             Compliance Review
           </button>
@@ -349,6 +359,7 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
                     className="compliance-checkbox"
                     checked={kycChecked}
                     onChange={(e) => setKycChecked(e.target.checked)}
+                    title="Verify Know Your Customer requirements have been met"
                   />
                   <label htmlFor="check-kyc">KYC Requirements Satisfied</label>
                 </div>
@@ -359,6 +370,7 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
                     className="compliance-checkbox"
                     checked={amlChecked}
                     onChange={(e) => setAmlChecked(e.target.checked)}
+                    title="Confirm Anti-Money Laundering screening has been completed"
                   />
                   <label htmlFor="check-aml">AML Screening Complete</label>
                 </div>
@@ -369,6 +381,7 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
                     className="compliance-checkbox"
                     checked={limitsChecked}
                     onChange={(e) => setLimitsChecked(e.target.checked)}
+                    title="Confirm trade is within approved client trading limits"
                   />
                   <label htmlFor="check-limits">Within Trading Limits</label>
                 </div>
@@ -379,6 +392,7 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
                     className="compliance-checkbox"
                     checked={sanctionsChecked}
                     onChange={(e) => setSanctionsChecked(e.target.checked)}
+                    title="Verify parties involved are not on sanctions lists"
                   />
                   <label htmlFor="check-sanctions">Sanctions Check Complete</label>
                 </div>
@@ -415,15 +429,27 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
           <div className="compliance-footer-actions">
             {!trade.is_validated && (
               <>
-                <button className="compliance-button-primary" onClick={initiateApprove}>
+                <button 
+                  className="compliance-button-primary" 
+                  onClick={initiateApprove}
+                  title="Approve this trade as compliant with all regulations"
+                >
                   Approve Trade
                 </button>
-                <button className="compliance-button-danger" onClick={initiateFlag}>
+                <button 
+                  className="compliance-button-danger" 
+                  onClick={initiateFlag}
+                  title="Flag this trade for further investigation due to compliance concerns"
+                >
                   Flag for Investigation
                 </button>
               </>
             )}
-            <button className="compliance-button-secondary" onClick={onClose}>
+            <button 
+              className="compliance-button-secondary" 
+              onClick={onClose}
+              title={trade.is_validated ? 'Close this review modal' : 'Save progress and review this trade later'}
+            >
               {trade.is_validated ? 'Close' : 'Review Later'}
             </button>
           </div>

@@ -95,6 +95,7 @@
 
 .compliance-modal-body {
   padding: var(--space-5);
+  max-height: 500px;
   flex: 1;
   overflow-y: auto;
 }

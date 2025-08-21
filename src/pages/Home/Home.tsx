@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
   useTrades, 
-  // useTradeValidation, 
+  useTradeValidation, 
   useStats 
 } from '../../hooks/useTrades';
 import { useProfitLossData, type ProfitLossDataPoint } from '../../hooks/useProfitLossData';
@@ -104,7 +104,7 @@ interface TradeData {
 const Home: React.FC = () => {
   // Data fetching from backend
   const { data: tradesData, isLoading: tradesLoading, error: tradesError, refetch } = useTrades(1000000); // Last 5 minutes
-  // const validation = useTradeValidation();
+  const validation = useTradeValidation();
   const { data: statsData } = useStats();
   
   // Pagination state
@@ -124,7 +124,10 @@ const Home: React.FC = () => {
         amount: trade.price,
         currency: trade.contract_type,
         createdAt: trade.date_of_execution,
-        status: trade.is_validated ? 'approved' : (trade.is_anomaly ? 'flagged' : 'pending'),
+        // Status logic accounts for both ML prediction and manual validation
+        status: trade.is_validated ? 
+          (trade.validated_classification ? 'approved' : 'flagged') : 
+          (trade.is_anomaly ? 'flagged' : 'pending'),
         risk: trade.is_anomaly ? 'high' : (trade.anomaly_score && trade.anomaly_score < -0.1 ? 'low' : 'medium'),
         isOutlier: trade.is_anomaly || false
       }))
@@ -163,19 +166,53 @@ const Home: React.FC = () => {
     setIsReviewModalOpen(true);
   };
   
-  // Placeholder handlers for marking trades
+  // Handlers for marking trades
   const handleMarkTradeGood = () => {
     console.log('Trade marked as good:', tradeToReview?.id);
-    // Here you would implement the actual API call to mark the trade
-    // For now we just close the modal
-    setIsReviewModalOpen(false);
+    
+    if (tradeToReview) {
+      // Use id + 1 as the record index
+      const recordIndex = Number(tradeToReview.id) - 1;
+      
+      validation.mutate({
+        record_index: recordIndex,
+        is_anomaly: false // Mark as not anomalous (good trade)
+      }, {
+        onSuccess: () => {
+          setIsReviewModalOpen(false);
+        },
+        onError: (error) => {
+          console.error('Error validating trade:', error);
+          // Keep modal open on error so user can try again
+        }
+      });
+    } else {
+      setIsReviewModalOpen(false);
+    }
   };
   
   const handleMarkTradeBad = () => {
     console.log('Trade marked as bad:', tradeToReview?.id);
-    // Here you would implement the actual API call to mark the trade
-    // For now we just close the modal
-    setIsReviewModalOpen(false);
+    
+    if (tradeToReview) {
+      // Use id + 1 as the record index
+      const recordIndex = Number(tradeToReview.id) - 1;
+      
+      validation.mutate({
+        record_index: recordIndex,
+        is_anomaly: true // Mark as anomalous (bad trade)
+      }, {
+        onSuccess: () => {
+          setIsReviewModalOpen(false);
+        },
+        onError: (error) => {
+          console.error('Error validating trade:', error);
+          // Keep modal open on error so user can try again
+        }
+      });
+    } else {
+      setIsReviewModalOpen(false);
+    }
   };
 
   // Handler for clicking on an outlier point
@@ -194,7 +231,11 @@ const Home: React.FC = () => {
       sales_person: `SP-${Math.floor(Math.random() * 1000)}`,
       contract_type: outlier.contractType || 'WTI',
       contract_month: new Date(outlier.date).toLocaleDateString('en-US', { month: 'long' }) + '/' + new Date(outlier.date).getFullYear().toString().substr(-2),
-      anomaly_score: outlier.value < 0 ? 0.8 : 0.3
+      anomaly_score: outlier.value < 0 ? 0.8 : 0.3,
+      // Add validation properties
+      is_validated: false,
+      validated_classification: null,
+      status: 'pending'
     };
     
     // Set the trade details to show in the trade details section
@@ -513,9 +554,22 @@ const Home: React.FC = () => {
                           ${trade.pnl?.toFixed(2)}
                         </td>
                         <td>
-                          <span className={`status-badge ${trade.status || 'pending'}`}>
-                            {trade.status === 'approved' ? 'Validated' : trade.status === 'flagged' ? 'Flagged' : 'Pending'}
-                          </span>
+                          <div className="status-container-row">
+                            {/* Show model prediction for non-validated trades */}
+                            {!trade.is_validated && (
+                              <span className={`status-badge ${trade.is_anomaly ? 'flagged' : 'approved'}`} title="ML model prediction">
+                                {trade.is_anomaly ? 'Flagged' : 'Validated'}
+                              </span>
+                            )}
+                            
+                            {/* Show manual validation status with special color */}
+                            {trade.is_validated && (
+                              <span className={`status-badge manual-${trade.validated_classification ? 'flagged' : 'approved'}`} 
+                                title="Manually validated by compliance officer">
+                                {trade.validated_classification ? 'Flagged' : 'Approved'}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td>
                           <div className="risk-container">
@@ -532,8 +586,8 @@ const Home: React.FC = () => {
                         </td>
                         <td>
                           <div className="action-buttons">
-                            {/* Review button */}
-                            {trade.status == 'pending' || true ? (
+                            {/* Review button - only show for unvalidated trades */}
+                            {!trade.is_validated ? (
                               <button 
                                 className="review-button" 
                                 onClick={() => handleOpenReviewModal(trade)}
@@ -541,7 +595,9 @@ const Home: React.FC = () => {
                                 Review Trade
                               </button>
                             ) : (
-                              null
+                              <span className="reviewed-label">
+                                Reviewed
+                              </span>
                             )}
                           </div>
                         </td>

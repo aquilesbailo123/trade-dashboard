@@ -90,20 +90,34 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
   
   // Function to handle final approval with comments
   const handleApprove = () => {
+    // Call the onMarkGood handler to send validation to backend
     onMarkGood();
-    // In a real app, you'd also save the comments and checkbox states
-    console.log('Approved with comments:', reviewComments);
+    
+    // Log details of the approval
+    console.log('Approved trade:', trade.id);
+    console.log('Review comments:', reviewComments);
     console.log('Compliance checks:', { kycChecked, amlChecked, limitsChecked, sanctionsChecked });
+    
+    // Close the confirmation dialog
     setShowConfirmation(false);
+    
+    // Note: The parent component will handle the API call and closing the modal
   };
 
   // Function to handle final flagging with comments
   const handleFlag = () => {
+    // Call the onMarkBad handler to send validation to backend
     onMarkBad();
-    // In a real app, you'd also save the comments and checkbox states
-    console.log('Flagged with comments:', reviewComments);
+    
+    // Log details of the flagging
+    console.log('Flagged trade:', trade.id);
+    console.log('Review comments:', reviewComments);
     console.log('Compliance checks:', { kycChecked, amlChecked, limitsChecked, sanctionsChecked });
+    
+    // Close the confirmation dialog
     setShowConfirmation(false);
+    
+    // Note: The parent component will handle the API call and closing the modal
   };
 
   return (

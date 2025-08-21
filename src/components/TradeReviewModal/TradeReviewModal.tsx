@@ -121,7 +121,7 @@ const TradeReviewModal: React.FC<TradeReviewModalProps> = ({
   };
 
   return (
-    <div className="compliance-modal-overlay" onClick={onClose}>
+    <div className="compliance-modal-overlay" >
       <div className="compliance-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="compliance-modal-header">
           <div className="compliance-header-left">

@@ -52,7 +52,7 @@ const Home: React.FC = () => {
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(15);
-    const [metalFilter, setMetalFilter] = useState<'all' | 'palladium' | 'copper' | 'gold' | 'silver' | 'iron'>('all');
+    const [metalFilter, setMetalFilter] = useState<'all' | 'alloy' | 'copper' | 'cobalt' | 'aluminium' | 'nickel' | 'zinc'>('all');
     const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'pending' | 'cancelled'>('all');
     
     // State for selected trade details
@@ -126,11 +126,12 @@ const Home: React.FC = () => {
 
     const getMetalColor = (metal: string) => {
         const colors = {
-            palladium: 'var(--color-primary-500)',
+            alloy: 'var(--color-primary-500)',
             copper: 'var(--color-warning-500)',
-            gold: 'var(--color-accent-500)',
-            silver: 'var(--color-text-secondary)',
-            iron: 'var(--color-danger-500)'
+            cobalt: 'var(--color-accent-500)',
+            aluminium: 'var(--color-text-secondary)',
+            nickel: 'var(--color-danger-500)',
+            zinc: 'var(--color-primary-400)',
         };
         return colors[metal as keyof typeof colors] || 'var(--color-text-secondary)';
     };
@@ -342,11 +343,12 @@ const Home: React.FC = () => {
                                         title="Filter trades by metal type"
                                     >
                                         <option value="all">All Metals</option>
-                                        <option value="palladium">Palladium</option>
+                                        <option value="alloy">Alloy</option>
                                         <option value="copper">Copper</option>
-                                        <option value="gold">Gold</option>
-                                        <option value="silver">Silver</option>
-                                        <option value="iron">Iron</option>
+                                        <option value="cobalt">Cobalt</option>
+                                        <option value="aluminium">Aluminium</option>
+                                        <option value="nickel">Nickel</option>
+                                        <option value="zinc">Zinc</option>
                                     </select>
                                 </div>
                                 

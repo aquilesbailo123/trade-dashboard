@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useCallback } from "react";
 
-export type ContractType = "WTI" | "BRENT" | "NATURAL_GAS" | "GOLD" | "SILVER";
+export type ContractType = "WTI" | "BRENT" | "NATURAL_GAS" | "COBALT" | "ALUMINIUM";
 
 export type Trade = {
   id: number;
@@ -35,7 +35,7 @@ export type StatsResponse = {
   anomaly_rate: number;
 };
 
-// Get API base URL from environment variable, fallback to localhost for development
+// Get API base URL from envnickelment variable, fallback to localhost for development
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 /**

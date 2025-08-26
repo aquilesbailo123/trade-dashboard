@@ -35,11 +35,12 @@ const MetalPerformanceChart: React.FC<MetalPerformanceChartProps> = ({
 
     const maxPL = Math.max(...chartData.map(d => Math.abs(d.avgPL)));
     const metalColors = {
-        palladium: 'var(--color-primary-500)',
+        alloy: 'var(--color-primary-500)',
         copper: 'var(--color-warning-500)',
-        gold: 'var(--color-accent-500)',
-        silver: 'var(--color-text-secondary)',
-        iron: 'var(--color-danger-500)'
+        cobalt: 'var(--color-accent-500)',
+        aluminium: 'var(--color-text-secondary)',
+        nickel: 'var(--color-danger-500)',
+        zinc: 'var(--color-primary-400)',
     };
 
     return (

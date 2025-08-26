@@ -112,7 +112,7 @@ type ExtendedUser = {
 // Generate a random company name for metal trading clients
 const generateCompanyName = () => {
     const prefixes = ['Global', 'Alpha', 'Premier', 'Strategic', 'Summit', 'Vanguard', 'Pinnacle', 'Apex', 'Meridian', 'Sterling'];
-    const mids = ['Metal', 'Precious', 'Commodity', 'Mining', 'Refining', 'Bullion', 'Industrial', 'Copper', 'Gold', 'Silver'];
+    const mids = ['Metal', 'Precious', 'Commodity', 'Mining', 'Refining', 'Bullion', 'Industrial', 'Copper', 'Cobalt', 'Aluminium'];
     const suffixes = ['Trading', 'Group', 'Holdings', 'International', 'Corporation', 'Industries', 'Resources', 'Metals', 'Partners', 'Exchange'];
     
     return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${mids[Math.floor(Math.random() * mids.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
@@ -191,7 +191,7 @@ export default function Users() {
                 tradingVolume / userTransactions.length : 
                 Math.floor(Math.random() * 5000000) + 100000; // $100K - $5M
             
-            const desks = ['Precious Metals', 'Base Metals', 'Industrial Metals', 'Copper Trading', 'Gold & Silver'];
+            const desks = ['Precious Metals', 'Base Metals', 'Industrial Metals', 'Copper Trading', 'Cobalt Trading'];
             const salesPersons = ['John Smith', 'Sarah Johnson', 'Mike Chen', 'Lisa Rodriguez', 'David Kim'];
             
             return {

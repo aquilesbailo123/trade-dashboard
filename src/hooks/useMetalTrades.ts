@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 export interface MetalTrade {
     id: string;
-    metal: 'palladium' | 'copper' | 'gold' | 'silver' | 'iron';
+    metal: 'alloy' | 'copper' | 'cobalt' | 'aluminium' | 'nickel' | 'zinc';
     quantity: number; // in ounces/tons
     estimatedPrice: number; // trading team's estimated price
     riskPrice: number; // risk-adjusted price set by trading team
@@ -27,7 +27,7 @@ export interface MetalStats {
 
 // Generate dummy metal trading data
 const generateMetalTrades = (count: number): MetalTrade[] => {
-    const metals: MetalTrade['metal'][] = ['palladium', 'copper', 'gold', 'silver', 'iron'];
+    const metals: MetalTrade['metal'][] = ['alloy', 'copper', 'cobalt', 'aluminium', 'nickel', 'zinc'];
     const traders = ['John Smith', 'Sarah Johnson', 'Mike Chen', 'Lisa Rodriguez', 'David Kim'];
     const clients = ['Mining Corp A', 'Industrial Ltd', 'Jewelry Inc', 'Tech Solutions', 'Manufacturing Co'];
     
@@ -71,11 +71,12 @@ const generateMetalTrades = (count: number): MetalTrade[] => {
 
 const getBasePrice = (metal: MetalTrade['metal']): number => {
     const basePrices = {
-        palladium: 2000,
+        alloy: 2000,
         copper: 8,
-        gold: 1950,
-        silver: 24,
-        iron: 120
+        cobalt: 1950,
+        aluminium: 24,
+        nickel: 120,
+        zinc: 120,
     };
     return basePrices[metal];
 };

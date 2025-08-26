@@ -1,0 +1,94 @@
+.accuracy_trend_chart_container {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+}
+
+.accuracy_trend_chart_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.accuracy_trend_chart_title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.accuracy_trend_chart_legend {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.accuracy_trend_legend_item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}
+
+.accuracy_trend_legend_dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-primary-500);
+}
+
+.accuracy_trend_chart_content {
+    flex: 1;
+    display: flex;
+    gap: var(--space-2);
+}
+
+.accuracy_trend_y_axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-right: var(--space-2);
+    min-width: 40px;
+}
+
+.accuracy_trend_y_label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+}
+
+.accuracy_trend_chart_area {
+    flex: 1;
+    position: relative;
+}
+
+.accuracy_trend_svg {
+    width: 100%;
+    height: 200px;
+}
+
+.accuracy_trend_point {
+    transition: r var(--transition-fast) var(--transition-timing-smooth);
+    cursor: pointer;
+}
+
+.accuracy_trend_point:hover {
+    r: 6;
+}
+
+.accuracy_trend_x_axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--space-2);
+    padding-left: 42px;
+}
+
+.accuracy_trend_x_label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+    text-align: center;
+}

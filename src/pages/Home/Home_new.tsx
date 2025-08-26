@@ -320,12 +320,11 @@ const Home: React.FC = () => {
                             </div>
                         </div>
                     ) : (
-                      null
-                        // <div className="home_metal_trade_details_container home_metal_empty_trade_row">
-                        //     <div className="home_metal_empty_message">
-                        //         <span>Click on any trade in the table below to view detailed information</span>
-                        //     </div>
-                        // </div>
+                        <div className="home_metal_trade_details_container home_metal_empty_trade_row">
+                            <div className="home_metal_empty_message">
+                                <span>Click on any trade in the table below to view detailed information</span>
+                            </div>
+                        </div>
                     )}
 
                     {/* Metal Trades Table */}

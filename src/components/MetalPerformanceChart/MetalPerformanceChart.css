@@ -1,0 +1,95 @@
+.metal_performance_chart_container {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+}
+
+.metal_performance_chart_header {
+    margin-bottom: var(--space-4);
+}
+
+.metal_performance_chart_title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.metal_performance_chart_content {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.metal_performance_bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    gap: var(--space-4);
+}
+
+.metal_performance_bar_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+}
+
+.metal_performance_bar_container {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+}
+
+.metal_performance_bar {
+    width: 60%;
+    min-height: 20px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    position: relative;
+    transition: all var(--transition-normal) var(--transition-timing-smooth);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: var(--space-1);
+}
+
+.metal_performance_bar:hover {
+    opacity: 0.8;
+    transform: scaleX(1.1);
+}
+
+.metal_performance_value {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.metal_performance_label {
+    margin-top: var(--space-2);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.metal_performance_metal_name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+}
+
+.metal_performance_accuracy {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}

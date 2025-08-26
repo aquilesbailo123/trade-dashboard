@@ -1,0 +1,145 @@
+.profit_loss_chart_container {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+}
+
+.profit_loss_chart_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.profit_loss_chart_title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.profit_loss_chart_legend {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.profit_loss_legend_item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}
+
+.profit_loss_legend_bar {
+    width: 12px;
+    height: 8px;
+    border-radius: var(--radius-sm);
+}
+
+.profit_loss_legend_bar.profit {
+    background: var(--color-success-500);
+}
+
+.profit_loss_legend_bar.loss {
+    background: var(--color-danger-500);
+}
+
+.profit_loss_chart_content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.profit_loss_bars {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    gap: var(--space-2);
+}
+
+.profit_loss_bar_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+}
+
+.profit_loss_bar_container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+}
+
+.profit_loss_bar {
+    width: 70%;
+    min-height: 20px;
+    border-radius: var(--radius-sm);
+    position: relative;
+    transition: all var(--transition-normal) var(--transition-timing-smooth);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: var(--space-1);
+}
+
+.profit_loss_bar.profit {
+    background: var(--color-success-500);
+}
+
+.profit_loss_bar.loss {
+    background: var(--color-danger-500);
+}
+
+.profit_loss_bar:hover {
+    opacity: 0.8;
+    transform: scaleX(1.1);
+}
+
+.profit_loss_value {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.profit_loss_zero_line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--color-border-primary);
+    opacity: 0.5;
+    z-index: 1;
+}
+
+.profit_loss_label {
+    margin-top: var(--space-2);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.profit_loss_week {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+}
+
+.profit_loss_count {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}

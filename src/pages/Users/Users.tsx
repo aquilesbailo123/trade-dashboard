@@ -72,21 +72,21 @@ const Icons = {
     )
 };
 
-// Trading client types for natural gas/oil trading
+// Metal trading client types
 const CLIENT_TYPES = [
-    'Hedge Fund',
-    'RIA',
-    'Broker',
-    'Oil Company',
-    'Mining Firm',
-    'Refinery',
-    'Pipeline Company',
-    'Energy Trader',
+    'Mining Company',
+    'Metal Refinery',
     'Commodity Fund',
-    'Utility Company',
-    'Trading Company',
-    'Investment Firm',
-    'Financial Institution'
+    'Precious Metals Dealer',
+    'Industrial Manufacturer',
+    'Jewelry Manufacturer',
+    'Electronics Company',
+    'Automotive Manufacturer',
+    'Construction Company',
+    'Investment Bank',
+    'Hedge Fund',
+    'Metal Trading House',
+    'Bullion Dealer'
 ];
 
 // Extended User type with trading-specific data
@@ -109,18 +109,18 @@ type ExtendedUser = {
     companyType?: string;
 };
 
-// Generate a random company name for trading clients
+// Generate a random company name for metal trading clients
 const generateCompanyName = () => {
-    const prefixes = ['Global', 'Alpha', 'Blue', 'Premier', 'Strategic', 'Summit', 'Vanguard', 'Pinnacle', 'Apex', 'Meridian'];
-    const mids = ['Energy', 'Resource', 'Commodity', 'Asset', 'Capital', 'Trade', 'Market', 'Petroleum', 'Gas', 'Natural'];
-    const suffixes = ['Partners', 'Trading', 'Group', 'Holdings', 'International', 'Investments', 'Corporation', 'Ventures', 'Industries', 'Resources'];
+    const prefixes = ['Global', 'Alpha', 'Premier', 'Strategic', 'Summit', 'Vanguard', 'Pinnacle', 'Apex', 'Meridian', 'Sterling'];
+    const mids = ['Metal', 'Precious', 'Commodity', 'Mining', 'Refining', 'Bullion', 'Industrial', 'Copper', 'Gold', 'Silver'];
+    const suffixes = ['Trading', 'Group', 'Holdings', 'International', 'Corporation', 'Industries', 'Resources', 'Metals', 'Partners', 'Exchange'];
     
     return `${prefixes[Math.floor(Math.random() * prefixes.length)]} ${mids[Math.floor(Math.random() * mids.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`;
 };
 
 // Generate a random email based on name or company
 const generateEmail = (name: string) => {
-    const domains = ['energytrade.com', 'commoditypartners.com', 'tradingfirm.com', 'resources.com', 'energytraders.net', 'gasgroup.com', 'oiltrading.net'];
+    const domains = ['metaltrading.com', 'preciousmetals.com', 'commodityexchange.com', 'bulliontraders.com', 'metalresources.net', 'mininggroup.com', 'refinerypartners.com'];
     const nameParts = name.toLowerCase().split(' ');
     let email = '';
     
@@ -191,7 +191,7 @@ export default function Users() {
                 tradingVolume / userTransactions.length : 
                 Math.floor(Math.random() * 5000000) + 100000; // $100K - $5M
             
-            const desks = ['Commodities', 'Energy Trading', 'Natural Gas', 'Crude Oil', 'Refined Products'];
+            const desks = ['Precious Metals', 'Base Metals', 'Industrial Metals', 'Copper Trading', 'Gold & Silver'];
             const salesPersons = ['John Smith', 'Sarah Johnson', 'Mike Chen', 'Lisa Rodriguez', 'David Kim'];
             
             return {
@@ -209,8 +209,8 @@ export default function Users() {
                 salesPerson: salesPersons[Math.floor(Math.random() * salesPersons.length)],
                 kycStatus: user.riskScore > 80 ? 'expired' : user.riskScore > 60 ? 'pending' : 'complete',
                 amlStatus: user.riskScore > 75 ? 'flagged' : user.riskScore > 50 ? 'pending' : 'cleared',
-                companyName: 'ABC Trading Company',
-                companyType: 'Energy Trader'
+                companyName: user.companyName || generateCompanyName(),
+                companyType: clientType
             } as ExtendedUser;
         });
     }, [usersData, transactionsData]);
@@ -253,10 +253,10 @@ export default function Users() {
         const kycExpiredCount = enhancedUsers.filter(user => user.kycStatus === 'expired').length;
         const amlFlaggedCount = enhancedUsers.filter(user => user.amlStatus === 'flagged').length;
         
-        // Calculate total trading volume
+        // Calculate total metal trading volume
         const totalTradingVolume = enhancedUsers.reduce((sum, user) => sum + (user.tradingVolume || 0), 0);
         
-        // Trading risk distribution by client type
+        // Metal trading risk distribution by client type
         const clientTypeRisk = {} as Record<string, { count: number, avgRisk: number }>;
         enhancedUsers.forEach(user => {
             if (user.clientType) {
@@ -290,13 +290,13 @@ export default function Users() {
         <div className="users_container">
             {/* Dashboard header */}
             <header className="users_header">
-                <h1>Trading Client Risk Analysis</h1>
+                <h1>Metal Trading Counterparties</h1>
                 <div className="users_header_actions">
                     <div className="users_search_bar">
                         <Icons.Search size={16} />
                         <input 
                             type="text" 
-                            placeholder="Search trading counterparties..." 
+                            placeholder="Search metal trading counterparties..." 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -306,16 +306,16 @@ export default function Users() {
 
             <div className="users_dashboard">
                 <div className="users_dashboard_wrapper">
-                    {/* Trading Client Metrics Summary Section */}
+                    {/* Metal Trading Client Metrics Summary Section */}
                     <section className="users_metrics_summary_section">
                         <div className="users_metrics_grid">
                             <div className="users_metric_card high">
                                 <div className="users_metric_header">
-                                    <h3>High Risk Clients</h3>
+                                    <h3>High Risk Counterparties</h3>
                                 </div>
                                 <div className="users_metric_value">
                                     {metrics.highRiskClients}
-                                    <span className="users_metric_unit">clients</span>
+                                    <span className="users_metric_unit">counterparties</span>
                                 </div>
                                 <div className="users_metric_info">Require immediate compliance review</div>
                             </div>
@@ -326,7 +326,7 @@ export default function Users() {
                                 </div>
                                 <div className="users_metric_value">
                                     {metrics.reviewClients}
-                                    <span className="users_metric_unit">clients</span>
+                                    <span className="users_metric_unit">counterparties</span>
                                 </div>
                                 <div className="users_metric_info">Pending compliance officer review</div>
                             </div>
@@ -337,28 +337,28 @@ export default function Users() {
                                 </div>
                                 <div className="users_metric_value">
                                     {metrics.kycExpiredCount + metrics.amlFlaggedCount}
-                                    <span className="users_metric_unit">clients</span>
+                                    <span className="users_metric_unit">counterparties</span>
                                 </div>
                                 <div className="users_metric_info">Documentation or screening issues</div>
                             </div>
 
                             <div className="users_metric_card total">
                                 <div className="users_metric_header">
-                                    <h3>Total Trading Clients</h3>
+                                    <h3>Total Metal Traders</h3>
                                 </div>
                                 <div className="users_metric_value">
                                     {metrics.totalClients}
-                                    <span className="users_metric_unit">clients</span>
+                                    <span className="users_metric_unit">counterparties</span>
                                 </div>
-                                <div className="users_metric_info">Active energy trading counterparties</div>
+                                <div className="users_metric_info">Active metal trading counterparties</div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Trading Clients Table */}
+                    {/* Metal Trading Counterparties Table */}
                     <section className="users_table_section">
                         <div className="users_panel_header">
-                            <h3>Trading Client Risk Profiles</h3>
+                            <h3>Metal Trading Counterparty Risk Profiles</h3>
                             <div className="users_table_actions">
                                 <div className="users_filter_container">
                                     <Icons.Filter size={16} />
@@ -368,13 +368,13 @@ export default function Users() {
                                         onChange={(e) => setRiskFilter(e.target.value)}
                                     >
                                         <option value="all">All Risk Levels</option>
-                                        <option value="high">High Risk Clients</option>
-                                        <option value="medium">Medium Risk Clients</option>
-                                        <option value="low">Low Risk Clients</option>
+                                        <option value="high">High Risk Counterparties</option>
+                                        <option value="medium">Medium Risk Counterparties</option>
+                                        <option value="low">Low Risk Counterparties</option>
                                     </select>
                                 </div>
                                 <button className="users_refresh_button">
-                                    <Icons.RefreshCw size={16} /> Refresh Trading Data
+                                    <Icons.RefreshCw size={16} /> Refresh Metal Trading Data
                                 </button>
                             </div>
                         </div>
@@ -382,19 +382,19 @@ export default function Users() {
                         {usersLoading ? (
                             <div className="users_loading_state">
                                 <div className="users_spinner"></div>
-                                <p>Loading trading clients...</p>
+                                <p>Loading metal trading counterparties...</p>
                             </div>
                         ) : (
                             <div className="users_table_container">
                                 <table className="users_table">
                                     <thead>
                                         <tr>
-                                            <th>Client ID</th>
+                                            <th>Counterparty ID</th>
                                             <th>Email</th>
                                             <th>Client Type</th>
-                                            <th>Trading Desk</th>
+                                            <th>Metal Trading Desk</th>
                                             <th>Sales Person</th>
-                                            <th>Trading Volume</th>
+                                            <th>Metal Trading Volume</th>
                                             <th>Risk Score</th>
                                             <th>KYC Status</th>
                                             <th>AML Status</th>
@@ -408,7 +408,7 @@ export default function Users() {
                                                 <td colSpan={11}>
                                                     <div className="users_empty_state">
                                                         <div className="users_empty_state_icon">🔍</div>
-                                                        <h3>No trading clients found</h3>
+                                                        <h3>No metal trading counterparties found</h3>
                                                         <p>Try adjusting your search or filter criteria</p>
                                                     </div>
                                                 </td>
@@ -478,7 +478,7 @@ export default function Users() {
                                 <Icons.ChevronLeft size={16} />
                             </button>
                             <span className="users_pagination_info">
-                                Trading Clients: {filteredUsers.length} | Page {currentPage} of {totalPages}
+                                Metal Trading Counterparties: {filteredUsers.length} | Page {currentPage} of {totalPages}
                             </span>
                             <button 
                                 className="users_pagination_button"

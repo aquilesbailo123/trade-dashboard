@@ -93,7 +93,7 @@ export default function DashboardLayout() {
         <div className="dashboard_layout_root">
             <aside className={`dashboard_layout_sidebar ${isMobileMenuOpen ? "is_open" : ""} ${isSidebarCollapsed ? "is_collapsed" : ""}`}>
                 <div className="dashboard_layout_brand">
-                    <span className="brand_text">Trade Anomaly Detection</span>
+                    <span className="brand_text">Metal Trades Dashboard</span>
                     <button 
                         className="sidebar_toggle"
                         onClick={toggleSidebar}

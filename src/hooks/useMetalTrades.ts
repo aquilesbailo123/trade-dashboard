@@ -51,7 +51,12 @@ const generateMetalTrades = (count: number): MetalTrade[] => {
             estimatedPrice,
             riskPrice,
             actualSalePrice,
-            timestamp: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+            timestamp: (() => {
+                const now = Date.now();
+                const daysBack = Math.floor(Math.random() * 30);
+                const pastDate = new Date(now - (daysBack * 24 * 60 * 60 * 1000));
+                return pastDate.toISOString();
+            })(),
             trader: traders[Math.floor(Math.random() * traders.length)],
             client: clients[Math.floor(Math.random() * clients.length)],
             status: Math.random() > 0.1 ? 'completed' : Math.random() > 0.5 ? 'pending' : 'cancelled',

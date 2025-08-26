@@ -65,7 +65,6 @@ const ProfitLossChart: React.FC<ProfitLossChartProps> = ({
                                     className={`profit_loss_bar ${data.totalPL >= 0 ? 'profit' : 'loss'}`}
                                     style={{
                                         height: `${(Math.abs(data.totalPL) / maxPL) * 80}%`,
-                                        transform: data.totalPL < 0 ? 'scaleY(-1)' : 'none'
                                     }}
                                     title={`Week of ${data.date.toLocaleDateString()}: $${data.totalPL.toFixed(2)} (${data.count} trades)`}
                                 >

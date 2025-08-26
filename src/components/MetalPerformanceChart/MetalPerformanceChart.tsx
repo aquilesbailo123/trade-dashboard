@@ -57,7 +57,6 @@ const MetalPerformanceChart: React.FC<MetalPerformanceChartProps> = ({
                                     style={{
                                         height: `${(Math.abs(data.avgPL) / maxPL) * 80}%`,
                                         backgroundColor: metalColors[data.metal as keyof typeof metalColors],
-                                        transform: data.avgPL < 0 ? 'scaleY(-1)' : 'none'
                                     }}
                                     title={`${data.metal}: $${data.avgPL.toFixed(2)} avg P&L`}
                                 >

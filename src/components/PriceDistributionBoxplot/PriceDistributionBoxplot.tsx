@@ -172,17 +172,18 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                                         strokeWidth="3"
                                     />
                                     
-                                    {/* Mean point */}
-                                    <circle
-                                        cx={centerX}
-                                        cy={scaleY(boxplotData.mean)}
-                                        r="4"
-                                        fill="var(--color-warning-500)"
-                                        stroke="var(--color-surface-primary)"
-                                        strokeWidth="2"
+                                    {/* Mean line */}
+                                    <line 
+                                        x1={centerX - boxWidth / 2} 
+                                        y1={scaleY(boxplotData.mean)} 
+                                        x2={centerX + boxWidth / 2} 
+                                        y2={scaleY(boxplotData.mean)}
+                                        stroke="var(--color-warning-500)"
+                                        strokeWidth="3"
+                                        strokeDasharray="4,2"
                                     >
                                         <title>Mean: {boxplotData.mean.toFixed(2)}%</title>
-                                    </circle>
+                                    </line>
                                     
                                     {/* Outliers */}
                                     {boxplotData.outliers.map((outlier, index) => (

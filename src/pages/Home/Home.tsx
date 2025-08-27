@@ -278,17 +278,17 @@ const Home: React.FC = () => {
                                 <AccuracyTrendChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Prediction Accuracy Trend"
+                                    title="Market Risk Price vs Execution Process Difference Trend"
                                 />
                                 <ProfitLossChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Weekly P&L Performance"
+                                    title="Trade Performance Distribution (Execution vs Risk Price Comparison)"
                                 />
                                 <RiskAdjustmentChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Risk Adjustment vs Actual Performance"
+                                    title="Execution Price vs Risk Price Scatterplot"
                                 />
                             </>
                         )}

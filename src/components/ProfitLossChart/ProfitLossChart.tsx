@@ -74,23 +74,23 @@ const ProfitLossChart: React.FC<ProfitLossChartProps> = ({
                         <span className="profit_loss_y_label chart_y_label">0</span>
                     </div>
                     <div className="profit_loss_chart_area chart_area">
-                        <svg className="profit_loss_svg chart_svg" viewBox="0 0 400 180">
+                        <svg className="profit_loss_svg chart_svg" viewBox="0 0 600 200">
                             {/* Grid lines */}
                             <g className="profit_loss_grid chart_grid">
-                                <line x1="20" y1="20" x2="380" y2="20" className="grid_line"/>
-                                <line x1="20" y1="100" x2="380" y2="100" className="grid_line"/>
-                                <line x1="20" y1="160" x2="380" y2="160" className="major_line"/>
+                                <line x1="20" y1="20" x2="580" y2="20" className="grid_line"/>
+                                <line x1="20" y1="110" x2="580" y2="110" className="grid_line"/>
+                                <line x1="20" y1="180" x2="580" y2="180" className="major_line"/>
                             </g>
 
                             {/* Bars */}
                             {chartData.map((data, index) => {
-                                const chartWidth = 330; // 380 - 50 (left margin for y-axis)
-                                const chartHeight = 120; // 160 - 20 (top) - 20 (bottom)
-                                const barSpacing = chartWidth / 3; // 110px per section
-                                const barWidth = 80;
+                                const chartWidth = 530; // 580 - 50 (left margin for y-axis)
+                                const chartHeight = 140; // 180 - 20 (top) - 20 (bottom)
+                                const barSpacing = chartWidth / 3; // ~177px per section
+                                const barWidth = 120;
                                 const x = 50 + (index + 0.5) * barSpacing;
                                 const barHeight = (data.count / maxCount) * chartHeight; 
-                                const y = 160 - barHeight;
+                                const y = 180 - barHeight;
                                 
                                 return (
                                     <g key={index}>

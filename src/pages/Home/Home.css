@@ -3239,7 +3239,7 @@ padding: 0;
 
 /* Metrics section */
 .home_metal_metrics_section {
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
 }
 
 .home_metal_metrics_grid {

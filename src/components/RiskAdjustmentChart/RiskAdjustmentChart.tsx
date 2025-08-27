@@ -51,7 +51,7 @@ const RiskAdjustmentChart: React.FC<RiskAdjustmentChartProps> = ({
 
     // Scale functions for positioning
     const scaleX = (price: number) => {
-        return 20 + ((price - minPrice) / (maxPrice - minPrice)) * 360;
+        return 20 + ((price - minPrice) / (maxPrice - minPrice)) * 560;
     };
 
     const scaleY = (price: number) => {
@@ -82,12 +82,12 @@ const RiskAdjustmentChart: React.FC<RiskAdjustmentChartProps> = ({
                         <span className="risk_adjustment_y_label chart_y_label">${minPrice.toFixed(0)}</span>
                     </div>
                     <div className="risk_adjustment_chart_area chart_area">
-                        <svg className="risk_adjustment_svg chart_svg" viewBox="0 0 400 200">
+                        <svg className="risk_adjustment_svg chart_svg" viewBox="0 0 600 200">
                             {/* Grid lines */}
                             <g className="risk_adjustment_grid chart_grid">
-                                <line x1="0" y1="20" x2="400" y2="20" className="grid_line"/>
-                                <line x1="0" y1="100" x2="400" y2="100" className="grid_line"/>
-                                <line x1="0" y1="180" x2="400" y2="180" className="major_line"/>
+                                <line x1="0" y1="20" x2="600" y2="20" className="grid_line"/>
+                                <line x1="0" y1="100" x2="600" y2="100" className="grid_line"/>
+                                <line x1="0" y1="180" x2="600" y2="180" className="major_line"/>
                             </g>
 
                             {/* Diagonal line separating winning/losing trades */}
@@ -109,7 +109,7 @@ const RiskAdjustmentChart: React.FC<RiskAdjustmentChartProps> = ({
                                 return (
                                     <circle
                                         key={i}
-                                        cx={Math.max(20, Math.min(380, x))}
+                                        cx={Math.max(20, Math.min(580, x))}
                                         cy={Math.max(20, Math.min(180, y))}
                                         r="4"
                                         fill={d.isWinning ? tradeColors.winning : tradeColors.losing}

@@ -82,7 +82,7 @@ export default function Settings() {
         <div className="settings_container">
             {/* Dashboard header */}
             <header className="settings_header">
-                <h1>Fraud Detection Settings</h1>
+                <h1>Settings</h1>
                 <div className="settings_header_actions">
                     <button className="settings_save_button">
                         <Icons.Save size={16} />

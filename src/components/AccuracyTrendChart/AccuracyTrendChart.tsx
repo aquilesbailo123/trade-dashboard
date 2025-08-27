@@ -63,7 +63,7 @@ const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
                         <span className="accuracy_trend_y_label chart_y_label">-{maxDifference.toFixed(1)}%</span>
                     </div>
                     <div className="accuracy_trend_chart_area chart_area">
-                        <svg className="accuracy_trend_svg chart_svg" viewBox="0 0 400 180">
+                        <svg className="accuracy_trend_svg chart_svg" viewBox="0 0 600 200">
                             <defs>
                                 <linearGradient id="priceDifferenceTrendGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                                     <stop offset="0%" stopColor="var(--color-primary-500)" stopOpacity="0.3"/>
@@ -73,17 +73,17 @@ const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
                             
                             {/* Grid lines */}
                             <g className="accuracy_trend_grid chart_grid">
-                                <line x1="20" y1="20" x2="380" y2="20" className="grid_line"/>
-                                <line x1="20" y1="90" x2="380" y2="90" className="major_line"/>
-                                <line x1="20" y1="160" x2="380" y2="160" className="grid_line"/>
+                                <line x1="20" y1="20" x2="580" y2="20" className="grid_line"/>
+                                <line x1="20" y1="100" x2="580" y2="100" className="major_line"/>
+                                <line x1="20" y1="180" x2="580" y2="180" className="grid_line"/>
                             </g>
 
                             {/* Zero line - horizontal line at 0% */}
                             <line 
                                 x1="20" 
-                                y1="90" 
-                                x2="380" 
-                                y2="90" 
+                                y1="100" 
+                                x2="580" 
+                                y2="100" 
                                 stroke="var(--color-text-secondary)" 
                                 strokeWidth="2" 
                                 strokeDasharray="5,5"
@@ -94,10 +94,10 @@ const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
                             {chartData.length > 0 && (
                                 <path
                                     d={`M ${chartData.map((d, i) => {
-                                        const x = chartData.length === 1 ? 200 : 20 + (i / (chartData.length - 1)) * 360;
-                                        const y = 90 - (d.avgDifference / maxDifference) * 70;
-                                        return `${i === 0 ? 'M' : 'L'} ${x} ${Math.max(20, Math.min(160, y))}`;
-                                    }).join(' ')} L 380 90 L 20 90 Z`}
+                                        const x = chartData.length === 1 ? 300 : 20 + (i / (chartData.length - 1)) * 560;
+                                        const y = 100 - (d.avgDifference / maxDifference) * 80;
+                                        return `${i === 0 ? 'M' : 'L'} ${x} ${Math.max(20, Math.min(180, y))}`;
+                                    }).join(' ')} L 580 100 L 20 100 Z`}
                                     fill="url(#priceDifferenceTrendGradient)"
                                 />
                             )}
@@ -106,9 +106,9 @@ const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
                             {chartData.length > 0 && (
                                 <path
                                     d={chartData.map((d, i) => {
-                                        const x = chartData.length === 1 ? 200 : 20 + (i / (chartData.length - 1)) * 360;
-                                        const y = 90 - (d.avgDifference / maxDifference) * 70;
-                                        return `${i === 0 ? 'M' : 'L'} ${x} ${Math.max(20, Math.min(160, y))}`;
+                                        const x = chartData.length === 1 ? 300 : 20 + (i / (chartData.length - 1)) * 560;
+                                        const y = 100 - (d.avgDifference / maxDifference) * 80;
+                                        return `${i === 0 ? 'M' : 'L'} ${x} ${Math.max(20, Math.min(180, y))}`;
                                     }).join(' ')}
                                     stroke="var(--color-primary-500)"
                                     strokeWidth="2"
@@ -118,9 +118,9 @@ const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
 
                             {/* Data points */}
                             {chartData.map((d, i) => {
-                                const x = chartData.length === 1 ? 200 : 20 + (i / (chartData.length - 1)) * 360;
-                                const y = 90 - (d.avgDifference / maxDifference) * 70;
-                                const clampedY = Math.max(20, Math.min(160, y));
+                                const x = chartData.length === 1 ? 300 : 20 + (i / (chartData.length - 1)) * 560;
+                                const y = 100 - (d.avgDifference / maxDifference) * 80;
+                                const clampedY = Math.max(20, Math.min(180, y));
                                 return (
                                     <circle
                                         key={i}

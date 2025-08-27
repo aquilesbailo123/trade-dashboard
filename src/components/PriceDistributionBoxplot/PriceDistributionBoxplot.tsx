@@ -68,9 +68,9 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
     const boxplotData = calculateBoxplotData(percentageDifferences);
     
     // Calculate chart dimensions and scaling
-    const chartWidth = 400;
-    const chartHeight = 250;
-    const boxWidth = 60;
+    const chartWidth = 600;
+    const chartHeight = 200;
+    const boxWidth = 80;
     const centerX = chartWidth / 2;
     
     const dataRange = Math.max(

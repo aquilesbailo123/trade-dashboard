@@ -1,4 +1,7 @@
+@import '../../styles/chartRules.css';
+
 .risk_adjustment_chart_container {
+    /* Inherits from chart_container in chartRules.css */
     background: var(--color-surface-primary);
     border: 1px solid var(--color-border-primary);
     border-radius: var(--radius-md);
@@ -8,6 +11,7 @@
 }
 
 .risk_adjustment_chart_header {
+    /* Inherits from chart_header in chartRules.css */
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -17,6 +21,7 @@
 }
 
 .risk_adjustment_chart_title {
+    /* Inherits from chart_title in chartRules.css */
     margin: 0;
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
@@ -24,12 +29,14 @@
 }
 
 .risk_adjustment_chart_legend {
+    /* Inherits from chart_legend in chartRules.css */
     display: flex;
     gap: var(--space-3);
     flex-wrap: wrap;
 }
 
 .risk_adjustment_legend_item {
+    /* Inherits from legend_item in chartRules.css */
     display: flex;
     align-items: center;
     gap: var(--space-1);
@@ -38,42 +45,60 @@
 }
 
 .risk_adjustment_legend_dot {
+    /* Inherits from legend_dot in chartRules.css */
     width: 8px;
     height: 8px;
     border-radius: 50%;
 }
 
 .risk_adjustment_chart_content {
+    /* Inherits from chart_content in chartRules.css */
     flex: 1;
     display: flex;
+    flex-direction: column;
     gap: var(--space-2);
 }
 
+.risk_adjustment_main_area {
+    display: flex;
+    align-items: stretch;
+    gap: var(--space-2);
+    height: 200px;
+}
+
 .risk_adjustment_y_axis {
+    /* Inherits from chart_y_axis in chartRules.css */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
     padding-right: var(--space-2);
-    min-width: 50px;
+    min-width: 45px;
+    height: 200px;
 }
 
 .risk_adjustment_y_label {
+    /* Inherits from y_label in chartRules.css */
     font-size: var(--font-size-xs);
     color: var(--color-text-tertiary);
 }
 
 .risk_adjustment_chart_area {
+    /* Inherits from chart_main_area in chartRules.css */
     flex: 1;
     position: relative;
+    height: 200px;
 }
 
 .risk_adjustment_svg {
+    /* Inherits from chart_svg in chartRules.css */
     width: 100%;
-    height: 300px;
+    height: 100%;
+    display: block;
 }
 
 .risk_adjustment_point {
+    /* Inherits from chart_point in chartRules.css */
     transition: all var(--transition-fast) var(--transition-timing-smooth);
     cursor: pointer;
 }
@@ -83,15 +108,43 @@
     opacity: 1 !important;
 }
 
+.risk_adjustment_grid .grid_line {
+    stroke: var(--color-border-primary);
+    stroke-opacity: 0.3;
+    stroke-width: 1;
+}
+
+.risk_adjustment_grid .major_line {
+    stroke: var(--color-border-primary);
+    stroke-opacity: 0.5;
+    stroke-width: 1;
+}
+
 .risk_adjustment_x_axis {
+    /* Inherits from chart_x_axis in chartRules.css */
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-top: var(--space-2);
-    padding-left: 52px;
+    padding-left: 47px; /* Align with chart area */
+    flex-wrap: nowrap;
+    overflow: hidden;
 }
 
 .risk_adjustment_x_label {
+    /* Inherits from x_label in chartRules.css */
     font-size: var(--font-size-xs);
-    color: var(--color-text-tertiary);
+    color: var(--color-text-secondary);
     text-align: center;
+    font-weight: var(--font-weight-medium);
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.risk_adjustment_x_label:nth-child(2) {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
 }

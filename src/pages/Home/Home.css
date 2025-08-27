@@ -3246,7 +3246,7 @@ padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--space-4);
-    margin-bottom: var(--space-6);
+    /* margin-bottom: var(--space-6); */
 }
 
 .home_metal_metric_card {
@@ -3662,6 +3662,54 @@ padding: 0;
     margin: 0 var(--space-2);
 }
 
+/* Chart Filter Dropdown Styles */
+.home_metal_chart_filter_container {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.home_metal_chart_filter_header {
+    margin-bottom: var(--space-3);
+}
+
+.home_metal_chart_filter_header h4 {
+    margin: 0;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.home_metal_chart_filter_dropdown {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.home_metal_chart_filter_select {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-normal) var(--transition-timing-smooth);
+    min-width: 150px;
+}
+
+.home_metal_chart_filter_select:hover {
+    border-color: var(--color-primary-500);
+}
+
+.home_metal_chart_filter_select:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
 /* Responsive tweaks */
 @media (max-width: 1200px) {
   .dashboard_graph_grid { grid-template-columns: 1fr; }
@@ -3674,4 +3722,14 @@ padding: 0;
   .metrics_grid { grid-template-columns: 1fr; }
   .home_metal_metrics_grid { grid-template-columns: 1fr; }
   .home_metal_trade_details_row { grid-template-columns: 1fr; }
+  
+  .home_metal_chart_filter_dropdown {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  
+  .home_metal_chart_filter_select {
+    width: 100%;
+  }
 }

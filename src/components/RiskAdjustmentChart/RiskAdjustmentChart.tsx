@@ -1,6 +1,7 @@
 import React from 'react';
 import { type MetalTrade } from '../../hooks/useMetalTrades';
 import './RiskAdjustmentChart.css';
+import '../../styles/chartRules.css';
 
 interface RiskAdjustmentChartProps {
     trades: MetalTrade[];
@@ -15,87 +16,120 @@ const RiskAdjustmentChart: React.FC<RiskAdjustmentChartProps> = ({
 }) => {
     const completedTrades = trades.filter(trade => trade.status === 'completed');
     
-    // Create scatter plot data showing risk adjustment vs actual performance
+    // Create scatter plot data showing execution price vs risk price
     const scatterData = completedTrades.map(trade => ({
-        riskAdjustment: trade.riskAdjustment,
-        actualDifference: trade.actualSalePrice - trade.estimatedPrice,
+        executionPrice: trade.actualSalePrice,
+        riskPrice: trade.estimatedPrice,
         metal: trade.metal,
         profitLoss: trade.profitLoss,
-        id: trade.id
+        id: trade.id,
+        isWinning: trade.actualSalePrice >= trade.estimatedPrice
     }));
 
-    const maxRisk = Math.max(...scatterData.map(d => Math.abs(d.riskAdjustment)));
-    const maxActual = Math.max(...scatterData.map(d => Math.abs(d.actualDifference)));
+    if (scatterData.length === 0) {
+        return (
+            <div className="chart_container" style={{ height }}>
+                <div className="chart_header">
+                    <h3 className="chart_title">{title}</h3>
+                </div>
+                <div className="chart_no_data">No trade data available</div>
+            </div>
+        );
+    }
 
-    const metalColors = {
-        alloy: 'var(--color-primary-500)',
-        copper: 'var(--color-warning-500)',
-        cobalt: 'var(--color-accent-500)',
-        aluminium: 'var(--color-text-secondary)',
-        nickel: 'var(--color-danger-500)',
-        zinc: 'var(--color-primary-400)',
+    const maxPrice = Math.max(
+        ...scatterData.map(d => Math.max(d.executionPrice, d.riskPrice))
+    );
+    const minPrice = Math.min(
+        ...scatterData.map(d => Math.min(d.executionPrice, d.riskPrice))
+    );
+
+    const tradeColors = {
+        winning: '#22c55e',
+        losing: '#ef4444',
+    };
+
+    // Scale functions for positioning
+    const scaleX = (price: number) => {
+        return 20 + ((price - minPrice) / (maxPrice - minPrice)) * 360;
+    };
+
+    const scaleY = (price: number) => {
+        return 180 - ((price - minPrice) / (maxPrice - minPrice)) * 160;
     };
 
     return (
-        <div className="risk_adjustment_chart_container" style={{ height }}>
-            <div className="risk_adjustment_chart_header">
-                <h3 className="risk_adjustment_chart_title">{title}</h3>
-                <div className="risk_adjustment_chart_legend">
-                    {Object.entries(metalColors).map(([metal, color]) => (
-                        <span key={metal} className="risk_adjustment_legend_item">
+        <div className="risk_adjustment_chart_container chart_container" style={{ height }}>
+            <div className="risk_adjustment_chart_header chart_header">
+                <h3 className="risk_adjustment_chart_title chart_title">{title}</h3>
+                <div className="risk_adjustment_chart_legend chart_legend">
+                    {Object.entries(tradeColors).map(([type, color]) => (
+                        <span key={type} className="risk_adjustment_legend_item chart_legend_item">
                             <span 
-                                className="risk_adjustment_legend_dot" 
+                                className="risk_adjustment_legend_dot legend_dot" 
                                 style={{ backgroundColor: color }}
                             ></span>
-                            {metal.charAt(0).toUpperCase() + metal.slice(1)}
+                            {type === 'winning' ? 'Profitable Trades' : 'Losing Trades'}
                         </span>
                     ))}
                 </div>
             </div>
-            <div className="risk_adjustment_chart_content">
-                <div className="risk_adjustment_y_axis">
-                    <span className="risk_adjustment_y_label">+${maxActual.toFixed(0)}</span>
-                    <span className="risk_adjustment_y_label">$0</span>
-                    <span className="risk_adjustment_y_label">-${maxActual.toFixed(0)}</span>
-                </div>
-                <div className="risk_adjustment_chart_area">
-                    <svg className="risk_adjustment_svg" viewBox="0 0 400 300">
-                        {/* Grid lines */}
-                        <g className="risk_adjustment_grid">
-                            <line x1="0" y1="75" x2="400" y2="75" stroke="var(--color-border-primary)" strokeOpacity="0.3"/>
-                            <line x1="0" y1="150" x2="400" y2="150" stroke="var(--color-border-primary)" strokeOpacity="0.5"/>
-                            <line x1="0" y1="225" x2="400" y2="225" stroke="var(--color-border-primary)" strokeOpacity="0.3"/>
-                            <line x1="100" y1="0" x2="100" y2="300" stroke="var(--color-border-primary)" strokeOpacity="0.3"/>
-                            <line x1="200" y1="0" x2="200" y2="300" stroke="var(--color-border-primary)" strokeOpacity="0.5"/>
-                            <line x1="300" y1="0" x2="300" y2="300" stroke="var(--color-border-primary)" strokeOpacity="0.3"/>
-                        </g>
+            <div className="risk_adjustment_chart_content chart_content">
+                <div className="risk_adjustment_main_area">
+                    <div className="risk_adjustment_y_axis chart_y_axis">
+                        <span className="risk_adjustment_y_label chart_y_label">${maxPrice.toFixed(0)}</span>
+                        <span className="risk_adjustment_y_label chart_y_label">${((maxPrice + minPrice) / 2).toFixed(0)}</span>
+                        <span className="risk_adjustment_y_label chart_y_label">${minPrice.toFixed(0)}</span>
+                    </div>
+                    <div className="risk_adjustment_chart_area chart_area">
+                        <svg className="risk_adjustment_svg chart_svg" viewBox="0 0 400 200">
+                            {/* Grid lines */}
+                            <g className="risk_adjustment_grid chart_grid">
+                                <line x1="0" y1="20" x2="400" y2="20" className="grid_line"/>
+                                <line x1="0" y1="100" x2="400" y2="100" className="grid_line"/>
+                                <line x1="0" y1="180" x2="400" y2="180" className="major_line"/>
+                            </g>
 
-                        {/* Data points */}
-                        {scatterData.map((d, i) => {
-                            const x = 200 + (d.riskAdjustment / maxRisk) * 180;
-                            const y = 150 - (d.actualDifference / maxActual) * 140;
-                            return (
-                                <circle
-                                    key={i}
-                                    cx={Math.max(10, Math.min(390, x))}
-                                    cy={Math.max(10, Math.min(290, y))}
-                                    r="4"
-                                    fill={metalColors[d.metal as keyof typeof metalColors]}
-                                    className="risk_adjustment_point"
-                                    opacity="0.7"
-                                >
-                                    <title>
-                                        {`${d.id} (${d.metal}): Risk Adj: $${d.riskAdjustment.toFixed(2)}, Actual Diff: $${d.actualDifference.toFixed(2)}, P&L: $${d.profitLoss.toFixed(2)}`}
-                                    </title>
-                                </circle>
-                            );
-                        })}
-                    </svg>
+                            {/* Diagonal line separating winning/losing trades */}
+                            <line 
+                                x1={scaleX(minPrice)} 
+                                y1={scaleY(minPrice)} 
+                                x2={scaleX(maxPrice)} 
+                                y2={scaleY(maxPrice)} 
+                                stroke="#ef4444" 
+                                strokeWidth="2" 
+                                strokeDasharray="5,5"
+                                opacity="0.8"
+                            />
+
+                            {/* Data points */}
+                            {scatterData.map((d, i) => {
+                                const x = scaleX(d.riskPrice);
+                                const y = scaleY(d.executionPrice);
+                                return (
+                                    <circle
+                                        key={i}
+                                        cx={Math.max(20, Math.min(380, x))}
+                                        cy={Math.max(20, Math.min(180, y))}
+                                        r="4"
+                                        fill={d.isWinning ? tradeColors.winning : tradeColors.losing}
+                                        className="risk_adjustment_point chart_point"
+                                        opacity="0.8"
+                                        strokeWidth="2"
+                                    >
+                                        <title>
+                                            {`${d.id} (${d.metal}): Risk Price: $${d.riskPrice.toFixed(2)}, Execution Price: $${d.executionPrice.toFixed(2)}, ${d.isWinning ? 'Winning' : 'Losing'} Trade`}
+                                        </title>
+                                    </circle>
+                                );
+                            })}
+                        </svg>
+                    </div>
                 </div>
-                <div className="risk_adjustment_x_axis">
-                    <span className="risk_adjustment_x_label">-${maxRisk.toFixed(0)}</span>
-                    <span className="risk_adjustment_x_label">Risk Adjustment</span>
-                    <span className="risk_adjustment_x_label">+${maxRisk.toFixed(0)}</span>
+                <div className="risk_adjustment_x_axis chart_x_axis">
+                    <span className="risk_adjustment_x_label chart_x_label">${minPrice.toFixed(0)}</span>
+                    <span className="risk_adjustment_x_label chart_x_label">Risk Price</span>
+                    <span className="risk_adjustment_x_label chart_x_label">${maxPrice.toFixed(0)}</span>
                 </div>
             </div>
         </div>

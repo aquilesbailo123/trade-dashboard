@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useMetalTrades, useMetalStats, type MetalTrade } from '../../hooks/useMetalTrades';
-import MetalPerformanceChart from '../../components/MetalPerformanceChart/MetalPerformanceChart';
+import PriceDistributionBoxplot from '../../components/PriceDistributionBoxplot/PriceDistributionBoxplot';
 import AccuracyTrendChart from '../../components/AccuracyTrendChart/AccuracyTrendChart';
 import ProfitLossChart from '../../components/ProfitLossChart/ProfitLossChart';
 import RiskAdjustmentChart from '../../components/RiskAdjustmentChart/RiskAdjustmentChart';
@@ -53,12 +53,13 @@ const Home: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(15);
     const [metalFilter, setMetalFilter] = useState<'all' | 'alloy' | 'copper' | 'cobalt' | 'aluminium' | 'nickel' | 'zinc'>('all');
+    const [chartMetalFilter, setChartMetalFilter] = useState<'all' | 'alloy' | 'copper' | 'cobalt' | 'aluminium' | 'nickel' | 'zinc'>('all');
     const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'pending' | 'cancelled'>('all');
     
     // State for selected trade details
     const [selectedTrade, setSelectedTrade] = useState<MetalTrade | null>(null);
 
-    // Filter trades based on metal and status
+    // Filter trades based on metal and status for table
     const filteredTrades = useMemo(() => {
         let filtered = trades;
         
@@ -74,6 +75,14 @@ const Home: React.FC = () => {
             new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         );
     }, [trades, metalFilter, statusFilter]);
+
+    // Filter trades for charts based on chart metal filter
+    const chartFilteredTrades = useMemo(() => {
+        if (chartMetalFilter === 'all') {
+            return trades;
+        }
+        return trades.filter(trade => trade.metal === chartMetalFilter);
+    }, [trades, chartMetalFilter]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredTrades.length / pageSize);
@@ -114,6 +123,10 @@ const Home: React.FC = () => {
 
     const handleMetalFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setMetalFilter(event.target.value as typeof metalFilter);
+    };
+
+    const handleChartMetalFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setChartMetalFilter(event.target.value as typeof chartMetalFilter);
     };
 
     const handleStatusFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -186,8 +199,34 @@ const Home: React.FC = () => {
                     </div>
                 </div>
             </section>
+            
 
             <div className="home_metal_dashboard">
+
+                {/* Chart Metal Filter Dropdown */}
+                <div className="home_metal_chart_filter_container">
+                    <div className="home_metal_chart_filter_header">
+                        <h4>Filter Charts by Metal</h4>
+                    </div>
+                    <div className="home_metal_chart_filter_dropdown">
+                        <Icons.Filter size={16} />
+                        <select 
+                            className="home_metal_chart_filter_select" 
+                            value={chartMetalFilter} 
+                            onChange={handleChartMetalFilterChange}
+                            title="Filter charts by metal type"
+                        >
+                            <option value="all">All Metals</option>
+                            <option value="alloy">Alloy</option>
+                            <option value="copper">Copper</option>
+                            <option value="cobalt">Cobalt</option>
+                            <option value="aluminium">Aluminium</option>
+                            <option value="nickel">Nickel</option>
+                            <option value="zinc">Zinc</option>
+                        </select>
+                    </div>
+                </div>
+                
                 <div className="home_metal_dashboard_wrapper">
                     {/* Metal Trading Analysis Charts Grid */}
                     <div className="home_metal_charts_grid">
@@ -231,23 +270,23 @@ const Home: React.FC = () => {
                             </>
                         ) : (
                             <>
-                                <MetalPerformanceChart
-                                    trades={trades}
+                                <PriceDistributionBoxplot
+                                    trades={chartFilteredTrades}
                                     height={350}
-                                    title="Metal Performance by P&L"
+                                    title="Price Difference Distribution (Execution vs Risk Price)"
                                 />
                                 <AccuracyTrendChart
-                                    trades={trades}
+                                    trades={chartFilteredTrades}
                                     height={350}
                                     title="Prediction Accuracy Trend"
                                 />
                                 <ProfitLossChart
-                                    trades={trades}
+                                    trades={chartFilteredTrades}
                                     height={350}
                                     title="Weekly P&L Performance"
                                 />
                                 <RiskAdjustmentChart
-                                    trades={trades}
+                                    trades={chartFilteredTrades}
                                     height={350}
                                     title="Risk Adjustment vs Actual Performance"
                                 />

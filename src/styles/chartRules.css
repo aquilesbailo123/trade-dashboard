@@ -1,0 +1,203 @@
+/* Chart Rules - Global styling guidelines for all chart components */
+
+/* Chart Container Rules */
+.chart_container {
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Chart Header Rules */
+.chart_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.chart_title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.chart_legend {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.chart_legend_item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+.chart_legend_dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.chart_legend_bar {
+    width: 12px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+/* Chart Content Rules */
+.chart_content {
+    position: relative;
+    height: calc(100% - 60px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Axis Rules */
+.chart_y_axis {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 30px;
+    width: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-right: 8px;
+}
+
+.chart_x_axis {
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+    margin-top: 8px;
+}
+
+.chart_y_label,
+.chart_x_label {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    font-weight: 500;
+}
+
+/* Chart Area Rules */
+.chart_area {
+    flex: 1;
+    margin-left: 50px;
+    margin-bottom: 8px;
+    position: relative;
+    background: var(--color-surface-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* SVG Rules */
+.chart_svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Grid Rules */
+.chart_grid line {
+    stroke: var(--color-border-secondary);
+    stroke-opacity: 0.3;
+    stroke-width: 1;
+}
+
+.chart_grid .major_line {
+    stroke-opacity: 0.5;
+}
+
+/* Data Point Rules */
+.chart_point {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chart_point:hover {
+    r: 6;
+    stroke: var(--color-surface-primary);
+    stroke-width: 2;
+}
+
+/* Bar Rules */
+.chart_bar {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chart_bar:hover {
+    opacity: 0.8;
+}
+
+/* Color Palette Rules */
+.chart_color_primary { fill: var(--color-primary-500); }
+.chart_color_secondary { fill: var(--color-secondary-500); }
+.chart_color_accent { fill: var(--color-accent-500); }
+.chart_color_warning { fill: var(--color-warning-500); }
+.chart_color_danger { fill: var(--color-danger-500); }
+.chart_color_success { fill: var(--color-success-500); }
+
+/* Metal Color Mapping */
+.chart_metal_alloy { fill: var(--color-primary-500); }
+.chart_metal_copper { fill: var(--color-warning-500); }
+.chart_metal_cobalt { fill: var(--color-accent-500); }
+.chart_metal_aluminium { fill: var(--color-text-secondary); }
+.chart_metal_nickel { fill: var(--color-danger-500); }
+.chart_metal_zinc { fill: var(--color-primary-400); }
+
+/* Loading and Error States */
+.chart_loading_container,
+.chart_error_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 12px;
+    color: var(--color-text-secondary);
+}
+
+.chart_loading_container .icon-primary {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive Rules */
+@media (max-width: 768px) {
+    .chart_header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .chart_legend {
+        gap: 12px;
+    }
+    
+    .chart_y_axis {
+        width: 30px;
+    }
+    
+    .chart_area {
+        margin-left: 40px;
+    }
+    
+    .chart_x_axis {
+        padding: 0 40px;
+    }
+}

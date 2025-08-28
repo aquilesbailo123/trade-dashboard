@@ -65,13 +65,32 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
         return { min, q1, median, q3, max, outliers, mean };
     };
 
+    // Calculate additional statistical measures
+    const calculateStandardDeviation = (data: number[], mean: number): number => {
+        if (data.length === 0) return 0;
+        const variance = data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / data.length;
+        return Math.sqrt(variance);
+    };
+
+    const calculateConfidenceInterval = (data: number[], mean: number, stdDev: number): [number, number] => {
+        if (data.length === 0) return [0, 0];
+        const standardError = stdDev / Math.sqrt(data.length);
+        const margin = 1.96 * standardError; // 95% confidence interval
+        return [mean - margin, mean + margin];
+    };
+
     const boxplotData = calculateBoxplotData(percentageDifferences);
+    const stdDev = calculateStandardDeviation(percentageDifferences, boxplotData.mean);
+    const [ciLower, ciUpper] = calculateConfidenceInterval(percentageDifferences, boxplotData.mean, stdDev);
     
-    // Calculate chart dimensions and scaling
+    // Calculate chart dimensions and scaling for horizontal orientation
     const chartWidth = 600;
     const chartHeight = 200;
-    const boxWidth = 80;
-    const centerX = chartWidth / 2;
+    const boxHeight = 60;
+    const centerY = chartHeight / 2;
+    const marginLeft = 50;
+    const marginRight = 50;
+    const plotWidth = chartWidth - marginLeft - marginRight;
     
     const dataRange = Math.max(
         Math.abs(boxplotData.min), 
@@ -81,8 +100,8 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
     const padding = dataRange * 0.1;
     const totalRange = (dataRange + padding) * 2;
     
-    const scaleY = (value: number) => {
-        return chartHeight / 2 - (value / totalRange) * chartHeight * 0.8;
+    const scaleX = (value: number) => {
+        return marginLeft + ((value + dataRange + padding) / totalRange) * plotWidth;
     };
 
     return (
@@ -99,63 +118,71 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
             <div className="price_distribution_boxplot_content chart_content">
                 <div className="price_distribution_main_area">
                     <div className="price_distribution_y_axis chart_y_axis">
-                        <span className="price_distribution_y_label chart_y_label">+{dataRange.toFixed(1)}%</span>
-                        <span className="price_distribution_y_label chart_y_label">0%</span>
-                        <span className="price_distribution_y_label chart_y_label">-{dataRange.toFixed(1)}%</span>
+                        <span className="price_distribution_y_label chart_y_label">Distribution</span>
                     </div>
                     <div className="price_distribution_chart_area chart_area">
                         <svg className="price_distribution_svg chart_svg" viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
-                            {/* Grid lines */}
+                            {/* Comprehensive grid lines */}
                             <g className="price_distribution_grid chart_grid">
-                                <line x1="0" y1={chartHeight * 0.1} x2={chartWidth} y2={chartHeight * 0.1} className="grid_line"/>
-                                <line x1="0" y1={chartHeight * 0.5} x2={chartWidth} y2={chartHeight * 0.5} className="major_line"/>
-                                <line x1="0" y1={chartHeight * 0.9} x2={chartWidth} y2={chartHeight * 0.9} className="grid_line"/>
+                                {/* Vertical grid lines */}
+                                <line x1={marginLeft} y1="20" x2={marginLeft} y2={chartHeight - 20} className="grid_line"/>
+                                <line x1={scaleX(0)} y1="20" x2={scaleX(0)} y2={chartHeight - 20} className="major_line"/>
+                                <line x1={chartWidth - marginRight} y1="20" x2={chartWidth - marginRight} y2={chartHeight - 20} className="grid_line"/>
+                                
+                                {/* Additional vertical grid lines for better granularity */}
+                                <line x1={scaleX(-dataRange/2)} y1="20" x2={scaleX(-dataRange/2)} y2={chartHeight - 20} className="grid_line" opacity="0.3"/>
+                                <line x1={scaleX(dataRange/2)} y1="20" x2={scaleX(dataRange/2)} y2={chartHeight - 20} className="grid_line" opacity="0.3"/>
+                                
+                                {/* Horizontal reference lines */}
+                                <line x1={marginLeft} y1={centerY - boxHeight/2} x2={chartWidth - marginRight} y2={centerY - boxHeight/2} className="grid_line" opacity="0.2"/>
+                                <line x1={marginLeft} y1={centerY} x2={chartWidth - marginRight} y2={centerY} className="grid_line" opacity="0.2"/>
+                                <line x1={marginLeft} y1={centerY + boxHeight/2} x2={chartWidth - marginRight} y2={centerY + boxHeight/2} className="grid_line" opacity="0.2"/>
                             </g>
 
                             {percentageDifferences.length > 0 && (
                                 <g className="price_distribution_boxplot">
-                                    {/* Whiskers */}
+                                    {/* Horizontal whiskers */}
                                     <line 
-                                        x1={centerX} 
-                                        y1={scaleY(boxplotData.min)} 
-                                        x2={centerX} 
-                                        y2={scaleY(boxplotData.q1)}
+                                        x1={scaleX(boxplotData.min)} 
+                                        y1={centerY} 
+                                        x2={scaleX(boxplotData.q1)} 
+                                        y2={centerY}
                                         stroke="var(--color-primary-500)"
                                         strokeWidth="2"
                                     />
                                     <line 
-                                        x1={centerX} 
-                                        y1={scaleY(boxplotData.q3)} 
-                                        x2={centerX} 
-                                        y2={scaleY(boxplotData.max)}
+                                        x1={scaleX(boxplotData.q3)} 
+                                        y1={centerY} 
+                                        x2={scaleX(boxplotData.max)} 
+                                        y2={centerY}
                                         stroke="var(--color-primary-500)"
                                         strokeWidth="2"
                                     />
                                     
                                     {/* Whisker caps */}
                                     <line 
-                                        x1={centerX - 15} 
-                                        y1={scaleY(boxplotData.min)} 
-                                        x2={centerX + 15} 
-                                        y2={scaleY(boxplotData.min)}
+                                        x1={scaleX(boxplotData.min)} 
+                                        y1={centerY - 15} 
+                                        x2={scaleX(boxplotData.min)} 
+                                        y2={centerY + 15}
                                         stroke="var(--color-primary-500)"
                                         strokeWidth="2"
                                     />
                                     <line 
-                                        x1={centerX - 15} 
-                                        y1={scaleY(boxplotData.max)} 
-                                        x2={centerX + 15} 
-                                        y2={scaleY(boxplotData.max)}
+                                        x1={scaleX(boxplotData.max)} 
+                                        y1={centerY - 15} 
+                                        x2={scaleX(boxplotData.max)} 
+                                        y2={centerY + 15}
                                         stroke="var(--color-primary-500)"
                                         strokeWidth="2"
                                     />
                                     
                                     {/* Box */}
                                     <rect
-                                        x={centerX - boxWidth / 2}
-                                        y={scaleY(boxplotData.q3)}
-                                        width={boxWidth}
-                                        height={scaleY(boxplotData.q1) - scaleY(boxplotData.q3)}
+                                        x={scaleX(boxplotData.q1)}
+                                        y={centerY - boxHeight / 2}
+                                        width={scaleX(boxplotData.q3) - scaleX(boxplotData.q1)}
+                                        height={boxHeight}
                                         fill="var(--color-primary-500)"
                                         fillOpacity="0.3"
                                         stroke="var(--color-primary-500)"
@@ -164,20 +191,20 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                                     
                                     {/* Median line */}
                                     <line 
-                                        x1={centerX - boxWidth / 2} 
-                                        y1={scaleY(boxplotData.median)} 
-                                        x2={centerX + boxWidth / 2} 
-                                        y2={scaleY(boxplotData.median)}
+                                        x1={scaleX(boxplotData.median)} 
+                                        y1={centerY - boxHeight / 2} 
+                                        x2={scaleX(boxplotData.median)} 
+                                        y2={centerY + boxHeight / 2}
                                         stroke="var(--color-primary-700)"
                                         strokeWidth="3"
                                     />
                                     
                                     {/* Mean line */}
                                     <line 
-                                        x1={centerX - boxWidth / 2} 
-                                        y1={scaleY(boxplotData.mean)} 
-                                        x2={centerX + boxWidth / 2} 
-                                        y2={scaleY(boxplotData.mean)}
+                                        x1={scaleX(boxplotData.mean)} 
+                                        y1={centerY - boxHeight / 2} 
+                                        x2={scaleX(boxplotData.mean)} 
+                                        y2={centerY + boxHeight / 2}
                                         stroke="var(--color-warning-500)"
                                         strokeWidth="3"
                                         strokeDasharray="4,2"
@@ -185,12 +212,71 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                                         <title>Mean: {boxplotData.mean.toFixed(2)}%</title>
                                     </line>
                                     
+                                    {/* Confidence interval for mean */}
+                                    <rect
+                                        x={scaleX(ciLower)}
+                                        y={centerY - 8}
+                                        width={scaleX(ciUpper) - scaleX(ciLower)}
+                                        height={16}
+                                        fill="var(--color-warning-500)"
+                                        fillOpacity="0.15"
+                                        stroke="var(--color-warning-500)"
+                                        strokeWidth="1"
+                                        strokeDasharray="2,2"
+                                    >
+                                        <title>95% Confidence Interval: [{ciLower.toFixed(2)}%, {ciUpper.toFixed(2)}%]</title>
+                                    </rect>
+                                    
+                                    {/* Standard deviation markers */}
+                                    <line 
+                                        x1={scaleX(boxplotData.mean - stdDev)} 
+                                        y1={centerY - boxHeight/2 - 10} 
+                                        x2={scaleX(boxplotData.mean - stdDev)} 
+                                        y2={centerY + boxHeight/2 + 10}
+                                        stroke="var(--color-info-500)"
+                                        strokeWidth="1"
+                                        strokeDasharray="3,3"
+                                        opacity="0.6"
+                                    >
+                                        <title>-1 Standard Deviation: {(boxplotData.mean - stdDev).toFixed(2)}%</title>
+                                    </line>
+                                    <line 
+                                        x1={scaleX(boxplotData.mean + stdDev)} 
+                                        y1={centerY - boxHeight/2 - 10} 
+                                        x2={scaleX(boxplotData.mean + stdDev)} 
+                                        y2={centerY + boxHeight/2 + 10}
+                                        stroke="var(--color-info-500)"
+                                        strokeWidth="1"
+                                        strokeDasharray="3,3"
+                                        opacity="0.6"
+                                    >
+                                        <title>+1 Standard Deviation: {(boxplotData.mean + stdDev).toFixed(2)}%</title>
+                                    </line>
+                                    
+                                    {/* Quartile markers on box edges */}
+                                    <circle
+                                        cx={scaleX(boxplotData.q1)}
+                                        cy={centerY - boxHeight/2 - 5}
+                                        r="2"
+                                        fill="var(--color-primary-700)"
+                                    >
+                                        <title>Q1: {boxplotData.q1.toFixed(2)}%</title>
+                                    </circle>
+                                    <circle
+                                        cx={scaleX(boxplotData.q3)}
+                                        cy={centerY - boxHeight/2 - 5}
+                                        r="2"
+                                        fill="var(--color-primary-700)"
+                                    >
+                                        <title>Q3: {boxplotData.q3.toFixed(2)}%</title>
+                                    </circle>
+                                    
                                     {/* Outliers */}
                                     {boxplotData.outliers.map((outlier, index) => (
                                         <circle
                                             key={index}
-                                            cx={centerX + (Math.random() - 0.5) * 20}
-                                            cy={scaleY(outlier)}
+                                            cx={scaleX(outlier)}
+                                            cy={centerY + (Math.random() - 0.5) * 30}
                                             r="3"
                                             fill="var(--color-danger-500)"
                                             fillOpacity="0.7"
@@ -205,6 +291,11 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                     </div>
                 </div>
                 <div className="price_distribution_x_axis chart_x_axis">
+                    <div className="price_distribution_x_labels">
+                        <span className="price_distribution_x_label chart_x_label">-{dataRange.toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label">0%</span>
+                        <span className="price_distribution_x_label chart_x_label">+{dataRange.toFixed(1)}%</span>
+                    </div>
                     <div className="price_distribution_stats">
                         <div className="price_distribution_stat_item">
                             <span className="price_distribution_stat_label">Mean:</span>
@@ -213,6 +304,14 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                         <div className="price_distribution_stat_item">
                             <span className="price_distribution_stat_label">Median:</span>
                             <span className="price_distribution_stat_value">{boxplotData.median.toFixed(2)}%</span>
+                        </div>
+                        <div className="price_distribution_stat_item">
+                            <span className="price_distribution_stat_label">Std Dev:</span>
+                            <span className="price_distribution_stat_value">{stdDev.toFixed(2)}%</span>
+                        </div>
+                        <div className="price_distribution_stat_item">
+                            <span className="price_distribution_stat_label">IQR:</span>
+                            <span className="price_distribution_stat_value">{(boxplotData.q3 - boxplotData.q1).toFixed(2)}%</span>
                         </div>
                         <div className="price_distribution_stat_item">
                             <span className="price_distribution_stat_label">Trades:</span>

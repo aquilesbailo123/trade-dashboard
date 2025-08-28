@@ -30,7 +30,22 @@
 
 .price_distribution_x_axis {
     /* Inherits from chart_x_axis in chartRules.css */
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.price_distribution_x_labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 0 50px;
+}
+
+.price_distribution_x_label {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-weight: 500;
 }
 
 .price_distribution_stats {

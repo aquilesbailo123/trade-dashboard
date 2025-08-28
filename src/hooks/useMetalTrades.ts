@@ -16,6 +16,16 @@ export interface MetalTrade {
     riskAdjustment: number; // difference between estimated and risk price
 }
 
+// API response interface
+interface ApiTradeResponse {
+    timestamp: string;
+    client: string;
+    contract: string;
+    price_estimated: number;
+    price_executed: number;
+    other: Record<string, any>;
+}
+
 export interface MetalStats {
     totalTrades: number;
     totalProfitLoss: number;
@@ -25,61 +35,63 @@ export interface MetalStats {
     totalVolume: number;
 }
 
-// Generate dummy metal trading data
-const generateMetalTrades = (count: number): MetalTrade[] => {
-    const metals: MetalTrade['metal'][] = ['alloy', 'copper', 'cobalt', 'aluminium', 'nickel', 'zinc'];
+// Transform API response to MetalTrade interface
+const transformApiResponse = (apiTrades: ApiTradeResponse[]): MetalTrade[] => {
     const traders = ['John Smith', 'Sarah Johnson', 'Mike Chen', 'Lisa Rodriguez', 'David Kim'];
-    const clients = ['Mining Corp A', 'Industrial Ltd', 'Jewelry Inc', 'Tech Solutions', 'Manufacturing Co'];
     
-    const trades: MetalTrade[] = [];
-    
-    for (let i = 0; i < count; i++) {
-        const metal = metals[Math.floor(Math.random() * metals.length)];
-        const basePrice = getBasePrice(metal);
-        const estimatedPrice = basePrice + (Math.random() - 0.5) * basePrice * 0.1; // ±10% variation
-        const riskAdjustment = (Math.random() - 0.5) * basePrice * 0.05; // ±5% risk adjustment
-        const riskPrice = estimatedPrice + riskAdjustment;
-        const actualSalePrice = basePrice + (Math.random() - 0.5) * basePrice * 0.15; // ±15% actual variation
-        const quantity = Math.floor(Math.random() * 1000) + 100;
+    return apiTrades.map((apiTrade, index) => {
+        // Map contract names to our metal types
+        const contractToMetal: Record<string, MetalTrade['metal']> = {
+            'ZINC': 'zinc',
+            'COPPER': 'copper',
+            'COBALT': 'cobalt',
+            'ALUMINIUM': 'aluminium',
+            'ALUMINUM': 'aluminium',
+            'NICKEL': 'nickel',
+            'ALLOY': 'alloy'
+        };
+        
+        const metal = contractToMetal[apiTrade.contract.toUpperCase()] || 'zinc';
+        const estimatedPrice = apiTrade.price_estimated;
+        const actualSalePrice = apiTrade.price_executed;
+        
+        // Calculate risk price as midpoint between estimated and executed (simulated)
+        const riskPrice = (estimatedPrice + actualSalePrice) / 2;
+        const quantity = Math.floor(Math.random() * 1000) + 100; // Simulated quantity
         const profitLoss = (actualSalePrice - riskPrice) * quantity;
         const accuracy = Math.max(0, 1 - Math.abs(estimatedPrice - actualSalePrice) / estimatedPrice);
+        const riskAdjustment = riskPrice - estimatedPrice;
         
-        trades.push({
-            id: `MT${String(i + 1).padStart(4, '0')}`,
+        return {
+            id: `MT${String(index + 1).padStart(4, '0')}`,
             metal,
             quantity,
             estimatedPrice,
             riskPrice,
             actualSalePrice,
-            timestamp: (() => {
-                const now = Date.now();
-                const daysBack = Math.floor(Math.random() * 30);
-                const pastDate = new Date(now - (daysBack * 24 * 60 * 60 * 1000));
-                return pastDate.toISOString();
-            })(),
+            timestamp: apiTrade.timestamp,
             trader: traders[Math.floor(Math.random() * traders.length)],
-            client: clients[Math.floor(Math.random() * clients.length)],
-            status: Math.random() > 0.1 ? 'completed' : Math.random() > 0.5 ? 'pending' : 'cancelled',
+            client: apiTrade.client,
+            status: 'completed' as const, // API data represents completed trades
             profitLoss,
             accuracy,
             riskAdjustment
-        });
-    }
-    
-    return trades.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+        };
+    }).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 };
 
-const getBasePrice = (metal: MetalTrade['metal']): number => {
-    const basePrices = {
-        alloy: 2000,
-        copper: 8,
-        cobalt: 1950,
-        aluminium: 24,
-        nickel: 120,
-        zinc: 120,
-    };
-    return basePrices[metal];
+// Fetch trades from API
+const fetchTradesFromApi = async (): Promise<MetalTrade[]> => {
+    const response = await fetch('https://execution-price-analysis.onrender.com/execution-prices');
+    
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const apiTrades: ApiTradeResponse[] = await response.json();
+    return transformApiResponse(apiTrades);
 };
+
 
 export const useMetalTrades = () => {
     const [trades, setTrades] = useState<MetalTrade[]>([]);
@@ -87,17 +99,16 @@ export const useMetalTrades = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Simulate API call
         const fetchTrades = async () => {
             try {
                 setIsLoading(true);
-                // Simulate network delay
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                const generatedTrades = generateMetalTrades(150);
-                setTrades(generatedTrades);
+                const apiTrades = await fetchTradesFromApi();
+                setTrades(apiTrades);
                 setError(null);
             } catch (err) {
-                setError('Failed to fetch metal trades');
+                const errorMessage = err instanceof Error ? err.message : 'Failed to fetch metal trades';
+                setError(errorMessage);
+                console.error('Error fetching trades:', err);
             } finally {
                 setIsLoading(false);
             }
@@ -106,9 +117,19 @@ export const useMetalTrades = () => {
         fetchTrades();
     }, []);
 
-    const refetch = () => {
-        const generatedTrades = generateMetalTrades(150);
-        setTrades(generatedTrades);
+    const refetch = async () => {
+        try {
+            setIsLoading(true);
+            const apiTrades = await fetchTradesFromApi();
+            setTrades(apiTrades);
+            setError(null);
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to fetch metal trades';
+            setError(errorMessage);
+            console.error('Error refetching trades:', err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return { trades, isLoading, error, refetch };

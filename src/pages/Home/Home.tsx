@@ -291,32 +291,32 @@ const Home: React.FC = () => {
                                 <PriceDistributionBoxplot
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Price Difference Distribution (Execution vs Risk Price)"
+                                    title="Execution Deviation Distribution"
                                 />
                                 <AccuracyTrendChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Market Risk Price vs Execution Process Difference Trend"
+                                    title="Execution Deviation Over Time"
                                 />
                                 <ProfitLossChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Trade Performance Distribution (Execution vs Risk Price Comparison)"
+                                    title="Execution Deviation Profit Levels"
                                 />
                                 <RiskAdjustmentChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Execution Price vs Risk Price Scatterplot"
+                                    title="Execution Price vs Risk Price"
                                 />
                                 <CorrelationTimelineChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="30-Day Rolling Correlation Timeline Chart"
+                                    title="30-Day Rolling Correlation With EUR/USD"
                                 />
                                 <VolatilityHeatmapChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Volatility Clustering Heatmap with Anomaly Detection Overlay"
+                                    title="Execution Deviation vs EUR/USD Return"
                                 />
                             </>
                         )}

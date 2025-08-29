@@ -243,6 +243,7 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
     height = 300, 
     title 
 }) => {
+    const [timeFrame, setTimeFrame] = useState<number>(30); // Default 30 days
     const [visibleLines, setVisibleLines] = useState({
         day0: true,
         day1: true,
@@ -272,18 +273,31 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
         
         if (!targetContract) return [];
 
-        const correlationResult = buildDailyFxCorrelations(convertedTrades, targetContract, 30);
+        const correlationResult = buildDailyFxCorrelations(convertedTrades, targetContract, timeFrame);
         
-        // Convert the result to CorrelationData format
-        const correlationData: CorrelationData[] = correlationResult.days.map((date, index) => ({
-            date,
-            correlation0Day: correlationResult.corrLag0[index] || 0,
-            correlation1Day: correlationResult.corrLag1[index] || 0,
-            correlation2Day: correlationResult.corrLag2[index] || 0
-        }));
+        // Convert the result to CorrelationData format, filtering out invalid data
+        const correlationData: CorrelationData[] = correlationResult.days
+            .map((date, index) => {
+                const corr0 = correlationResult.corrLag0[index];
+                const corr1 = correlationResult.corrLag1[index];
+                const corr2 = correlationResult.corrLag2[index];
+                
+                return {
+                    date,
+                    correlation0Day: (corr0 !== null && isFinite(corr0)) ? corr0 : 0,
+                    correlation1Day: (corr1 !== null && isFinite(corr1)) ? corr1 : 0,
+                    correlation2Day: (corr2 !== null && isFinite(corr2)) ? corr2 : 0
+                };
+            })
+            .filter(d => 
+                isFinite(d.correlation0Day) || 
+                isFinite(d.correlation1Day) || 
+                isFinite(d.correlation2Day)
+            );
 
         console.log('Generated correlation data points:', correlationData.length);
         console.log('Using contract:', targetContract);
+        console.log('Available trades for correlation:', convertedTrades.length);
         
         return correlationData;
     };
@@ -331,24 +345,40 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
         <div className="correlation_timeline_chart_container chart_container" style={{ height }}>
             <div className="correlation_timeline_chart_header chart_header">
                 <h3 className="correlation_timeline_chart_title chart_title">{title}</h3>
-                <div className="correlation_timeline_chart_legend chart_legend">
-                    {lineConfigs.map(config => (
-                        <span 
-                            key={config.key}
-                            className={`correlation_timeline_legend_item chart_legend_item ${!visibleLines[config.key] ? 'disabled' : ''}`}
-                            onClick={() => toggleLine(config.key)}
-                            style={{ cursor: 'pointer' }}
+                <div className="correlation_timeline_controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+                    <div className="correlation_timeframe_control" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label style={{ fontSize: '14px', fontWeight: '500', color: 'var(--color-text-secondary)' }}>Time Frame:</label>
+                        <select 
+                            value={timeFrame} 
+                            onChange={(e) => setTimeFrame(parseInt(e.target.value))}
+                            className="correlation-timeframe-select"
                         >
+                            <option value={7}>7 Days</option>
+                            <option value={14}>14 Days</option>
+                            <option value={30}>30 Days</option>
+                            <option value={60}>60 Days</option>
+                            <option value={90}>90 Days</option>
+                        </select>
+                    </div>
+                    <div className="correlation_timeline_chart_legend chart_legend">
+                        {lineConfigs.map(config => (
                             <span 
-                                className="correlation_timeline_legend_line"
-                                style={{ 
-                                    backgroundColor: visibleLines[config.key] ? config.color : 'var(--color-text-tertiary)',
-                                    opacity: visibleLines[config.key] ? 1 : 0.3
-                                }}
-                            ></span>
-                            {config.label}
-                        </span>
-                    ))}
+                                key={config.key}
+                                className={`correlation_timeline_legend_item chart_legend_item ${!visibleLines[config.key] ? 'disabled' : ''}`}
+                                onClick={() => toggleLine(config.key)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <span 
+                                    className="correlation_timeline_legend_line"
+                                    style={{ 
+                                        backgroundColor: visibleLines[config.key] ? config.color : 'var(--color-text-tertiary)',
+                                        opacity: visibleLines[config.key] ? 1 : 0.3
+                                    }}
+                                ></span>
+                                {config.label}
+                            </span>
+                        ))}
+                    </div>
                 </div>
             </div>
             <div className="correlation_timeline_chart_content chart_content">
@@ -374,7 +404,7 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
                                 <line x1={marginLeft} y1={scaleY(-1)} x2={chartWidth - marginRight} y2={scaleY(-1)} className="grid_line" opacity="0.3"/>
                                 
                                 {/* Critical threshold bands */}
-                                <rect 
+                                {/* <rect 
                                     x={marginLeft} 
                                     y={scaleY(1)} 
                                     width={plotWidth} 
@@ -389,7 +419,7 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
                                     height={scaleY(-1) - scaleY(-0.7)}
                                     fill="var(--color-danger-500)" 
                                     opacity="0.1"
-                                />
+                                /> */}
                             </g>
 
                             {/* Correlation lines */}

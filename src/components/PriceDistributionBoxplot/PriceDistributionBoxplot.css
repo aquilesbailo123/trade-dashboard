@@ -11,8 +11,13 @@
 
 .price_distribution_main_area {
     display: flex;
-    height: calc(100% - 40px);
+    height: 200px;
     position: relative;
+}
+
+.price_distribution_boxplot_content {
+    justify-content: center;
+    gap: var(--space-2)
 }
 
 .price_distribution_grid .grid_line {
@@ -27,6 +32,14 @@
     stroke-width: 1;
 }
 
+.price_distribution_chart_area  {
+    height: 200px;
+    margin-right: 48px;
+}
+
+.price_distribution_svg {
+    display: block;
+}
 
 .price_distribution_x_axis {
     /* Inherits from chart_x_axis in chartRules.css */

@@ -38,15 +38,12 @@ function binarySearch(arr: number[], x: number): number {
   return ~lo;
 }
 
-function toUnixSeconds(ts: string): number | null {
-  try {
-    const d = new Date(ts);
-    const ms = d.getTime();
-    if (!isFinite(ms)) return null;
-    return Math.floor(ms / 1000);
-  } catch {
-    return null;
-  }
+function fxOneDayPercentChange(tSec: number): number | null {
+  const DAY = 86400;
+  const pToday = priceAt(tSec);
+  const pYesterday = priceAt(tSec - DAY);
+  if (pToday == null || pYesterday == null || pYesterday === 0) return null;
+  return (pToday - pYesterday) / pYesterday;
 }
 
 interface VolatilityHeatmapChartProps {
@@ -75,36 +72,35 @@ const VolatilityHeatmapChart: React.FC<VolatilityHeatmapChartProps> = ({
 
     // Calculate scatter plot data
     const calculateScatterData = (): ScatterPoint[] => {
-        if (completedTrades.length === 0) return [];
-
         const scatterPoints: ScatterPoint[] = [];
         
-        for (const trade of completedTrades) {
-            const tSec = toUnixSeconds(trade.timestamp);
-            if (tSec === null) continue;
+        completedTrades.forEach(trade => {
+            // Convert trade timestamp to Unix seconds
+            const tradeTimestamp = Math.floor(new Date(trade.timestamp).getTime() / 1000);
             
-            const fxPrice = priceAt(tSec);
-            if (fxPrice === null) continue;
+            // Get FX one-day percentage change for this trade's timestamp
+            const fxOneDayChange = fxOneDayPercentChange(tradeTimestamp);
+            if (fxOneDayChange === null) return; // Skip if no FX data available
             
-            const pnl = trade.actualSalePrice - trade.riskPrice;
+            // Calculate execution deviation percentage
+            const executionDeviation = ((trade.actualSalePrice - trade.riskPrice) / trade.riskPrice) * 100;
             
             scatterPoints.push({
                 id: trade.id,
-                fxPrice,
-                pnl,
-                isAnomaly: false, // Will be calculated below
-                trade
+                trade,
+                fxPrice: fxOneDayChange * 100, // Convert to percentage for X-axis
+                pnl: executionDeviation, // Y-axis is now execution deviation percentage
+                isAnomaly: false // Will be calculated later
             });
-        }
+        });
         
-        // Anomaly detection using statistical outliers
-        if (scatterPoints.length > 0) {
-            const pnlValues = scatterPoints.map(p => p.pnl);
-            const mean = pnlValues.reduce((sum, val) => sum + val, 0) / pnlValues.length;
-            const variance = pnlValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / pnlValues.length;
+        // Calculate anomalies using standard deviation on execution deviation
+        if (scatterPoints.length > 1) {
+            const deviationValues = scatterPoints.map(p => p.pnl);
+            const mean = deviationValues.reduce((sum, val) => sum + val, 0) / deviationValues.length;
+            const variance = deviationValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / deviationValues.length;
             const stdDev = Math.sqrt(variance);
             
-            // Mark points as anomalies if they are more than anomalySensitivity standard deviations from mean
             scatterPoints.forEach(point => {
                 const zScore = Math.abs(point.pnl - mean) / stdDev;
                 point.isAnomaly = zScore > anomalySensitivity;
@@ -121,23 +117,23 @@ const VolatilityHeatmapChart: React.FC<VolatilityHeatmapChartProps> = ({
     const chartHeight = 200;
     
     // Calculate scales with proper margins
-    const fxPrices = scatterData.map(p => p.fxPrice);
-    const pnlValues = scatterData.map(p => p.pnl);
+    const fxChanges = scatterData.map(p => p.fxPrice); // Now FX daily percentage changes
+    const deviationValues = scatterData.map(p => p.pnl); // Now execution deviation percentages
     
-    const fxMin = fxPrices.length > 0 ? Math.min(...fxPrices) : 1.0;
-    const fxMax = fxPrices.length > 0 ? Math.max(...fxPrices) : 1.2;
-    const pnlMin = pnlValues.length > 0 ? Math.min(...pnlValues) : -100;
-    const pnlMax = pnlValues.length > 0 ? Math.max(...pnlValues) : 100;
+    const fxMin = fxChanges.length > 0 ? Math.min(...fxChanges) : -2.0;
+    const fxMax = fxChanges.length > 0 ? Math.max(...fxChanges) : 2.0;
+    const deviationMin = deviationValues.length > 0 ? Math.min(...deviationValues) : -10;
+    const deviationMax = deviationValues.length > 0 ? Math.max(...deviationValues) : 10;
     
     // Add some padding to the ranges
     const fxRange = fxMax - fxMin;
-    const pnlRange = pnlMax - pnlMin;
+    const deviationRange = deviationMax - deviationMin;
     const fxPadding = fxRange * 0.1;
-    const pnlPadding = pnlRange * 0.1;
+    const deviationPadding = deviationRange * 0.1;
     
     // Simple scaling functions like other charts
     const scaleX = (fx: number) => 20 + ((fx - (fxMin - fxPadding)) / (fxRange + 2 * fxPadding)) * 560;
-    const scaleY = (pnl: number) => 20 + ((pnlMax + pnlPadding - pnl) / (pnlRange + 2 * pnlPadding)) * 160;
+    const scaleY = (deviation: number) => 20 + ((deviationMax + deviationPadding - deviation) / (deviationRange + 2 * deviationPadding)) * 160;
 
     const handlePointClick = (point: ScatterPoint) => {
         setSelectedPoint(point);
@@ -170,11 +166,11 @@ const VolatilityHeatmapChart: React.FC<VolatilityHeatmapChartProps> = ({
             <div className="volatility_heatmap_chart_content chart_content">
                 <div className="volatility_heatmap_main_area">
                     <div className="volatility_heatmap_y_axis chart_y_axis">
-                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '10%'}}>${pnlMax.toFixed(0)}</span>
-                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '30%'}}>${(pnlMax * 0.5).toFixed(0)}</span>
-                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '50%'}}>$0</span>
-                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '70%'}}>${(pnlMin * 0.5).toFixed(0)}</span>
-                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '90%'}}>${pnlMin.toFixed(0)}</span>
+                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '10%'}}>+{deviationMax.toFixed(1)}%</span>
+                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '30%'}}>+{(deviationMax * 0.5).toFixed(1)}%</span>
+                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '50%'}}>0%</span>
+                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '70%'}}>{(deviationMin * 0.5).toFixed(1)}%</span>
+                        <span className="volatility_heatmap_y_label chart_y_label" style={{top: '90%'}}>{deviationMin.toFixed(1)}%</span>
                     </div>
                     <div className="volatility_heatmap_chart_area chart_area">
                         <svg className="volatility_heatmap_svg chart_svg" viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
@@ -182,8 +178,8 @@ const VolatilityHeatmapChart: React.FC<VolatilityHeatmapChartProps> = ({
                             <g className="scatter_grid">
                                 {/* Horizontal grid lines */}
                                 <line x1={20} y1={scaleY(0)} x2={580} y2={scaleY(0)} stroke="var(--color-border-secondary)" strokeWidth="1" opacity="0.5"/>
-                                <line x1={20} y1={scaleY(pnlMax * 0.5)} x2={580} y2={scaleY(pnlMax * 0.5)} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
-                                <line x1={20} y1={scaleY(pnlMin * 0.5)} x2={580} y2={scaleY(pnlMin * 0.5)} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1={20} y1={scaleY(deviationMax * 0.5)} x2={580} y2={scaleY(deviationMax * 0.5)} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1={20} y1={scaleY(deviationMin * 0.5)} x2={580} y2={scaleY(deviationMin * 0.5)} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
                                 
                                 {/* Vertical grid lines */}
                                 {[0.25, 0.5, 0.75].map(fraction => {
@@ -254,7 +250,7 @@ const VolatilityHeatmapChart: React.FC<VolatilityHeatmapChartProps> = ({
                                 className="volatility_heatmap_x_label chart_x_label"
                                 style={{ position: 'absolute', left: position, transform: 'translateX(-50%)' }}
                             >
-                                {fxValue.toFixed(3)}
+                                {fxValue >= 0 ? '+' : ''}{fxValue.toFixed(2)}%
                             </span>
                         );
                     })}

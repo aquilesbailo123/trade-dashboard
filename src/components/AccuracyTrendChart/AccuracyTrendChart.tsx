@@ -58,9 +58,11 @@ const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
             <div className="accuracy_trend_chart_content chart_content">
                 <div className="accuracy_trend_main_area">
                     <div className="accuracy_trend_y_axis chart_y_axis">
-                        <span className="accuracy_trend_y_label chart_y_label">+{maxDifference.toFixed(1)}%</span>
-                        <span className="accuracy_trend_y_label chart_y_label">0%</span>
-                        <span className="accuracy_trend_y_label chart_y_label">-{maxDifference.toFixed(1)}%</span>
+                        <span className="accuracy_trend_y_label chart_y_label" style={{top: '10%'}}>+{maxDifference.toFixed(1)}%</span>
+                        <span className="accuracy_trend_y_label chart_y_label" style={{top: '30%'}}>+{(maxDifference * 0.5).toFixed(1)}%</span>
+                        <span className="accuracy_trend_y_label chart_y_label" style={{top: '50%'}}>0%</span>
+                        <span className="accuracy_trend_y_label chart_y_label" style={{top: '70%'}}>-{(maxDifference * 0.5).toFixed(1)}%</span>
+                        <span className="accuracy_trend_y_label chart_y_label" style={{top: '90%'}}>-{maxDifference.toFixed(1)}%</span>
                     </div>
                     <div className="accuracy_trend_chart_area chart_area">
                         <svg className="accuracy_trend_svg chart_svg" viewBox="0 0 600 200">
@@ -73,9 +75,28 @@ const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
                             
                             {/* Grid lines */}
                             <g className="accuracy_trend_grid chart_grid">
-                                <line x1="20" y1="20" x2="580" y2="20" className="grid_line"/>
-                                <line x1="20" y1="100" x2="580" y2="100" className="major_line"/>
-                                <line x1="20" y1="180" x2="580" y2="180" className="grid_line"/>
+                                <line x1="20" y1="20" x2="580" y2="20" stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1="20" y1="60" x2="580" y2="60" stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1="20" y1="100" x2="580" y2="100" stroke="var(--color-border-secondary)" strokeWidth="1" opacity="0.6"/>
+                                <line x1="20" y1="140" x2="580" y2="140" stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1="20" y1="180" x2="580" y2="180" stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                
+                                {/* Vertical grid lines aligned with data points */}
+                                {chartData.map((_, i) => {
+                                    const x = chartData.length === 1 ? 300 : 20 + (i / (chartData.length - 1)) * 560;
+                                    return (
+                                        <line 
+                                            key={i}
+                                            x1={x} 
+                                            y1="20" 
+                                            x2={x} 
+                                            y2="180" 
+                                            stroke="var(--color-border-tertiary)" 
+                                            strokeWidth="0.5" 
+                                            opacity="0.2"
+                                        />
+                                    );
+                                })}
                             </g>
 
                             {/* Zero line - horizontal line at 0% */}
@@ -140,7 +161,9 @@ const AccuracyTrendChart: React.FC<AccuracyTrendChartProps> = ({
                 <div className="accuracy_trend_x_axis chart_x_axis">
                     {chartData.length > 0 && chartData.map((d, i) => {
                         const displayDate = new Date(d.date + 'T00:00:00'); // Add time to ensure proper parsing
-                        const position = chartData.length === 1 ? '50%' : `${5 + (i / (chartData.length - 1)) * 90}%`;
+                        // Align with dot positions: 20px to 580px range, converted to percentage
+                        const dotX = chartData.length === 1 ? 300 : 20 + (i / (chartData.length - 1)) * 560;
+                        const position = `${(dotX / 600) * 100}%`;
                         return (
                             <span 
                                 key={i} 

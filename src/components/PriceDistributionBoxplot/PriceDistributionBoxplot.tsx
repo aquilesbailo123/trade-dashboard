@@ -72,16 +72,16 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
         return Math.sqrt(variance);
     };
 
-    const calculateConfidenceInterval = (data: number[], mean: number, stdDev: number): [number, number] => {
-        if (data.length === 0) return [0, 0];
-        const standardError = stdDev / Math.sqrt(data.length);
-        const margin = 1.96 * standardError; // 95% confidence interval
-        return [mean - margin, mean + margin];
-    };
+    // const calculateConfidenceInterval = (data: number[], mean: number, stdDev: number): [number, number] => {
+    //     if (data.length === 0) return [0, 0];
+    //     const standardError = stdDev / Math.sqrt(data.length);
+    //     const margin = 1.96 * standardError; // 95% confidence interval
+    //     return [mean - margin, mean + margin];
+    // };
 
     const boxplotData = calculateBoxplotData(percentageDifferences);
     const stdDev = calculateStandardDeviation(percentageDifferences, boxplotData.mean);
-    const [ciLower, ciUpper] = calculateConfidenceInterval(percentageDifferences, boxplotData.mean, stdDev);
+    // const [ciLower, ciUpper] = calculateConfidenceInterval(percentageDifferences, boxplotData.mean, stdDev);
     
     // Calculate chart dimensions and scaling for horizontal orientation
     const chartWidth = 600;
@@ -118,25 +118,29 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
             <div className="price_distribution_boxplot_content chart_content">
                 <div className="price_distribution_main_area">
                     <div className="price_distribution_y_axis chart_y_axis">
-                        <span className="price_distribution_y_label chart_y_label">Distribution</span>
+                        <span className="price_distribution_y_label chart_y_label">Dist.</span>
                     </div>
-                    <div className="price_distribution_chart_area chart_area">
+                    <div className="chart_area price_distribution_chart_area">
                         <svg className="price_distribution_svg chart_svg" viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
                             {/* Comprehensive grid lines */}
                             <g className="price_distribution_grid chart_grid">
-                                {/* Vertical grid lines */}
-                                <line x1={marginLeft} y1="20" x2={marginLeft} y2={chartHeight - 20} className="grid_line"/>
-                                <line x1={scaleX(0)} y1="20" x2={scaleX(0)} y2={chartHeight - 20} className="major_line"/>
-                                <line x1={chartWidth - marginRight} y1="20" x2={chartWidth - marginRight} y2={chartHeight - 20} className="grid_line"/>
+                                {/* Major vertical grid lines */}
+                                <line x1={marginLeft} y1="20" x2={marginLeft} y2={chartHeight - 20} stroke="var(--color-border-secondary)" strokeWidth="1" opacity="0.4"/>
+                                <line x1={scaleX(0)} y1="20" x2={scaleX(0)} y2={chartHeight - 20} stroke="var(--color-border-primary)" strokeWidth="2" opacity="0.8"/>
+                                <line x1={chartWidth - marginRight} y1="20" x2={chartWidth - marginRight} y2={chartHeight - 20} stroke="var(--color-border-secondary)" strokeWidth="1" opacity="0.4"/>
                                 
                                 {/* Additional vertical grid lines for better granularity */}
-                                <line x1={scaleX(-dataRange/2)} y1="20" x2={scaleX(-dataRange/2)} y2={chartHeight - 20} className="grid_line" opacity="0.3"/>
-                                <line x1={scaleX(dataRange/2)} y1="20" x2={scaleX(dataRange/2)} y2={chartHeight - 20} className="grid_line" opacity="0.3"/>
+                                <line x1={scaleX(-dataRange * 0.75)} y1="20" x2={scaleX(-dataRange * 0.75)} y2={chartHeight - 20} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1={scaleX(-dataRange * 0.5)} y1="20" x2={scaleX(-dataRange * 0.5)} y2={chartHeight - 20} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1={scaleX(-dataRange * 0.25)} y1="20" x2={scaleX(-dataRange * 0.25)} y2={chartHeight - 20} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1={scaleX(dataRange * 0.25)} y1="20" x2={scaleX(dataRange * 0.25)} y2={chartHeight - 20} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1={scaleX(dataRange * 0.5)} y1="20" x2={scaleX(dataRange * 0.5)} y2={chartHeight - 20} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
+                                <line x1={scaleX(dataRange * 0.75)} y1="20" x2={scaleX(dataRange * 0.75)} y2={chartHeight - 20} stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.3"/>
                                 
                                 {/* Horizontal reference lines */}
-                                <line x1={marginLeft} y1={centerY - boxHeight/2} x2={chartWidth - marginRight} y2={centerY - boxHeight/2} className="grid_line" opacity="0.2"/>
-                                <line x1={marginLeft} y1={centerY} x2={chartWidth - marginRight} y2={centerY} className="grid_line" opacity="0.2"/>
-                                <line x1={marginLeft} y1={centerY + boxHeight/2} x2={chartWidth - marginRight} y2={centerY + boxHeight/2} className="grid_line" opacity="0.2"/>
+                                <line x1={marginLeft} y1="40" x2={chartWidth - marginRight} y2="40" stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.2"/>
+                                <line x1={marginLeft} y1={centerY} x2={chartWidth - marginRight} y2={centerY} stroke="var(--color-border-secondary)" strokeWidth="1" opacity="0.4"/>
+                                <line x1={marginLeft} y1="160" x2={chartWidth - marginRight} y2="160" stroke="var(--color-border-tertiary)" strokeWidth="0.5" opacity="0.2"/>
                             </g>
 
                             {percentageDifferences.length > 0 && (
@@ -213,7 +217,7 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                                     </line>
                                     
                                     {/* Confidence interval for mean */}
-                                    <rect
+                                    {/* <rect
                                         x={scaleX(ciLower)}
                                         y={centerY - 8}
                                         width={scaleX(ciUpper) - scaleX(ciLower)}
@@ -225,7 +229,7 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                                         strokeDasharray="2,2"
                                     >
                                         <title>95% Confidence Interval: [{ciLower.toFixed(2)}%, {ciUpper.toFixed(2)}%]</title>
-                                    </rect>
+                                    </rect> */}
                                     
                                     {/* Standard deviation markers */}
                                     <line 
@@ -292,9 +296,15 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                 </div>
                 <div className="price_distribution_x_axis chart_x_axis">
                     <div className="price_distribution_x_labels">
-                        <span className="price_distribution_x_label chart_x_label">-{dataRange.toFixed(1)}%</span>
-                        <span className="price_distribution_x_label chart_x_label">0%</span>
-                        <span className="price_distribution_x_label chart_x_label">+{dataRange.toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '8%'}}>-{dataRange.toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '20%'}}>-{(dataRange * 0.75).toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '32%'}}>-{(dataRange * 0.5).toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '44%'}}>-{(dataRange * 0.25).toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '50%'}}>0%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '56%'}}>+{(dataRange * 0.25).toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '68%'}}>+{(dataRange * 0.5).toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '80%'}}>+{(dataRange * 0.75).toFixed(1)}%</span>
+                        <span className="price_distribution_x_label chart_x_label" style={{left: '92%'}}>+{dataRange.toFixed(1)}%</span>
                     </div>
                     <div className="price_distribution_stats">
                         <div className="price_distribution_stat_item">

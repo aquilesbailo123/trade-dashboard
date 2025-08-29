@@ -46,6 +46,7 @@ const ProfitLossChart: React.FC<ProfitLossChartProps> = ({
     ];
 
     const maxCount = Math.max(...chartData.map(d => d.count), 1);
+    const totalTrades = completedTrades.length;
 
     return (
         <div className="profit_loss_chart_container chart_container" style={{ height }}>
@@ -69,9 +70,9 @@ const ProfitLossChart: React.FC<ProfitLossChartProps> = ({
             <div className="profit_loss_chart_content chart_content">
                 <div className="profit_loss_main_area">
                     <div className="profit_loss_y_axis chart_y_axis">
-                        <span className="profit_loss_y_label chart_y_label">{maxCount}</span>
-                        <span className="profit_loss_y_label chart_y_label">{Math.floor(maxCount / 2)}</span>
-                        <span className="profit_loss_y_label chart_y_label">0</span>
+                        <span className="profit_loss_y_label chart_y_label">{totalTrades > 0 ? ((maxCount / totalTrades) * 100).toFixed(0) : 0}%</span>
+                        <span className="profit_loss_y_label chart_y_label">{totalTrades > 0 ? ((Math.floor(maxCount / 2) / totalTrades) * 100).toFixed(0) : 0}%</span>
+                        <span className="profit_loss_y_label chart_y_label">0%</span>
                     </div>
                     <div className="profit_loss_chart_area chart_area">
                         <svg className="profit_loss_svg chart_svg" viewBox="0 0 600 200">

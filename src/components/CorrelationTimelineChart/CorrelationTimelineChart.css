@@ -1,0 +1,59 @@
+/* CorrelationTimelineChart specific styles */
+
+/* CorrelationTimelineChart inherits base styles from chartRules.css */
+
+.correlation_timeline_legend_item {
+    /* Inherits from chart_legend_item in chartRules.css */
+    transition: opacity 0.2s ease;
+}
+
+.correlation_timeline_legend_item.disabled {
+    opacity: 0.5;
+}
+
+.correlation_timeline_legend_item:hover {
+    opacity: 0.8;
+}
+
+.correlation_timeline_legend_line {
+    width: 16px;
+    height: 3px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+
+.correlation_timeline_main_area {
+    display: flex;
+    flex: 1;
+    position: relative;
+}
+
+
+.correlation_timeline_line {
+    cursor: pointer;
+    transition: stroke-width 0.2s ease;
+}
+
+.correlation_timeline_line:hover {
+    stroke-width: 3;
+}
+
+
+.correlation_timeline_x_axis {
+    /* Inherits from chart_x_axis in chartRules.css */
+    position: relative;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .correlation_timeline_legend_item {
+        font-size: 11px;
+    }
+    
+    .correlation_timeline_legend_line {
+        width: 12px;
+        height: 2px;
+    }
+}

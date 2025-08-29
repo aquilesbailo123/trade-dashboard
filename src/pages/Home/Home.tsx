@@ -4,6 +4,8 @@ import PriceDistributionBoxplot from '../../components/PriceDistributionBoxplot/
 import AccuracyTrendChart from '../../components/AccuracyTrendChart/AccuracyTrendChart';
 import ProfitLossChart from '../../components/ProfitLossChart/ProfitLossChart';
 import RiskAdjustmentChart from '../../components/RiskAdjustmentChart/RiskAdjustmentChart';
+import CorrelationTimelineChart from '../../components/CorrelationTimelineChart/CorrelationTimelineChart';
+import VolatilityHeatmapChart from '../../components/VolatilityHeatmapChart/VolatilityHeatmapChart';
 import './Home.css';
 
 // Icon components for consistent styling
@@ -248,6 +250,14 @@ const Home: React.FC = () => {
                                     <Icons.RefreshCw size={24} className="icon-primary animate-spin" />
                                     <p className="animate-pulse">Loading risk analysis...</p>
                                 </div>
+                                <div className="home_metal_loading_container">
+                                    <Icons.RefreshCw size={24} className="icon-primary animate-spin" />
+                                    <p className="animate-pulse">Loading correlation analysis...</p>
+                                </div>
+                                <div className="home_metal_loading_container">
+                                    <Icons.RefreshCw size={24} className="icon-primary animate-spin" />
+                                    <p className="animate-pulse">Loading volatility heatmap...</p>
+                                </div>
                             </>
                         ) : tradesError ? (
                             <>
@@ -266,6 +276,14 @@ const Home: React.FC = () => {
                                 <div className="home_metal_error_container">
                                     <Icons.X size={24} className="icon-danger" />
                                     <p>Failed to load risk analysis</p>
+                                </div>
+                                <div className="home_metal_error_container">
+                                    <Icons.X size={24} className="icon-danger" />
+                                    <p>Failed to load correlation data</p>
+                                </div>
+                                <div className="home_metal_error_container">
+                                    <Icons.X size={24} className="icon-danger" />
+                                    <p>Failed to load volatility heatmap</p>
                                 </div>
                             </>
                         ) : (
@@ -289,6 +307,16 @@ const Home: React.FC = () => {
                                     trades={chartFilteredTrades}
                                     height={350}
                                     title="Execution Price vs Risk Price Scatterplot"
+                                />
+                                <CorrelationTimelineChart
+                                    trades={chartFilteredTrades}
+                                    height={350}
+                                    title="30-Day Rolling Correlation Timeline Chart"
+                                />
+                                <VolatilityHeatmapChart
+                                    trades={chartFilteredTrades}
+                                    height={350}
+                                    title="Volatility Clustering Heatmap with Anomaly Detection Overlay"
                                 />
                             </>
                         )}

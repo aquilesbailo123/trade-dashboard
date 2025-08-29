@@ -1,0 +1,280 @@
+/* VolatilityHeatmapChart specific styles */
+
+/* VolatilityHeatmapChart inherits base styles from chartRules.css */
+
+.volatility_heatmap_chart_header {
+    /* Inherits from chart_header in chartRules.css */
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+}
+
+
+.volatility_heatmap_controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.volatility_sensitivity_control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+.volatility_sensitivity_control label {
+    font-weight: 500;
+}
+
+.volatility_sensitivity_control input[type="range"] {
+    width: 80px;
+    height: 4px;
+    background: var(--color-border-secondary);
+    border-radius: 2px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.volatility_sensitivity_control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: var(--color-primary-500);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.volatility_sensitivity_control input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: var(--color-primary-500);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.volatility_anomaly_summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.anomaly_count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-warning-600);
+    background: var(--color-warning-100);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+
+.volatility_heatmap_main_area {
+    display: flex;
+    flex: 1;
+    position: relative;
+}
+
+.volatility_heatmap_y_axis {
+    /* Inherits from chart_y_axis in chartRules.css */
+    justify-content: space-around;
+}
+
+.volatility_heatmap_y_label {
+    /* Inherits from chart_y_label in chartRules.css */
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+
+
+.volatility_heatmap_cell {
+    transition: all 0.2s ease;
+}
+
+.volatility_heatmap_cell:hover {
+    stroke-width: 2;
+    stroke: var(--color-primary-500);
+}
+
+.volatility_anomaly_border {
+    pointer-events: none;
+    animation: anomaly-pulse 2s ease-in-out infinite;
+}
+
+@keyframes anomaly-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.volatility_heatmap_color_scale {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.volatility_color_scale_title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: 4px;
+}
+
+.volatility_color_scale_gradient {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.volatility_color_scale_item {
+    width: 20px;
+    height: 8px;
+    border: 1px solid var(--color-border-secondary);
+}
+
+.volatility_color_scale_labels {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+}
+
+.volatility_heatmap_x_axis {
+    /* Inherits from chart_x_axis in chartRules.css */
+    position: relative;
+}
+
+
+.volatility_cell_details {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    min-width: 250px;
+    z-index: 10;
+}
+
+.volatility_details_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border-secondary);
+}
+
+.volatility_details_header h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.volatility_details_header button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.volatility_details_header button:hover {
+    color: var(--color-text-primary);
+}
+
+.volatility_details_content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.volatility_detail_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.volatility_detail_item span:first-child {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.volatility_detail_item span:last-child {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.volatility_detail_item.anomaly {
+    padding: 8px;
+    background: var(--color-warning-100);
+    border-radius: 4px;
+    border: 1px solid var(--color-warning-300);
+}
+
+.volatility_detail_item.anomaly .anomaly_type {
+    color: var(--color-warning-700);
+    text-transform: capitalize;
+    font-weight: 700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .volatility_heatmap_chart_header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .volatility_heatmap_controls {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .volatility_heatmap_color_scale {
+        position: static;
+        transform: none;
+        flex-direction: row;
+        margin-top: 12px;
+    }
+    
+    .volatility_color_scale_gradient {
+        flex-direction: row;
+    }
+    
+    .volatility_color_scale_labels {
+        flex-direction: row;
+        gap: 60px;
+    }
+    
+    .volatility_cell_details {
+        position: static;
+        margin-top: 12px;
+    }
+}

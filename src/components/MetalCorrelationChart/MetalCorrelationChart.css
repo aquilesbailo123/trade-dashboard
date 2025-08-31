@@ -1,9 +1,8 @@
 .metal_correlation_chart_container {
-    background: var(--color-background-primary);
+    /* background: var(--color-background-primary); */
     border: 1px solid var(--color-border-secondary);
     border-radius: 8px;
     padding: 16px;
-    margin-bottom: 16px;
 }
 
 .metal_correlation_chart_header {

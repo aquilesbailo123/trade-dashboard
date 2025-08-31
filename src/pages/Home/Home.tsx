@@ -293,32 +293,32 @@ const Home: React.FC = () => {
                                 <PriceDistributionBoxplot
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Execution Deviation Distribution"
+                                    title={`Execution Deviation Distribution - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
                                 />
                                 <AccuracyTrendChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Execution Deviation Over Time"
+                                    title={`Execution Deviation Over Time - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
                                 />
                                 <ProfitLossChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Execution Deviation Profit Levels"
+                                    title={`Execution Deviation Profit Levels - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
                                 />
                                 <RiskAdjustmentChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Execution Price vs Risk Price"
+                                    title={`Execution Price vs Risk Price - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
                                 />
                                 <CorrelationTimelineChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="30-Day Rolling Correlation With EUR/USD"
+                                    title={`30-Day Rolling Correlation With EUR/USD - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
                                 />
                                 <VolatilityHeatmapChart
                                     trades={chartFilteredTrades}
                                     height={350}
-                                    title="Execution Deviation vs EUR/USD Return"
+                                    title={`Execution Deviation vs EUR/USD Return - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
                                 />
                                 <MetalCorrelationChart
                                     selectedMetal={chartMetalFilter === 'all' ? 'aluminium' : chartMetalFilter}

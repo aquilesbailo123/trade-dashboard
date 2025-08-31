@@ -110,8 +110,16 @@ const PriceDistributionBoxplot: React.FC<PriceDistributionBoxplotProps> = ({
                 <h3 className="price_distribution_boxplot_title chart_title">{title}</h3>
                 <div className="price_distribution_boxplot_legend chart_legend">
                     <span className="price_distribution_legend_item chart_legend_item">
-                        <span className="price_distribution_legend_box"></span>
-                        Price Difference Distribution
+                        <span className="price_distribution_legend_line" style={{ backgroundColor: 'var(--color-primary-700)', width: '16px', height: '3px' }}></span>
+                        Median
+                    </span>
+                    <span className="price_distribution_legend_item chart_legend_item">
+                        <span className="price_distribution_legend_line" style={{ width: '16px', height: '3px', borderTop: '2px dashed var(--color-warning-500)', backgroundColor: 'transparent' }}></span>
+                        Mean
+                    </span>
+                    <span className="price_distribution_legend_item chart_legend_item">
+                        <span className="price_distribution_legend_dot" style={{ backgroundColor: 'var(--color-danger-500)', width: '8px', height: '8px', borderRadius: '50%' }}></span>
+                        Outliers
                     </span>
                 </div>
             </div>

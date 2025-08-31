@@ -1,0 +1,1612 @@
+{
+  "Aluminium": {
+    "correlation": [
+      {
+        "feature": "Cobalt",
+        "correlation": 0.469951
+      },
+      {
+        "feature": "Gbp",
+        "correlation": 0.308305
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "correlation": 0.279012
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "correlation": 0.258039
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "correlation": 0.234402
+      },
+      {
+        "feature": "Prev Week Cad",
+        "correlation": -0.219148
+      },
+      {
+        "feature": "Spx",
+        "correlation": -0.21064
+      },
+      {
+        "feature": "Tin",
+        "correlation": 0.193097
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "correlation": 0.188908
+      },
+      {
+        "feature": "Prev Week Dax",
+        "correlation": 0.168459
+      },
+      {
+        "feature": "Oil Brent",
+        "correlation": -0.149029
+      },
+      {
+        "feature": "Molybdenum",
+        "correlation": -0.144154
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "correlation": 0.134673
+      },
+      {
+        "feature": "Zinc",
+        "correlation": 0.134139
+      },
+      {
+        "feature": "Oil Wti",
+        "correlation": -0.120685
+      },
+      {
+        "feature": "Cad",
+        "correlation": -0.111064
+      },
+      {
+        "feature": "Ftse",
+        "correlation": -0.080212
+      },
+      {
+        "feature": "Copper",
+        "correlation": 0.069806
+      },
+      {
+        "feature": "Nickel",
+        "correlation": 0.05744
+      },
+      {
+        "feature": "Prev Week Aud",
+        "correlation": -0.048888
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "correlation": -0.043709
+      },
+      {
+        "feature": "Dax",
+        "correlation": -0.040037
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "correlation": -0.035351
+      },
+      {
+        "feature": "Prev Week Spx",
+        "correlation": -0.035127
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "correlation": 0.020476
+      },
+      {
+        "feature": "Aud",
+        "correlation": 0.020167
+      },
+      {
+        "feature": "Prev Week Tin",
+        "correlation": 0.014072
+      },
+      {
+        "feature": "Prev Week Copper",
+        "correlation": 0.008232
+      }
+    ],
+    "model_importance": [
+      {
+        "feature": "Cobalt",
+        "importance": 0.197928
+      },
+      {
+        "feature": "Gbp",
+        "importance": 0.157395
+      },
+      {
+        "feature": "Spx",
+        "importance": 0.075742
+      },
+      {
+        "feature": "Nickel",
+        "importance": 0.066967
+      },
+      {
+        "feature": "Molybdenum",
+        "importance": 0.064853
+      },
+      {
+        "feature": "Prev Week Cad",
+        "importance": 0.054094
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "importance": 0.047803
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "importance": 0.037349
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "importance": 0.030052
+      },
+      {
+        "feature": "Ftse",
+        "importance": 0.026462
+      },
+      {
+        "feature": "Prev Week Tin",
+        "importance": 0.025903
+      },
+      {
+        "feature": "Prev Week Aud",
+        "importance": 0.022276
+      },
+      {
+        "feature": "Aud",
+        "importance": 0.020426
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "importance": 0.019799
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "importance": 0.01902
+      },
+      {
+        "feature": "Copper",
+        "importance": 0.018862
+      },
+      {
+        "feature": "Prev Week Dax",
+        "importance": 0.015105
+      },
+      {
+        "feature": "Cad",
+        "importance": 0.014843
+      },
+      {
+        "feature": "Tin",
+        "importance": 0.014276
+      },
+      {
+        "feature": "Zinc",
+        "importance": 0.011777
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "importance": 0.011657
+      },
+      {
+        "feature": "Oil Brent",
+        "importance": 0.011576
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "importance": 0.011095
+      },
+      {
+        "feature": "Prev Week Copper",
+        "importance": 0.008419
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "importance": 0.0066
+      },
+      {
+        "feature": "Prev Week Spx",
+        "importance": 0.004962
+      },
+      {
+        "feature": "Dax",
+        "importance": 0.002792
+      },
+      {
+        "feature": "Oil Wti",
+        "importance": 0.001967
+      }
+    ]
+  },
+  "Cobalt": {
+    "correlation": [
+      {
+        "feature": "Prev Week Aluminium",
+        "correlation": 0.735829
+      },
+      {
+        "feature": "Aluminium",
+        "correlation": 0.469951
+      },
+      {
+        "feature": "Nickel",
+        "correlation": 0.34917
+      },
+      {
+        "feature": "Zinc",
+        "correlation": 0.281561
+      },
+      {
+        "feature": "Tin",
+        "correlation": 0.268393
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "correlation": 0.260205
+      },
+      {
+        "feature": "Molybdenum",
+        "correlation": -0.227755
+      },
+      {
+        "feature": "Prev Week Spx",
+        "correlation": -0.218084
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "correlation": 0.217413
+      },
+      {
+        "feature": "Spx",
+        "correlation": -0.190189
+      },
+      {
+        "feature": "Gbp",
+        "correlation": 0.14195
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "correlation": -0.115217
+      },
+      {
+        "feature": "Prev Week Copper",
+        "correlation": 0.100591
+      },
+      {
+        "feature": "Prev Week Cad",
+        "correlation": -0.092642
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "correlation": 0.081445
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "correlation": -0.079149
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "correlation": -0.075528
+      },
+      {
+        "feature": "Aud",
+        "correlation": 0.073281
+      },
+      {
+        "feature": "Ftse",
+        "correlation": -0.059245
+      },
+      {
+        "feature": "Prev Week Dax",
+        "correlation": 0.057135
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "correlation": -0.035493
+      },
+      {
+        "feature": "Oil Wti",
+        "correlation": -0.028497
+      },
+      {
+        "feature": "Oil Brent",
+        "correlation": -0.020968
+      },
+      {
+        "feature": "Prev Week Aud",
+        "correlation": -0.019611
+      },
+      {
+        "feature": "Cad",
+        "correlation": 0.019556
+      },
+      {
+        "feature": "Prev Week Tin",
+        "correlation": -0.014404
+      },
+      {
+        "feature": "Dax",
+        "correlation": -0.007212
+      },
+      {
+        "feature": "Copper",
+        "correlation": 0.001543
+      }
+    ],
+    "model_importance": [
+      {
+        "feature": "Prev Week Aluminium",
+        "importance": 0.515087
+      },
+      {
+        "feature": "Aluminium",
+        "importance": 0.108455
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "importance": 0.095718
+      },
+      {
+        "feature": "Molybdenum",
+        "importance": 0.067035
+      },
+      {
+        "feature": "Nickel",
+        "importance": 0.039609
+      },
+      {
+        "feature": "Cad",
+        "importance": 0.027046
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "importance": 0.022254
+      },
+      {
+        "feature": "Tin",
+        "importance": 0.016349
+      },
+      {
+        "feature": "Aud",
+        "importance": 0.013918
+      },
+      {
+        "feature": "Prev Week Spx",
+        "importance": 0.01166
+      },
+      {
+        "feature": "Prev Week Aud",
+        "importance": 0.010645
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "importance": 0.010484
+      },
+      {
+        "feature": "Gbp",
+        "importance": 0.009037
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "importance": 0.007368
+      },
+      {
+        "feature": "Oil Brent",
+        "importance": 0.006519
+      },
+      {
+        "feature": "Prev Week Cad",
+        "importance": 0.006476
+      },
+      {
+        "feature": "Zinc",
+        "importance": 0.005808
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "importance": 0.004359
+      },
+      {
+        "feature": "Prev Week Copper",
+        "importance": 0.004181
+      },
+      {
+        "feature": "Prev Week Tin",
+        "importance": 0.003686
+      },
+      {
+        "feature": "Prev Week Dax",
+        "importance": 0.003657
+      },
+      {
+        "feature": "Spx",
+        "importance": 0.003647
+      },
+      {
+        "feature": "Copper",
+        "importance": 0.003141
+      },
+      {
+        "feature": "Dax",
+        "importance": 0.001769
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "importance": 0.001382
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "importance": 0.000402
+      },
+      {
+        "feature": "Ftse",
+        "importance": 0.000173
+      },
+      {
+        "feature": "Oil Wti",
+        "importance": 0.000137
+      }
+    ]
+  },
+  "Copper": {
+    "correlation": [
+      {
+        "feature": "Dax",
+        "correlation": 0.672296
+      },
+      {
+        "feature": "Zinc",
+        "correlation": 0.634665
+      },
+      {
+        "feature": "Nickel",
+        "correlation": 0.621382
+      },
+      {
+        "feature": "Aud",
+        "correlation": 0.616208
+      },
+      {
+        "feature": "Ftse",
+        "correlation": 0.549615
+      },
+      {
+        "feature": "Spx",
+        "correlation": 0.464724
+      },
+      {
+        "feature": "Cad",
+        "correlation": 0.448362
+      },
+      {
+        "feature": "Gbp",
+        "correlation": 0.372769
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "correlation": -0.280837
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "correlation": 0.270669
+      },
+      {
+        "feature": "Prev Week Cad",
+        "correlation": -0.232784
+      },
+      {
+        "feature": "Tin",
+        "correlation": 0.207846
+      },
+      {
+        "feature": "Prev Week Aud",
+        "correlation": -0.20497
+      },
+      {
+        "feature": "Prev Week Tin",
+        "correlation": -0.197536
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "correlation": 0.122712
+      },
+      {
+        "feature": "Prev Week Spx",
+        "correlation": 0.080368
+      },
+      {
+        "feature": "Aluminium",
+        "correlation": 0.069806
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "correlation": 0.057242
+      },
+      {
+        "feature": "Prev Week Dax",
+        "correlation": 0.056574
+      },
+      {
+        "feature": "Molybdenum",
+        "correlation": -0.04798
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "correlation": -0.046338
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "correlation": 0.037477
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "correlation": -0.021138
+      },
+      {
+        "feature": "Oil Brent",
+        "correlation": 0.016921
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "correlation": -0.011113
+      },
+      {
+        "feature": "Oil Wti",
+        "correlation": -0.00743
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "correlation": 0.003072
+      },
+      {
+        "feature": "Cobalt",
+        "correlation": 0.001543
+      }
+    ],
+    "model_importance": [
+      {
+        "feature": "Aud",
+        "importance": 0.119741
+      },
+      {
+        "feature": "Nickel",
+        "importance": 0.114927
+      },
+      {
+        "feature": "Zinc",
+        "importance": 0.085866
+      },
+      {
+        "feature": "Dax",
+        "importance": 0.079129
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "importance": 0.077789
+      },
+      {
+        "feature": "Prev Week Tin",
+        "importance": 0.059658
+      },
+      {
+        "feature": "Cad",
+        "importance": 0.053275
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "importance": 0.049492
+      },
+      {
+        "feature": "Spx",
+        "importance": 0.037736
+      },
+      {
+        "feature": "Cobalt",
+        "importance": 0.036354
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "importance": 0.03473
+      },
+      {
+        "feature": "Prev Week Cad",
+        "importance": 0.033379
+      },
+      {
+        "feature": "Molybdenum",
+        "importance": 0.032957
+      },
+      {
+        "feature": "Oil Brent",
+        "importance": 0.028507
+      },
+      {
+        "feature": "Tin",
+        "importance": 0.026793
+      },
+      {
+        "feature": "Aluminium",
+        "importance": 0.024261
+      },
+      {
+        "feature": "Oil Wti",
+        "importance": 0.016274
+      },
+      {
+        "feature": "Prev Week Dax",
+        "importance": 0.015349
+      },
+      {
+        "feature": "Ftse",
+        "importance": 0.012411
+      },
+      {
+        "feature": "Gbp",
+        "importance": 0.011087
+      },
+      {
+        "feature": "Prev Week Aud",
+        "importance": 0.009625
+      },
+      {
+        "feature": "Prev Week Spx",
+        "importance": 0.008522
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "importance": 0.008209
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "importance": 0.008092
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "importance": 0.006622
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "importance": 0.004265
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "importance": 0.004091
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "importance": 0.000859
+      }
+    ]
+  },
+  "Nickel": {
+    "correlation": [
+      {
+        "feature": "Dax",
+        "correlation": 0.722842
+      },
+      {
+        "feature": "Zinc",
+        "correlation": 0.702838
+      },
+      {
+        "feature": "Copper",
+        "correlation": 0.621382
+      },
+      {
+        "feature": "Ftse",
+        "correlation": 0.598197
+      },
+      {
+        "feature": "Aud",
+        "correlation": 0.583817
+      },
+      {
+        "feature": "Prev Week Tin",
+        "correlation": -0.548831
+      },
+      {
+        "feature": "Spx",
+        "correlation": 0.418957
+      },
+      {
+        "feature": "Cobalt",
+        "correlation": 0.34917
+      },
+      {
+        "feature": "Prev Week Aud",
+        "correlation": -0.347449
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "correlation": -0.310019
+      },
+      {
+        "feature": "Prev Week Copper",
+        "correlation": -0.288515
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "correlation": -0.288109
+      },
+      {
+        "feature": "Cad",
+        "correlation": 0.273404
+      },
+      {
+        "feature": "Gbp",
+        "correlation": 0.26265
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "correlation": -0.251665
+      },
+      {
+        "feature": "Prev Week Cad",
+        "correlation": -0.207134
+      },
+      {
+        "feature": "Prev Week Dax",
+        "correlation": -0.188181
+      },
+      {
+        "feature": "Prev Week Spx",
+        "correlation": -0.172725
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "correlation": -0.148755
+      },
+      {
+        "feature": "Tin",
+        "correlation": 0.126596
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "correlation": -0.10988
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "correlation": 0.104846
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "correlation": -0.091819
+      },
+      {
+        "feature": "Molybdenum",
+        "correlation": -0.089361
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "correlation": 0.060717
+      },
+      {
+        "feature": "Aluminium",
+        "correlation": 0.05744
+      },
+      {
+        "feature": "Oil Brent",
+        "correlation": 0.032032
+      },
+      {
+        "feature": "Oil Wti",
+        "correlation": 0.002103
+      }
+    ],
+    "model_importance": [
+      {
+        "feature": "Copper",
+        "importance": 0.189261
+      },
+      {
+        "feature": "Zinc",
+        "importance": 0.125564
+      },
+      {
+        "feature": "Cobalt",
+        "importance": 0.0931
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "importance": 0.086662
+      },
+      {
+        "feature": "Spx",
+        "importance": 0.062718
+      },
+      {
+        "feature": "Dax",
+        "importance": 0.060833
+      },
+      {
+        "feature": "Prev Week Tin",
+        "importance": 0.046931
+      },
+      {
+        "feature": "Tin",
+        "importance": 0.041642
+      },
+      {
+        "feature": "Ftse",
+        "importance": 0.035061
+      },
+      {
+        "feature": "Prev Week Spx",
+        "importance": 0.032197
+      },
+      {
+        "feature": "Prev Week Cad",
+        "importance": 0.025391
+      },
+      {
+        "feature": "Aud",
+        "importance": 0.022738
+      },
+      {
+        "feature": "Aluminium",
+        "importance": 0.022507
+      },
+      {
+        "feature": "Prev Week Dax",
+        "importance": 0.019479
+      },
+      {
+        "feature": "Oil Brent",
+        "importance": 0.01856
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "importance": 0.017976
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "importance": 0.014871
+      },
+      {
+        "feature": "Prev Week Copper",
+        "importance": 0.013633
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "importance": 0.013175
+      },
+      {
+        "feature": "Oil Wti",
+        "importance": 0.012531
+      },
+      {
+        "feature": "Molybdenum",
+        "importance": 0.01201
+      },
+      {
+        "feature": "Prev Week Aud",
+        "importance": 0.011271
+      },
+      {
+        "feature": "Gbp",
+        "importance": 0.005495
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "importance": 0.004546
+      },
+      {
+        "feature": "Cad",
+        "importance": 0.00368
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "importance": 0.003219
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "importance": 0.002585
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "importance": 0.002361
+      }
+    ]
+  },
+  "Molybdenum": {
+    "correlation": [
+      {
+        "feature": "Gbp",
+        "correlation": -0.259559
+      },
+      {
+        "feature": "Tin",
+        "correlation": -0.259057
+      },
+      {
+        "feature": "Cobalt",
+        "correlation": -0.227755
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "correlation": -0.211823
+      },
+      {
+        "feature": "Prev Week Cad",
+        "correlation": 0.192787
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "correlation": -0.187627
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "correlation": 0.182205
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "correlation": 0.18109
+      },
+      {
+        "feature": "Prev Week Spx",
+        "correlation": 0.157341
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "correlation": -0.15661
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "correlation": -0.148854
+      },
+      {
+        "feature": "Aluminium",
+        "correlation": -0.144154
+      },
+      {
+        "feature": "Prev Week Aud",
+        "correlation": 0.142317
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "correlation": -0.129831
+      },
+      {
+        "feature": "Aud",
+        "correlation": -0.128305
+      },
+      {
+        "feature": "Ftse",
+        "correlation": 0.126529
+      },
+      {
+        "feature": "Oil Wti",
+        "correlation": 0.110671
+      },
+      {
+        "feature": "Zinc",
+        "correlation": -0.105741
+      },
+      {
+        "feature": "Dax",
+        "correlation": -0.10518
+      },
+      {
+        "feature": "Nickel",
+        "correlation": -0.089361
+      },
+      {
+        "feature": "Spx",
+        "correlation": 0.086865
+      },
+      {
+        "feature": "Oil Brent",
+        "correlation": 0.08104
+      },
+      {
+        "feature": "Prev Week Tin",
+        "correlation": -0.077444
+      },
+      {
+        "feature": "Cad",
+        "correlation": -0.075931
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "correlation": 0.054813
+      },
+      {
+        "feature": "Copper",
+        "correlation": -0.04798
+      },
+      {
+        "feature": "Prev Week Copper",
+        "correlation": 0.045652
+      },
+      {
+        "feature": "Prev Week Dax",
+        "correlation": 0.020929
+      }
+    ],
+    "model_importance": [
+      {
+        "feature": "Tin",
+        "importance": 0.097249
+      },
+      {
+        "feature": "Prev Week Cad",
+        "importance": 0.089287
+      },
+      {
+        "feature": "Ftse",
+        "importance": 0.083589
+      },
+      {
+        "feature": "Zinc",
+        "importance": 0.052019
+      },
+      {
+        "feature": "Prev Week Spx",
+        "importance": 0.051754
+      },
+      {
+        "feature": "Gbp",
+        "importance": 0.048803
+      },
+      {
+        "feature": "Dax",
+        "importance": 0.048478
+      },
+      {
+        "feature": "Oil Brent",
+        "importance": 0.046185
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "importance": 0.045895
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "importance": 0.040836
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "importance": 0.037119
+      },
+      {
+        "feature": "Copper",
+        "importance": 0.037041
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "importance": 0.035781
+      },
+      {
+        "feature": "Cad",
+        "importance": 0.034797
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "importance": 0.030511
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "importance": 0.027122
+      },
+      {
+        "feature": "Oil Wti",
+        "importance": 0.02405
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "importance": 0.022686
+      },
+      {
+        "feature": "Nickel",
+        "importance": 0.022383
+      },
+      {
+        "feature": "Prev Week Tin",
+        "importance": 0.021193
+      },
+      {
+        "feature": "Cobalt",
+        "importance": 0.019934
+      },
+      {
+        "feature": "Prev Week Aud",
+        "importance": 0.018718
+      },
+      {
+        "feature": "Prev Week Dax",
+        "importance": 0.016566
+      },
+      {
+        "feature": "Spx",
+        "importance": 0.015579
+      },
+      {
+        "feature": "Prev Week Copper",
+        "importance": 0.013211
+      },
+      {
+        "feature": "Aud",
+        "importance": 0.009936
+      },
+      {
+        "feature": "Aluminium",
+        "importance": 0.005511
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "importance": 0.003767
+      }
+    ]
+  },
+  "Tin": {
+    "correlation": [
+      {
+        "feature": "Prev Week Copper",
+        "correlation": 0.519407
+      },
+      {
+        "feature": "Prev Week Dax",
+        "correlation": 0.373367
+      },
+      {
+        "feature": "Zinc",
+        "correlation": 0.358101
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "correlation": 0.328295
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "correlation": 0.299721
+      },
+      {
+        "feature": "Cobalt",
+        "correlation": 0.268393
+      },
+      {
+        "feature": "Molybdenum",
+        "correlation": -0.259057
+      },
+      {
+        "feature": "Copper",
+        "correlation": 0.207846
+      },
+      {
+        "feature": "Aluminium",
+        "correlation": 0.193097
+      },
+      {
+        "feature": "Prev Week Spx",
+        "correlation": 0.18547
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "correlation": 0.183522
+      },
+      {
+        "feature": "Aud",
+        "correlation": 0.17841
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "correlation": 0.156865
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "correlation": 0.150726
+      },
+      {
+        "feature": "Ftse",
+        "correlation": 0.141836
+      },
+      {
+        "feature": "Prev Week Cad",
+        "correlation": -0.134256
+      },
+      {
+        "feature": "Nickel",
+        "correlation": 0.126596
+      },
+      {
+        "feature": "Oil Brent",
+        "correlation": 0.118636
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "correlation": 0.117719
+      },
+      {
+        "feature": "Dax",
+        "correlation": 0.117445
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "correlation": 0.090029
+      },
+      {
+        "feature": "Oil Wti",
+        "correlation": 0.08654
+      },
+      {
+        "feature": "Gbp",
+        "correlation": 0.086343
+      },
+      {
+        "feature": "Cad",
+        "correlation": -0.067621
+      },
+      {
+        "feature": "Prev Week Aud",
+        "correlation": 0.040119
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "correlation": -0.039621
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "correlation": -0.023152
+      },
+      {
+        "feature": "Spx",
+        "correlation": -0.008965
+      }
+    ],
+    "model_importance": [
+      {
+        "feature": "Prev Week Copper",
+        "importance": 0.128877
+      },
+      {
+        "feature": "Aud",
+        "importance": 0.128864
+      },
+      {
+        "feature": "Prev Week Spx",
+        "importance": 0.096101
+      },
+      {
+        "feature": "Zinc",
+        "importance": 0.077638
+      },
+      {
+        "feature": "Ftse",
+        "importance": 0.069056
+      },
+      {
+        "feature": "Prev Week Aud",
+        "importance": 0.06225
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "importance": 0.044536
+      },
+      {
+        "feature": "Prev Week Dax",
+        "importance": 0.04308
+      },
+      {
+        "feature": "Dax",
+        "importance": 0.033733
+      },
+      {
+        "feature": "Molybdenum",
+        "importance": 0.032669
+      },
+      {
+        "feature": "Aluminium",
+        "importance": 0.02758
+      },
+      {
+        "feature": "Prev Week Zinc",
+        "importance": 0.025589
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "importance": 0.021763
+      },
+      {
+        "feature": "Cad",
+        "importance": 0.021043
+      },
+      {
+        "feature": "Nickel",
+        "importance": 0.019513
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "importance": 0.019423
+      },
+      {
+        "feature": "Spx",
+        "importance": 0.018418
+      },
+      {
+        "feature": "Prev Week Cad",
+        "importance": 0.018368
+      },
+      {
+        "feature": "Gbp",
+        "importance": 0.016154
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "importance": 0.01587
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "importance": 0.01561
+      },
+      {
+        "feature": "Oil Brent",
+        "importance": 0.01474
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "importance": 0.010861
+      },
+      {
+        "feature": "Copper",
+        "importance": 0.010294
+      },
+      {
+        "feature": "Cobalt",
+        "importance": 0.00888
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "importance": 0.007875
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "importance": 0.007034
+      },
+      {
+        "feature": "Oil Wti",
+        "importance": 0.004179
+      }
+    ]
+  },
+  "Zinc": {
+    "correlation": [
+      {
+        "feature": "Nickel",
+        "correlation": 0.702838
+      },
+      {
+        "feature": "Dax",
+        "correlation": 0.656287
+      },
+      {
+        "feature": "Copper",
+        "correlation": 0.634665
+      },
+      {
+        "feature": "Spx",
+        "correlation": 0.545956
+      },
+      {
+        "feature": "Ftse",
+        "correlation": 0.536547
+      },
+      {
+        "feature": "Aud",
+        "correlation": 0.535701
+      },
+      {
+        "feature": "Tin",
+        "correlation": 0.358101
+      },
+      {
+        "feature": "Prev Week Aud",
+        "correlation": -0.29902
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "correlation": -0.294697
+      },
+      {
+        "feature": "Cobalt",
+        "correlation": 0.281561
+      },
+      {
+        "feature": "Gbp",
+        "correlation": 0.26654
+      },
+      {
+        "feature": "Prev Week Cad",
+        "correlation": -0.221477
+      },
+      {
+        "feature": "Prev Week Spx",
+        "correlation": -0.20444
+      },
+      {
+        "feature": "Prev Week Tin",
+        "correlation": -0.197458
+      },
+      {
+        "feature": "Cad",
+        "correlation": 0.196956
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "correlation": -0.157243
+      },
+      {
+        "feature": "Aluminium",
+        "correlation": 0.134139
+      },
+      {
+        "feature": "Prev Week Copper",
+        "correlation": -0.129595
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "correlation": 0.119353
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "correlation": 0.114264
+      },
+      {
+        "feature": "Prev Week Dax",
+        "correlation": -0.114051
+      },
+      {
+        "feature": "Molybdenum",
+        "correlation": -0.105741
+      },
+      {
+        "feature": "Oil Wti",
+        "correlation": -0.09713
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "correlation": 0.089725
+      },
+      {
+        "feature": "Oil Brent",
+        "correlation": -0.079854
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "correlation": 0.072005
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "correlation": 0.045176
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "correlation": -0.018961
+      }
+    ],
+    "model_importance": [
+      {
+        "feature": "Nickel",
+        "importance": 0.294729
+      },
+      {
+        "feature": "Tin",
+        "importance": 0.089014
+      },
+      {
+        "feature": "Prev Week Gbp",
+        "importance": 0.069751
+      },
+      {
+        "feature": "Dax",
+        "importance": 0.049108
+      },
+      {
+        "feature": "Prev Week Cad",
+        "importance": 0.046164
+      },
+      {
+        "feature": "Copper",
+        "importance": 0.044413
+      },
+      {
+        "feature": "Ftse",
+        "importance": 0.043631
+      },
+      {
+        "feature": "Cobalt",
+        "importance": 0.037301
+      },
+      {
+        "feature": "Prev Week Ftse",
+        "importance": 0.036285
+      },
+      {
+        "feature": "Oil Wti",
+        "importance": 0.035939
+      },
+      {
+        "feature": "Prev Week Spx",
+        "importance": 0.030803
+      },
+      {
+        "feature": "Prev Week Tin",
+        "importance": 0.03012
+      },
+      {
+        "feature": "Prev Week Copper",
+        "importance": 0.026206
+      },
+      {
+        "feature": "Spx",
+        "importance": 0.025565
+      },
+      {
+        "feature": "Oil Brent",
+        "importance": 0.019037
+      },
+      {
+        "feature": "Prev Week Dax",
+        "importance": 0.017318
+      },
+      {
+        "feature": "Prev Week Oil Brent",
+        "importance": 0.016054
+      },
+      {
+        "feature": "Molybdenum",
+        "importance": 0.014626
+      },
+      {
+        "feature": "Prev Week Nickel",
+        "importance": 0.012047
+      },
+      {
+        "feature": "Aud",
+        "importance": 0.011819
+      },
+      {
+        "feature": "Prev Week Oil Wti",
+        "importance": 0.011539
+      },
+      {
+        "feature": "Prev Week Aud",
+        "importance": 0.009911
+      },
+      {
+        "feature": "Prev Week Cobalt",
+        "importance": 0.007585
+      },
+      {
+        "feature": "Prev Week Molybdenum",
+        "importance": 0.006855
+      },
+      {
+        "feature": "Gbp",
+        "importance": 0.005239
+      },
+      {
+        "feature": "Cad",
+        "importance": 0.003969
+      },
+      {
+        "feature": "Prev Week Aluminium",
+        "importance": 0.002719
+      },
+      {
+        "feature": "Aluminium",
+        "importance": 0.002255
+      }
+    ]
+  }
+}

@@ -6,6 +6,8 @@ import ProfitLossChart from '../../components/ProfitLossChart/ProfitLossChart';
 import RiskAdjustmentChart from '../../components/RiskAdjustmentChart/RiskAdjustmentChart';
 import CorrelationTimelineChart from '../../components/CorrelationTimelineChart/CorrelationTimelineChart';
 import VolatilityHeatmapChart from '../../components/VolatilityHeatmapChart/VolatilityHeatmapChart';
+import MetalCorrelationChart from '../../components/MetalCorrelationChart/MetalCorrelationChart';
+import MetalImportanceChart from '../../components/MetalImportanceChart/MetalImportanceChart';
 import './Home.css';
 
 // Icon components for consistent styling
@@ -317,6 +319,16 @@ const Home: React.FC = () => {
                                     trades={chartFilteredTrades}
                                     height={350}
                                     title="Execution Deviation vs EUR/USD Return"
+                                />
+                                <MetalCorrelationChart
+                                    selectedMetal={chartMetalFilter === 'all' ? 'aluminium' : chartMetalFilter}
+                                    height={400}
+                                    title={`Feature Correlations - ${chartMetalFilter === 'all' ? 'Aluminium' : chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                                <MetalImportanceChart
+                                    selectedMetal={chartMetalFilter === 'all' ? 'aluminium' : chartMetalFilter}
+                                    height={400}
+                                    title={`Deep Learning Feature Importance - ${chartMetalFilter === 'all' ? 'Aluminium' : chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
                                 />
                             </>
                         )}

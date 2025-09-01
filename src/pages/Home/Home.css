@@ -3686,9 +3686,9 @@ padding: 0;
 
 .home_metal_chart_filter_header h4 {
     margin: 0;
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--color-text-primary);
+    color: var(--color-bg-secondary);
 }
 
 .home_metal_chart_filter_dropdown {

@@ -457,31 +457,7 @@ const Home: React.FC = () => {
                         </div>
                         
                         <div className="home_metal_table_container">
-                            {tradesError ? (
-                                <div className="home_metal_empty_state">
-                                    <div className="home_metal_empty_state_icon">
-                                        <Icons.X size={48} className="icon-danger" />
-                                    </div>
-                                    <h3>Unable to load metal trades</h3>
-                                    <p>Please check the connection and try again.</p>
-                                    <button className="home_metal_refresh_button" onClick={handleRefresh}>
-                                        <Icons.RefreshCw size={16} /> Try Again
-                                    </button>
-                                </div>
-                            ) : tradesLoading ? (
-                                <div className="home_metal_empty_state">
-                                    <div className="home_metal_empty_state_icon">
-                                        <Icons.RefreshCw size={48} className="icon-primary" />
-                                    </div>
-                                    <h3>Loading metal trades...</h3>
-                                    <p>Fetching latest trading data.</p>
-                                </div>
-                            ) : paginatedTrades.length === 0 ? (
-                                <div className="home_metal_empty_state">
-                                    <h3>No trades found</h3>
-                                    <p>No trades match the selected filters.</p>
-                                </div>
-                            ) : (
+                            {paginatedTrades && paginatedTrades?.length > 0 ? (
                                 <table className="home_metal_trades_table">
                                     <thead>
                                         <tr>
@@ -535,7 +511,26 @@ const Home: React.FC = () => {
                                         ))}
                                     </tbody>
                                 </table>
-                            )}
+                            ) : tradesLoading ? (
+                                <div className="home_metal_empty_state">
+                                    <div className="home_metal_empty_state_icon">
+                                        <Icons.RefreshCw size={48} className="icon-primary" />
+                                    </div>
+                                    <h3>Loading metal trades...</h3>
+                                    <p>Fetching latest trading data.</p>
+                                </div>
+                            ) : tradesError ? (
+                                <div className="home_metal_empty_state">
+                                    <div className="home_metal_empty_state_icon">
+                                        <Icons.X size={48} className="icon-danger" />
+                                    </div>
+                                    <h3>Unable to load metal trades</h3>
+                                    <p>Please check the connection and try again.</p>
+                                    <button className="home_metal_refresh_button" onClick={handleRefresh}>
+                                        <Icons.RefreshCw size={16} /> Try Again
+                                    </button>
+                                </div>
+                            ) : null}
                         </div>
                         {!tradesError && !tradesLoading && paginatedTrades.length > 0 && (
                             <div className="home_metal_pagination">

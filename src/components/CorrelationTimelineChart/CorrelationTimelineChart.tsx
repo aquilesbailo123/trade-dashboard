@@ -243,7 +243,7 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
     height = 300, 
     title 
 }) => {
-    const [timeFrame, setTimeFrame] = useState<number>(7); // Default 30 days
+    const [timeFrame, setTimeFrame] = useState<number>(5); // Default 30 days
     const [visibleLines, setVisibleLines] = useState({
         day0: true,
         day1: true,
@@ -384,7 +384,7 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
                             onChange={(e) => setTimeFrame(parseInt(e.target.value))}
                             className="correlation-timeframe-select"
                         >
-                            <option value={7}>7 Days</option>
+                            <option value={5}>5 Days</option>
                             <option value={14}>14 Days</option>
                             <option value={30}>30 Days</option>
                             <option value={60}>60 Days</option>

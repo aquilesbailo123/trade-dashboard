@@ -57,7 +57,7 @@ const Home: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(15);
     const [metalFilter, setMetalFilter] = useState<'all' | 'alloy' | 'copper' | 'cobalt' | 'aluminium' | 'nickel' | 'zinc'>('all');
-    const [chartMetalFilter, setChartMetalFilter] = useState<'all' | 'alloy' | 'copper' | 'cobalt' | 'aluminium' | 'nickel' | 'zinc'>('all');
+    const [chartMetalFilter, setChartMetalFilter] = useState<'all' | 'alloy' | 'copper' | 'cobalt' | 'aluminium' | 'nickel' | 'zinc'>('copper');
     const [statusFilter, setStatusFilter] = useState<'all' | 'completed' | 'pending' | 'cancelled'>('all');
     
     // State for selected trade details

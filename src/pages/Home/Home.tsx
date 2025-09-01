@@ -234,7 +234,50 @@ const Home: React.FC = () => {
                 <div className="home_metal_dashboard_wrapper">
                     {/* Metal Trading Analysis Charts Grid */}
                     <div className="home_metal_charts_grid">
-                        {tradesLoading ? (
+                        {chartFilteredTrades ? (
+                            <>
+                                <PriceDistributionBoxplot
+                                    trades={chartFilteredTrades}
+                                    height={350}
+                                    title={`Execution Deviation Distribution - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                                <AccuracyTrendChart
+                                    trades={chartFilteredTrades}
+                                    height={350}
+                                    title={`Execution Deviation Over Time - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                                <ProfitLossChart
+                                    trades={chartFilteredTrades}
+                                    height={350}
+                                    title={`Execution Deviation Profit Levels - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                                <RiskAdjustmentChart
+                                    trades={chartFilteredTrades}
+                                    height={350}
+                                    title={`Execution Price vs Risk Price - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                                <CorrelationTimelineChart
+                                    trades={chartFilteredTrades}
+                                    height={350}
+                                    title={`30-Day Rolling Correlation With EUR/USD - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                                <VolatilityHeatmapChart
+                                    trades={chartFilteredTrades}
+                                    height={350}
+                                    title={`Execution Deviation vs EUR/USD Return - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                                <MetalCorrelationChart
+                                    selectedMetal={chartMetalFilter === 'all' ? 'aluminium' : chartMetalFilter}
+                                    height={400}
+                                    title={`Feature Correlations - ${chartMetalFilter === 'all' ? 'Aluminium' : chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                                <MetalImportanceChart
+                                    selectedMetal={chartMetalFilter === 'all' ? 'aluminium' : chartMetalFilter}
+                                    height={400}
+                                    title={`Deep Learning Feature Importance - ${chartMetalFilter === 'all' ? 'Aluminium' : chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
+                                />
+                            </>
+                        ) : tradesLoading ? (
                             <>
                                 <div className="home_metal_loading_container">
                                     <Icons.RefreshCw size={24} className="icon-primary animate-spin" />
@@ -288,50 +331,7 @@ const Home: React.FC = () => {
                                     <p>Failed to load volatility heatmap</p>
                                 </div>
                             </>
-                        ) : (
-                            <>
-                                <PriceDistributionBoxplot
-                                    trades={chartFilteredTrades}
-                                    height={350}
-                                    title={`Execution Deviation Distribution - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
-                                />
-                                <AccuracyTrendChart
-                                    trades={chartFilteredTrades}
-                                    height={350}
-                                    title={`Execution Deviation Over Time - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
-                                />
-                                <ProfitLossChart
-                                    trades={chartFilteredTrades}
-                                    height={350}
-                                    title={`Execution Deviation Profit Levels - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
-                                />
-                                <RiskAdjustmentChart
-                                    trades={chartFilteredTrades}
-                                    height={350}
-                                    title={`Execution Price vs Risk Price - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
-                                />
-                                <CorrelationTimelineChart
-                                    trades={chartFilteredTrades}
-                                    height={350}
-                                    title={`30-Day Rolling Correlation With EUR/USD - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
-                                />
-                                <VolatilityHeatmapChart
-                                    trades={chartFilteredTrades}
-                                    height={350}
-                                    title={`Execution Deviation vs EUR/USD Return - ${chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
-                                />
-                                <MetalCorrelationChart
-                                    selectedMetal={chartMetalFilter === 'all' ? 'aluminium' : chartMetalFilter}
-                                    height={400}
-                                    title={`Feature Correlations - ${chartMetalFilter === 'all' ? 'Aluminium' : chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
-                                />
-                                <MetalImportanceChart
-                                    selectedMetal={chartMetalFilter === 'all' ? 'aluminium' : chartMetalFilter}
-                                    height={400}
-                                    title={`Deep Learning Feature Importance - ${chartMetalFilter === 'all' ? 'Aluminium' : chartMetalFilter.charAt(0).toUpperCase() + chartMetalFilter.slice(1)}`}
-                                />
-                            </>
-                        )}
+                        ) : null}
                     </div>
 
                     {/* Trade Details Section - Always visible */}

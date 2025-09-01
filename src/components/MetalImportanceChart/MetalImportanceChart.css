@@ -41,6 +41,7 @@
 .metal_importance_chart_content {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 8px;
 }
 

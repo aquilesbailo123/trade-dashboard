@@ -22,6 +22,13 @@
     display: inline-block;
 }
 
+/* .correlation_timeline_chart_legend {
+    flex-direction: column;
+} */
+
+/* .correlation_timeframe_control {
+    flex-direction: column;
+} */
 
 .correlation_timeline_main_area {
     display: flex;
@@ -72,6 +79,13 @@
 .correlation-timeframe-select option {
     background-color: var(--color-surface-primary) !important;
     color: var(--color-text-primary) !important;
+}
+
+@media (max-width: 1800px) {
+    .correlation_timeline_chart_header {
+        margin-bottom: 0;
+        border-bottom: none;
+    }
 }
 
 /* Responsive adjustments */

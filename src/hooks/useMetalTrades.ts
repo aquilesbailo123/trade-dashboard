@@ -115,6 +115,12 @@ export const useMetalTrades = () => {
         };
 
         fetchTrades();
+        
+        // Set up interval to refresh every 3 seconds
+        const interval = setInterval(fetchTrades, 3000);
+        
+        // Cleanup interval on unmount
+        return () => clearInterval(interval);
     }, []);
 
     const refetch = async () => {

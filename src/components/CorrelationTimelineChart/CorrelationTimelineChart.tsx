@@ -243,7 +243,7 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
     height = 300, 
     title 
 }) => {
-    const [timeFrame, setTimeFrame] = useState<number>(30); // Default 30 days
+    const [timeFrame, setTimeFrame] = useState<number>(7); // Default 30 days
     const [visibleLines, setVisibleLines] = useState({
         day0: true,
         day1: true,
@@ -346,20 +346,7 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
             <div className="correlation_timeline_chart_header chart_header">
                 <h3 className="correlation_timeline_chart_title chart_title">{title}</h3>
                 <div className="correlation_timeline_controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
-                    <div className="correlation_timeframe_control" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <label style={{ fontSize: '14px', fontWeight: '500', color: 'var(--color-text-secondary)' }}>Time Frame:</label>
-                        <select 
-                            value={timeFrame} 
-                            onChange={(e) => setTimeFrame(parseInt(e.target.value))}
-                            className="correlation-timeframe-select"
-                        >
-                            <option value={7}>7 Days</option>
-                            <option value={14}>14 Days</option>
-                            <option value={30}>30 Days</option>
-                            <option value={60}>60 Days</option>
-                            <option value={90}>90 Days</option>
-                        </select>
-                    </div>
+                    
                     <div className="correlation_timeline_chart_legend chart_legend">
                         {lineConfigs.map(config => (
                             <span 
@@ -378,6 +365,32 @@ const CorrelationTimelineChart: React.FC<CorrelationTimelineChartProps> = ({
                                 {config.label}
                             </span>
                         ))}
+                        {/* <span className="correlation_timeline_legend_item chart_legend_item">
+                            <span className="correlation_timeline_legend_line" style={{ backgroundColor: 'var(--color-success-500)', width: '16px', height: '3px' }}></span>
+                            Above 0: Positive
+                        </span>
+                        <span className="correlation_timeline_legend_item chart_legend_item">
+                            <span className="correlation_timeline_legend_line" style={{ backgroundColor: 'var(--color-danger-500)', width: '16px', height: '3px' }}></span>
+                            Below 0: Negative
+                        </span>
+                        <span className="correlation_timeline_legend_item chart_legend_item">
+                            <span className="correlation_timeline_legend_line" style={{ backgroundColor: 'var(--color-text-tertiary)', width: '16px', height: '3px' }}></span>
+                            At 0: No Correlation
+                        </span> */}
+                        <div className="correlation_timeframe_control" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label style={{ fontSize: '14px', fontWeight: '500', color: 'var(--color-text-secondary)' }}>Time Frame:</label>
+                        <select 
+                            value={timeFrame} 
+                            onChange={(e) => setTimeFrame(parseInt(e.target.value))}
+                            className="correlation-timeframe-select"
+                        >
+                            <option value={7}>7 Days</option>
+                            <option value={14}>14 Days</option>
+                            <option value={30}>30 Days</option>
+                            <option value={60}>60 Days</option>
+                            <option value={90}>90 Days</option>
+                        </select>
+                    </div>
                     </div>
                 </div>
             </div>

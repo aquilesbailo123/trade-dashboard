@@ -212,7 +212,7 @@ export function useTrades(seconds: number = 60) {
   return useQuery({
     queryKey: ["trades", seconds],
     queryFn: () => fetchRecentTrades(seconds),
-    refetchInterval: 5000, // Refetch every 5 seconds to get new trades
+    refetchInterval: 3000, // Refetch every 3 seconds to get new trades
     staleTime: 1000, // Consider data stale after 1 second
   });
 }
@@ -326,8 +326,8 @@ export function useStats() {
   return useQuery({
     queryKey: ["stats"],
     queryFn: fetchStats,
-    refetchInterval: 10000, // Refetch every 10 seconds
-    staleTime: 5000,
+    refetchInterval: 3000, // Refetch every 3 seconds
+    staleTime: 1000,
   });
 }
 

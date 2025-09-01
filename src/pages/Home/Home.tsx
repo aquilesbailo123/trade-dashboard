@@ -532,7 +532,7 @@ const Home: React.FC = () => {
                                 </div>
                             ) : null}
                         </div>
-                        {!tradesError && !tradesLoading && paginatedTrades.length > 0 && (
+                        {paginatedTrades.length > 0 && currentPage && totalPages ? (
                             <div className="home_metal_pagination">
                                 <button 
                                     className="home_metal_pagination_button" 
@@ -552,7 +552,7 @@ const Home: React.FC = () => {
                                     <Icons.ChevronRight size={16} />
                                 </button>
                             </div>
-                        )}
+                        ) : null}
                     </section>
                 </div>
             </div>

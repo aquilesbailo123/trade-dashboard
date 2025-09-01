@@ -26,7 +26,7 @@ const ProfitLossChart: React.FC<ProfitLossChartProps> = ({
         
         if (percentageDiff < 0) {
             acc.below.count += 1;
-        } else if (percentageDiff < 10) {
+        } else if (percentageDiff < 2) {
             acc.lowAbove.count += 1;
         } else {
             acc.highAbove.count += 1;
@@ -35,8 +35,8 @@ const ProfitLossChart: React.FC<ProfitLossChartProps> = ({
         return acc;
     }, {
         below: { count: 0, label: '<0%', description: 'Below Risk Price' },
-        lowAbove: { count: 0, label: '<10%', description: '0-10% Above Risk' },
-        highAbove: { count: 0, label: '≥10%', description: '10%+ Above Risk' }
+        lowAbove: { count: 0, label: '<2%', description: '0-2% Above Risk' },
+        highAbove: { count: 0, label: '≥2%', description: '2%+ Above Risk' }
     });
 
     const chartData = [
@@ -59,11 +59,11 @@ const ProfitLossChart: React.FC<ProfitLossChartProps> = ({
                     </span>
                     <span className="profit_loss_legend_item chart_legend_item">
                         <span className="profit_loss_legend_bar" style={{ backgroundColor: 'var(--color-warning-500)' }}></span>
-                        0-10% Above
+                        0-2% Above
                     </span>
                     <span className="profit_loss_legend_item chart_legend_item">
                         <span className="profit_loss_legend_bar" style={{ backgroundColor: 'var(--color-success-500)' }}></span>
-                        10%+ Above
+                        2%+ Above
                     </span>
                 </div>
             </div>
